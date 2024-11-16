@@ -7,11 +7,19 @@ class Auth {
 
   Future<String?> createUserWithEmailAndPassword({required String email, required String password}) async {
     try {
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+       UserCredential userCredential = await _firebaseAuth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
-      return 'Success';
+      User? user = userCredential.user;
+
+      if (user != null) {
+       // Gửi email xác thực sau khi người dùng đăng ký thành công
+       await sendEmailVerificationLink(user);
+       return 'Đăng ký thành công! Email xác thực đã được gửi đến ${user.email}.';
+      } else {
+       return 'Đăng ký thất bại! Không thể tạo người dùng.';
+      }
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
         return 'The password provided is too weak.';
@@ -24,7 +32,14 @@ class Auth {
       return e.toString();
     }
   }
-  Future<String?> sendEmailVerificationLink() async{
-    
+  Future<String?> sendEmailVerificationLink(User user) async{
+    try {
+      // Gửi email xác thực
+      await user.sendEmailVerification();
+      print("Đã gửi email xác thực đến: ${user.email}");
+    } catch (e) {
+      // Xử lý lỗi nếu có
+      print("Lỗi khi gửi email xác thực: $e");
+    }
   }
 }
