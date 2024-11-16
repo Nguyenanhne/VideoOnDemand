@@ -24,4 +24,7 @@ class Auth {
       return e.toString();
     }
   }
+  Future<String?> sendEmailVerificationLink() async{
+    
+  }
 }
