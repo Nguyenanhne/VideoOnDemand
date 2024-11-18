@@ -11,6 +11,7 @@ class Auth {
         email: email,
         password: password,
       );
+
       User? user = userCredential.user;
 
       if (user != null) {
@@ -20,6 +21,7 @@ class Auth {
       } else {
        return 'Đăng ký thất bại! Không thể tạo người dùng.';
       }
+      return "Success";
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
         return 'The password provided is too weak.';

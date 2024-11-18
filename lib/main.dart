@@ -1,4 +1,5 @@
 import 'package:du_an_cntt/views/email_verification_link/email_verification_link_mobile.dart';
+import 'package:du_an_cntt/views/sign_up/sign_up_mobile.dart';
 import 'package:du_an_cntt/views/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -42,7 +43,7 @@ class MyApp extends StatelessWidget {
             colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple)
                 .copyWith(background: Colors.black),
           ),
-          home: const EmailVerificationLinkMobile(),
+          home: const SignUpScreenMobile(),
         );
       },
     );
