@@ -1,7 +1,7 @@
 import 'dart:ui'; // Để sử dụng BackdropFilter
 import 'package:du_an_cntt/utils.dart';
 import 'package:du_an_cntt/view_models/home_vm.dart';
-import 'package:du_an_cntt/views/login/login_mobile.dart';
+import 'package:du_an_cntt/views/login/sign_in_mobile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -56,7 +56,7 @@ class _WelcomeScreenMobileState extends State<WelcomeScreenMobile> {
             ),
             InkWell(
               onTap: (){
-                homeVM.onTapNavigateToScreen(context, LoginScreenMobile());
+                homeVM.onTapNavigateToScreen(context, SignInScreenMobile());
               },
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 10.w),

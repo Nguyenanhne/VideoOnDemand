@@ -1,3 +1,4 @@
+import 'package:du_an_cntt/helper/navigator.dart';
 import 'package:du_an_cntt/view_models/signup_vm.dart';
 import 'package:du_an_cntt/views/email_verification_link/email_verification_link_mobile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -21,9 +22,9 @@ class SignUpScreenMobile extends StatefulWidget {
 class _SignUpScreenMobileState extends State<SignUpScreenMobile> {
   final SignUpViewModel signUpVM = SignUpViewModel();
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _usenameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController usenameController = TextEditingController();
 
   final Auth _firebaseAuth = Auth();
 
@@ -94,7 +95,7 @@ class _SignUpScreenMobileState extends State<SignUpScreenMobile> {
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
                       child: TextFormField(
-                        controller: _emailController,
+                        controller: emailController,
                         style: contentStyle,
                         keyboardType: TextInputType.emailAddress,
                         validator: (value) {
@@ -121,7 +122,7 @@ class _SignUpScreenMobileState extends State<SignUpScreenMobile> {
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 20.w),
                       child: TextFormField(
-                        controller: _passwordController,
+                        controller: passwordController,
                         obscureText: true,
                         style: contentStyle,
                         decoration: InputDecoration(
@@ -170,7 +171,7 @@ class _SignUpScreenMobileState extends State<SignUpScreenMobile> {
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
                       child: TextFormField(
-                        controller: _usenameController,
+                        controller: usenameController,
                         style: TextStyle(
                             fontSize: 14.sp,
                             color: Colors.black,
@@ -212,18 +213,16 @@ class _SignUpScreenMobileState extends State<SignUpScreenMobile> {
                         ),
                         onPressed: () async {
                           if (_formKey.currentState! .validate()) {
-                            await _firebaseAuth.createUserWithEmailAndPassword(email: _emailController.text, password: _passwordController.text);
-
-                            await QuickAlert.show(
+                            await _firebaseAuth.createUserWithEmailAndPassword(email: emailController.text, password: passwordController.text);
+                            QuickAlert.show(
                               context: context,
                               type: QuickAlertType.success,
                               title: "Còn 1 bước nữa",
                               text: "Vui lòng kiểm tra email và xác thực tài khoản",
-                              onConfirmBtnTap: (){
-                                signUpVM.onTapNavigateToScreen(context, EmailVerificationLinkMobile());
+                              onConfirmBtnTap: () async {
+                                await NavigatorHelper.navigateAndRemoveUntil(context, const EmailVerificationLinkMobile());
                               }
                             );
-
                           }
                         },
                         child: Text(

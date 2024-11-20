@@ -1,17 +1,26 @@
+import 'package:du_an_cntt/helper/navigator.dart';
 import 'package:du_an_cntt/utils.dart';
+import 'package:du_an_cntt/view_models/sign_in_vm.dart';
+import 'package:du_an_cntt/views/email_verification_link/email_verification_link_mobile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
-class LoginScreenMobile extends StatefulWidget {
-  const LoginScreenMobile({super.key});
+import 'package:quickalert/quickalert.dart';
+
+import '../../services/firebase_authentication.dart';
+class SignInScreenMobile extends StatefulWidget {
+  const SignInScreenMobile({super.key});
 
   @override
-  State<LoginScreenMobile> createState() => _LoginScreenMobileState();
+  State<SignInScreenMobile> createState() => _SignInScreenMobileState();
 }
 
-class _LoginScreenMobileState extends State<LoginScreenMobile> {
+class _SignInScreenMobileState extends State<SignInScreenMobile> {
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final SignInViewModel signInViewModel = new SignInViewModel();
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -43,6 +52,7 @@ class _LoginScreenMobileState extends State<LoginScreenMobile> {
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
                       child: TextFormField(
+                        controller: emailController,
                         style: TextStyle(
                             fontSize: 14.sp,
                             color: Colors.grey[400],
@@ -63,6 +73,7 @@ class _LoginScreenMobileState extends State<LoginScreenMobile> {
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 20.w),
                       child: TextFormField(
+                        controller: passwordController,
                         obscureText: true,
                         style: TextStyle(
                             fontSize: 14.sp,
@@ -97,7 +108,9 @@ class _LoginScreenMobileState extends State<LoginScreenMobile> {
                             width: 1
                           )
                         ),
-                        onPressed: (){},
+                        onPressed: () async {
+                          await signInViewModel.Login(context: context, email: emailController.text.trim(), password: passwordController.text.trim());
+                        },
                         child: Text(
                           "Bắt đầu",
                           style: TextStyle(

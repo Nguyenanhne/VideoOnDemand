@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-class LoginScreenTablet extends StatefulWidget {
-  const LoginScreenTablet({super.key});
+class SignInScreenTablet extends StatefulWidget {
+  const SignInScreenTablet({super.key});
 
   @override
-  State<LoginScreenTablet> createState() => _LoginScreenTabletState();
+  State<SignInScreenTablet> createState() => _SignInScreenTabletState();
 }
 
-class _LoginScreenTabletState extends State<LoginScreenTablet> {
+class _SignInScreenTabletState extends State<SignInScreenTablet> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

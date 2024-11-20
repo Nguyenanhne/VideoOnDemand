@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class LoginScreen extends StatelessWidget {
-  const LoginScreen({super.key, required this.mobileBody, required this.tabletBody, required this.webBody});
+class SignInScreen extends StatelessWidget {
+  const SignInScreen({super.key, required this.mobileBody, required this.tabletBody, required this.webBody});
   final Widget mobileBody;
   final Widget tabletBody;
   final Widget webBody;
