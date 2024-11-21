@@ -1,8 +1,11 @@
 import 'dart:async';
 
+import 'package:du_an_cntt/helper/navigator.dart';
 import 'package:du_an_cntt/utils.dart';
 import 'package:du_an_cntt/view_models/email_verification_link_vm.dart';
+import 'package:du_an_cntt/views/home/home_mobile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -21,10 +24,19 @@ class EmailVerificationLinkMobile extends StatefulWidget {
 class _EmailVerificationLinkMobileState extends State<EmailVerificationLinkMobile> {
   EmailVerificationLinkViewModel viewModel = EmailVerificationLinkViewModel();
   final firebaseAuth = Auth();
+  User? user = FirebaseAuth.instance.currentUser;
+  late final timer;
   @override
   void initState() {
     super.initState();
     firebaseAuth.sendEmailVerificationLink();
+    timer = Timer.periodic(Duration(seconds: 3), (timer) {
+      user?.reload();
+      if(user!.emailVerified){
+        timer.cancel();
+        NavigatorHelper.navigateAndRemoveUntil(context, HomeScreenMobile());
+      }
+    });
   }
   @override
   void dispose() {

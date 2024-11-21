@@ -10,7 +10,7 @@ import '../services/firebase_authentication.dart';
 import '../views/email_verification_link/email_verification_link_mobile.dart';
 class SignInViewModel extends ChangeNotifier{
   Future<void> Login({required BuildContext context, required String email, required String password}) async {
-    final user = await Auth().loginUserWithEmailAndPassword(email: email, password: password);
+    final user = await Auth().signInUserWithEmailAndPassword(email: email, password: password);
 
     if (user != null){
       QuickAlert.show(

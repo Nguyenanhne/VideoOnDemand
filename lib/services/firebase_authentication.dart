@@ -54,7 +54,7 @@ class Auth {
     return false;
   }
 
-  Future<User?> loginUserWithEmailAndPassword({required String email, required String password}) async {
+  Future<User?> signInUserWithEmailAndPassword({required String email, required String password}) async {
     try {
       final cred = await firebaseAuth.signInWithEmailAndPassword(
           email: email, password: password);
@@ -63,5 +63,12 @@ class Auth {
       log("Tên đăng nhập hoặc mật khẩu không hợp lệ");
     }
   }
-
+  Future<void> signOut()async {
+    try{
+      await FirebaseAuth.instance.signOut();
+    }
+    catch (e){
+      print(e);
+    }
+  }
 }
