@@ -20,7 +20,14 @@ class SignInScreenMobile extends StatefulWidget {
 class _SignInScreenMobileState extends State<SignInScreenMobile> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final SignInViewModel signInViewModel = new SignInViewModel();
+  final SignInViewModel signInViewModel = SignInViewModel();
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -45,146 +52,144 @@ class _SignInScreenMobileState extends State<SignInScreenMobile> {
           slivers: [
             SliverFillRemaining(
               hasScrollBody: false,
-              child: Container(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
-                      child: TextFormField(
-                        controller: emailController,
-                        style: TextStyle(
-                            fontSize: 14.sp,
-                            color: Colors.grey[400],
-                            fontFamily: GoogleFonts.roboto().fontFamily
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
+                    child: TextFormField(
+                      controller: emailController,
+                      style: TextStyle(
+                          fontSize: 14.sp,
+                          color: Colors.grey[400],
+                          fontFamily: GoogleFonts.roboto().fontFamily
+                      ),
+                      decoration: InputDecoration(
+                        fillColor: Colors.grey[800],
+                        filled: true,
+                        labelText: "Email hoặc số điện thoại",
+                        labelStyle: TextStyle(color: Colors.grey[400], fontFamily: GoogleFonts.roboto().fontFamily, fontSize: 16.sp),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(5),
                         ),
-                        decoration: InputDecoration(
-                          fillColor: Colors.grey[800],
-                          filled: true,
-                          labelText: "Email hoặc số điện thoại",
-                          labelStyle: TextStyle(color: Colors.grey[400], fontFamily: GoogleFonts.roboto().fontFamily, fontSize: 16.sp),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          floatingLabelBehavior: FloatingLabelBehavior.auto,
+                        floatingLabelBehavior: FloatingLabelBehavior.auto,
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20.w),
+                    child: TextFormField(
+                      controller: passwordController,
+                      obscureText: true,
+                      style: TextStyle(
+                          fontSize: 14.sp,
+                          color: Colors.grey[400],
+                          fontFamily: GoogleFonts.roboto().fontFamily
+                      ),
+                      decoration: InputDecoration(
+                        fillColor: Colors.grey[800],
+                        filled: true,
+                        labelText: "Mật khẩu",
+                        labelStyle: TextStyle(color: Colors.grey[400], fontFamily: GoogleFonts.roboto().fontFamily, fontSize: 16.sp),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        floatingLabelBehavior: FloatingLabelBehavior.auto,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    width: double.maxFinite,
+                    padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        padding: EdgeInsets.symmetric(vertical: 10.h),
+                        elevation: 10,
+                        backgroundColor: Colors.black12,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5)
+                        ),
+                        side: BorderSide(
+                          color: Colors.white,
+                          width: 1
+                        )
+                      ),
+                      onPressed: () async {
+                        await signInViewModel.Login(context: context, email: emailController.text.trim(), password: passwordController.text.trim());
+                      },
+                      child: Text(
+                        "Bắt đầu",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: GoogleFonts.roboto().fontFamily,
                         ),
                       ),
                     ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 20.w),
-                      child: TextFormField(
-                        controller: passwordController,
-                        obscureText: true,
-                        style: TextStyle(
-                            fontSize: 14.sp,
-                            color: Colors.grey[400],
-                            fontFamily: GoogleFonts.roboto().fontFamily
-                        ),
-                        decoration: InputDecoration(
-                          fillColor: Colors.grey[800],
-                          filled: true,
-                          labelText: "Mật khẩu",
-                          labelStyle: TextStyle(color: Colors.grey[400], fontFamily: GoogleFonts.roboto().fontFamily, fontSize: 16.sp),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          floatingLabelBehavior: FloatingLabelBehavior.auto,
-                        ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20.w),
+                    child: Text(
+                      "Hoặc",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16.sp,
+                        fontFamily: GoogleFonts.roboto().fontFamily,
                       ),
                     ),
-                    Container(
-                      width: double.maxFinite,
-                      padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
+                  ),
+                  Container(
+                    width: double.maxFinite,
+                    padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
                           padding: EdgeInsets.symmetric(vertical: 10.h),
                           elevation: 10,
-                          backgroundColor: Colors.black12,
+                          backgroundColor: Colors.grey[900],
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(5)
+                              borderRadius: BorderRadius.circular(5)
                           ),
                           side: BorderSide(
-                            color: Colors.white,
-                            width: 1
+                              color: Colors.white,
+                              width: 1
                           )
-                        ),
-                        onPressed: () async {
-                          await signInViewModel.Login(context: context, email: emailController.text.trim(), password: passwordController.text.trim());
-                        },
-                        child: Text(
-                          "Bắt đầu",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16.sp,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: GoogleFonts.roboto().fontFamily,
-                          ),
-                        ),
                       ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 20.w),
+                      onPressed: (){},
                       child: Text(
-                        "Hoặc",
+                        "Dùng mã đăng nhập",
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 16.sp,
+                          fontWeight: FontWeight.bold,
                           fontFamily: GoogleFonts.roboto().fontFamily,
                         ),
                       ),
                     ),
-                    Container(
-                      width: double.maxFinite,
-                      padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                            padding: EdgeInsets.symmetric(vertical: 10.h),
-                            elevation: 10,
-                            backgroundColor: Colors.grey[900],
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(5)
-                            ),
-                            side: BorderSide(
-                                color: Colors.white,
-                                width: 1
-                            )
-                        ),
-                        onPressed: (){},
-                        child: Text(
-                          "Dùng mã đăng nhập",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16.sp,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: GoogleFonts.roboto().fontFamily,
-                          ),
-                        ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
+                    child: Text(
+                      "Bạn quên mật khẩu?",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16.sp,
+                        fontFamily: GoogleFonts.roboto().fontFamily,
                       ),
                     ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
-                      child: Text(
-                        "Bạn quên mật khẩu?",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16.sp,
-                          fontFamily: GoogleFonts.roboto().fontFamily,
-                        ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
+                    child: Text(
+                      "Bạn mới sử dụng Netflix. Đăng ký ngay!",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16.sp,
+                        fontFamily: GoogleFonts.roboto().fontFamily,
                       ),
                     ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
-                      child: Text(
-                        "Bạn mới sử dụng Netflix. Đăng ký ngay!",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16.sp,
-                          fontFamily: GoogleFonts.roboto().fontFamily,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             )
           ],

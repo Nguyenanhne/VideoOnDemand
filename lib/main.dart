@@ -1,4 +1,5 @@
 import 'package:du_an_cntt/views/email_verification_link/email_verification_link_mobile.dart';
+import 'package:du_an_cntt/views/forgot_password/input_email_mobile.dart';
 import 'package:du_an_cntt/views/home/home_mobile.dart';
 import 'package:du_an_cntt/views/login/sign_in_mobile.dart';
 import 'package:du_an_cntt/views/login/sign_in_screen.dart';
@@ -46,13 +47,15 @@ class MyApp extends StatelessWidget {
             colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple)
                 .copyWith(background: Colors.black),
           ),
-          home: const SignInScreenMobile(),
+          home: const SplashScreen(),
           initialRoute: "/",
           routes: {
             "/SignInScreen": (context) => SignInScreenMobile(),
             "/HomeScreen": (context) => HomeScreenMobile(),
             "/SignUpScreen": (context) => SignUpScreenMobile(),
-            "/EmailVerificationLink": (context) => EmailVerificationLinkMobile()
+            "/EmailVerificationLinkScreenm": (context) => EmailVerificationLinkMobile(),
+            "/InputEmailScreen": (context) => InputEmailMobile(),
+            "SplashScreen": (context) => SplashScreen()
           }
         );
       },

@@ -21,12 +21,12 @@ class SignUpScreenMobile extends StatefulWidget {
 
 class _SignUpScreenMobileState extends State<SignUpScreenMobile> {
   final SignUpViewModel signUpVM = SignUpViewModel();
-  final _formKey = GlobalKey<FormState>();
+  final formKey = GlobalKey<FormState>();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController usenameController = TextEditingController();
 
-  final Auth _firebaseAuth = Auth();
+  final Auth firebaseAuth = Auth();
 
   var errorStyle = TextStyle(
       fontSize: 12.sp,
@@ -39,7 +39,14 @@ class _SignUpScreenMobileState extends State<SignUpScreenMobile> {
       color: Colors.black,
       fontFamily: GoogleFonts.roboto().fontFamily
   );
-
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    emailController.dispose();
+    passwordController.dispose();
+    usenameController.dispose();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -62,7 +69,7 @@ class _SignUpScreenMobileState extends State<SignUpScreenMobile> {
             SliverFillRemaining(
               hasScrollBody: false,
               child: Form(
-                key: _formKey,
+                key: formKey,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -212,8 +219,8 @@ class _SignUpScreenMobileState extends State<SignUpScreenMobile> {
                             // )
                         ),
                         onPressed: () async {
-                          if (_formKey.currentState! .validate()) {
-                            await _firebaseAuth.createUserWithEmailAndPassword(email: emailController.text, password: passwordController.text);
+                          if (formKey.currentState! .validate()) {
+                            await firebaseAuth.createUserWithEmailAndPassword(email: emailController.text, password: passwordController.text);
                             QuickAlert.show(
                               context: context,
                               type: QuickAlertType.success,

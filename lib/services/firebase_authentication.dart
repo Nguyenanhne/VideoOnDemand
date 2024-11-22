@@ -66,6 +66,21 @@ class Auth {
   Future<void> signOut()async {
     try{
       await FirebaseAuth.instance.signOut();
+      final user = FirebaseAuth.instance.currentUser;
+      if (user == null) {
+        print("User logged out successfully.");
+      } else {
+        print("Logout failed. User is still logged in.");
+      }
+    }
+    catch (e){
+      print(e);
+    }
+  }
+  Future<void> sendPasswordResetEmail(String email) async{
+    try{
+      await firebaseAuth.sendPasswordResetEmail(email: email);
+      print("Đã gửi link reset password xác thực đến: ${email}");
     }
     catch (e){
       print(e);

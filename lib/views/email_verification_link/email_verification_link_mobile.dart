@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:du_an_cntt/helper/navigator.dart';
 import 'package:du_an_cntt/utils.dart';
@@ -25,21 +26,27 @@ class _EmailVerificationLinkMobileState extends State<EmailVerificationLinkMobil
   EmailVerificationLinkViewModel viewModel = EmailVerificationLinkViewModel();
   final firebaseAuth = Auth();
   User? user = FirebaseAuth.instance.currentUser;
-  late final timer;
   @override
   void initState() {
     super.initState();
     firebaseAuth.sendEmailVerificationLink();
-    timer = Timer.periodic(Duration(seconds: 3), (timer) {
-      user?.reload();
-      if(user!.emailVerified){
-        timer.cancel();
-        NavigatorHelper.navigateAndRemoveUntil(context, HomeScreenMobile());
-      }
-    });
+    // timer = Timer.periodic(Duration(seconds: 3), (timer) {
+    //   print("countdown");
+    //   FirebaseAuth.instance.currentUser?.reload();
+    //   if(FirebaseAuth.instance.currentUser!.emailVerified){
+    //     timer.cancel();
+    //   }
+    // });
+    viewModel.startEmailVerificationTimer(
+      context,
+      () {
+          NavigatorHelper.navigateAndRemoveUntil(context, HomeScreenMobile());
+        }
+    );
   }
   @override
   void dispose() {
+    viewModel.dispose();
     super.dispose();
   }
 
@@ -111,8 +118,9 @@ class _EmailVerificationLinkMobileState extends State<EmailVerificationLinkMobil
                 ),
               ),
               GestureDetector(
-                onTap: (){
+                onTap: () async {
                   viewModel.ontapBackToLoginScreen(context);
+                  await firebaseAuth.signOut();
                 },
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
