@@ -1,5 +1,5 @@
 import 'package:du_an_cntt/views/email_verification_link/email_verification_link_mobile.dart';
-import 'package:du_an_cntt/views/forgot_password/input_email_mobile.dart';
+import 'package:du_an_cntt/views/forgot_password/forgot_password_mobile.dart';
 import 'package:du_an_cntt/views/home/home_mobile.dart';
 import 'package:du_an_cntt/views/login/sign_in_mobile.dart';
 import 'package:du_an_cntt/views/login/sign_in_screen.dart';
@@ -53,8 +53,8 @@ class MyApp extends StatelessWidget {
             "/SignInScreen": (context) => SignInScreenMobile(),
             "/HomeScreen": (context) => HomeScreenMobile(),
             "/SignUpScreen": (context) => SignUpScreenMobile(),
-            "/EmailVerificationLinkScreenm": (context) => EmailVerificationLinkMobile(),
-            "/InputEmailScreen": (context) => InputEmailMobile(),
+            "/EmailVerificationLinkScreen": (context) => EmailVerificationLinkMobile(),
+            "/ForgotPasswordScreen": (context) => ForgotPasswordMobile(),
             "SplashScreen": (context) => SplashScreen()
           }
         );

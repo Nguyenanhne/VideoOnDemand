@@ -37,8 +37,8 @@ class WelcomePage extends StatelessWidget {
           ),
         ),
         Positioned.fill(
-          top: MediaQuery.of(context).size.height / 2,
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Flexible(
                 child: Padding(
@@ -67,7 +67,7 @@ class WelcomePage extends StatelessWidget {
                   ),
                 ),
               ),
-              Expanded(
+              Flexible(
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20.w),
                   child: Text(

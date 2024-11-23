@@ -2,6 +2,8 @@ import 'package:du_an_cntt/helper/navigator.dart';
 import 'package:du_an_cntt/utils.dart';
 import 'package:du_an_cntt/view_models/sign_in_vm.dart';
 import 'package:du_an_cntt/views/email_verification_link/email_verification_link_mobile.dart';
+import 'package:du_an_cntt/views/forgot_password/forgot_password_mobile.dart';
+import 'package:du_an_cntt/views/sign_up/sign_up_mobile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -45,7 +47,9 @@ class _SignInScreenMobileState extends State<SignInScreenMobile> {
           ),
           leading: IconButton(
             icon: Icon(Icons.arrow_back, color: Color(colorAppbarIcon)),
-            onPressed: () {  },
+            onPressed: () {
+              NavigatorHelper.goBack(context);
+            },
           ),
         ),
         body: CustomScrollView(
@@ -155,7 +159,9 @@ class _SignInScreenMobileState extends State<SignInScreenMobile> {
                               width: 1
                           )
                       ),
-                      onPressed: (){},
+                      onPressed: (){
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Coming soon")));
+                      },
                       child: Text(
                         "Dùng mã đăng nhập",
                         style: TextStyle(
@@ -169,23 +175,33 @@ class _SignInScreenMobileState extends State<SignInScreenMobile> {
                   ),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
-                    child: Text(
-                      "Bạn quên mật khẩu?",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16.sp,
-                        fontFamily: GoogleFonts.roboto().fontFamily,
+                    child: GestureDetector(
+                      onTap: (){
+                        NavigatorHelper.navigateTo(context, ForgotPasswordMobile());
+                      },
+                      child: Text(
+                        "Bạn quên mật khẩu?",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16.sp,
+                          fontFamily: GoogleFonts.roboto().fontFamily,
+                        ),
                       ),
                     ),
                   ),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
-                    child: Text(
-                      "Bạn mới sử dụng Netflix. Đăng ký ngay!",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16.sp,
-                        fontFamily: GoogleFonts.roboto().fontFamily,
+                    child: GestureDetector(
+                      onTap: (){
+                        NavigatorHelper.navigateTo(context, SignUpScreenMobile());
+                      },
+                      child: Text(
+                        "Bạn mới sử dụng Netflix. Đăng ký ngay!",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16.sp,
+                          fontFamily: GoogleFonts.roboto().fontFamily,
+                        ),
                       ),
                     ),
                   ),

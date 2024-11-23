@@ -9,14 +9,14 @@ import 'package:quickalert/quickalert.dart';
 import '../../services/firebase_authentication.dart';
 import '../../utils.dart';
 
-class InputEmailMobile extends StatefulWidget {
-  const InputEmailMobile({super.key});
+class ForgotPasswordMobile extends StatefulWidget {
+  const ForgotPasswordMobile({super.key});
 
   @override
-  State<InputEmailMobile> createState() => _InputEmailMobileState();
+  State<ForgotPasswordMobile> createState() => _ForgotPasswordMobileState();
 }
 
-class _InputEmailMobileState extends State<InputEmailMobile> {
+class _ForgotPasswordMobileState extends State<ForgotPasswordMobile> {
   final TextEditingController emailController = TextEditingController();
   final firebaseAuth = Auth();
   final formKey = GlobalKey<FormState>();
@@ -44,7 +44,9 @@ class _InputEmailMobileState extends State<InputEmailMobile> {
           ),
           leading: IconButton(
             icon: Icon(Icons.arrow_back, color: Color(colorAppbarIcon)),
-            onPressed: () {  },
+            onPressed: () {
+              NavigatorHelper.goBack(context);
+            },
           ),
         ),
         body: CustomScrollView(
