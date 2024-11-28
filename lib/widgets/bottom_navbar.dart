@@ -1,3 +1,4 @@
+import 'package:du_an_cntt/views/detailed%20movie/detailed_movie_mobile.dart';
 import 'package:du_an_cntt/views/home/home_mobile.dart';
 import 'package:du_an_cntt/views/home/home_screen.dart';
 import 'package:du_an_cntt/views/home/home_tablet.dart';
@@ -20,34 +21,31 @@ class BottomNavBar extends StatelessWidget {
     return DefaultTabController(
       length: 3,
       child: Scaffold(
-        bottomNavigationBar: Container(
-          child: Container(
-            child: const TabBar(
-              tabs: [
-                Tab(
-                  icon: Icon(LineAwesomeIcons.home_solid),
-                  text: "Home",
-                ),
-                Tab(
-                  icon: Icon(LineAwesomeIcons.search_solid),
-                  text: "Search",
-                ),
-                Tab(
-                  icon: Icon(Icons.photo_library),
-                  text: "New & Hot",
-                ),
-              ],
-              indicatorColor: Colors.transparent,
-              labelColor: Colors.white,
-              unselectedLabelColor: Color(0x38CCCCCC),
+        bottomNavigationBar: const TabBar(
+          tabs: [
+            Tab(
+              icon: Icon(LineAwesomeIcons.home_solid),
+              text: "Trang chủ",
             ),
-          ),
+            Tab(
+              icon: Icon(Icons.photo_library),
+              text: "Mới & Hot",
+            ),
+            Tab(
+              icon: Icon(Icons.person_3),
+              text: "Netflix của tôi",
+
+            )
+          ],
+          indicatorColor: Colors.transparent,
+          labelColor: Colors.white,
+          unselectedLabelColor: Colors.white30,
         ),
         body: TabBarView(
           children: [
             HomeScreen(mobileBody: HomeScreenMobile(), tabletBody: HomeScreenTablet(), webBody: Text("webBody")),
-            SearchScreen(mobileBody: SearchScreenMobile(), tabletBody: SearchScreenTablet(), webBody: Text("webBody")),
-            NewsAndHotScreen(mobileBody: NewsAndHotScreenMobile(), tabletBody: NewsAndHotScreenTablet(), webBody: Text("webBody"))
+            NewsAndHotScreen(mobileBody: NewsAndHotScreenMobile(), tabletBody: NewsAndHotScreenTablet(), webBody: Text("webBody")),
+            DetailedMovieScreenMobile(),
           ],
         ),
       )

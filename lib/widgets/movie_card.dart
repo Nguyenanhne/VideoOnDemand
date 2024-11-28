@@ -7,7 +7,7 @@ import '../models/movie_model.dart';
 class MovieCardWidget extends StatelessWidget {
   final Future<MovieModel> movie ;
   final String headerLineText;
-  const MovieCardWidget({super.key, required this.movie, required this.headerLineText});
+  const  MovieCardWidget({super.key, required this.movie, required this.headerLineText});
 
   @override
   Widget build(BuildContext context) {

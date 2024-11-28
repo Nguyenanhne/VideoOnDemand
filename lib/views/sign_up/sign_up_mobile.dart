@@ -70,7 +70,7 @@ class _SignUpScreenMobileState extends State<SignUpScreenMobile> {
         body: CustomScrollView(
           slivers: [
             SliverFillRemaining(
-              hasScrollBody: false,
+              hasScrollBody: true,
               child: Form(
                 key: formKey,
                 child: Column(

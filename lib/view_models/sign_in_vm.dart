@@ -11,7 +11,8 @@ import '../views/email_verification_link/email_verification_link_mobile.dart';
 class SignInViewModel extends ChangeNotifier{
   Future<void> Login({required BuildContext context, required String email, required String password}) async {
     final user = await Auth().signInUserWithEmailAndPassword(email: email, password: password);
-
+    FocusScope.of(context).unfocus();
+    await Future.delayed(Duration(milliseconds: 500));
     if (user != null){
       QuickAlert.show(
           context: context,

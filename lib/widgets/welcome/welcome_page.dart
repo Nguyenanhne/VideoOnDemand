@@ -40,6 +40,7 @@ class WelcomePage extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              Expanded(child: Container()),
               Flexible(
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20.w),
@@ -47,7 +48,7 @@ class WelcomePage extends StatelessWidget {
                     title,
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      fontSize: 30.sp,
+                      fontSize: 30,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
                       fontFamily: GoogleFonts.roboto().fontFamily,

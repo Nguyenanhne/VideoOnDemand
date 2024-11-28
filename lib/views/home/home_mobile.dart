@@ -7,6 +7,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 
 import '../../models/movie_model.dart';
+import '../../widgets/bottom_navbar.dart';
 class HomeScreenMobile extends StatefulWidget {
   const HomeScreenMobile({super.key});
 

@@ -18,7 +18,6 @@ class EmailVerificationLinkViewModel extends ChangeNotifier{
         isEmailVerified = true;
         timer.cancel();
         onVerified();
-        notifyListeners();
       }
     });
   }

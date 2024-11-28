@@ -1,3 +1,5 @@
+import 'package:du_an_cntt/view_models/movie_detail_vm.dart';
+import 'package:du_an_cntt/views/detailed%20movie/detailed_movie_mobile.dart';
 import 'package:du_an_cntt/views/email_verification_link/email_verification_link_mobile.dart';
 import 'package:du_an_cntt/views/forgot_password/forgot_password_mobile.dart';
 import 'package:du_an_cntt/views/home/home_mobile.dart';
@@ -5,10 +7,12 @@ import 'package:du_an_cntt/views/login/sign_in_mobile.dart';
 import 'package:du_an_cntt/views/login/sign_in_screen.dart';
 import 'package:du_an_cntt/views/sign_up/sign_up_mobile.dart';
 import 'package:du_an_cntt/views/splash_screen.dart';
+import 'package:du_an_cntt/widgets/bottom_navbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -16,7 +20,15 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => DetailedMovieViewModel())
+      ],
+      child: MyApp()
+      ,
+    )
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -47,7 +59,7 @@ class MyApp extends StatelessWidget {
             colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple)
                 .copyWith(background: Colors.black),
           ),
-          home: const SplashScreen(),
+          home: const DetailedMovieScreenMobile(),
           initialRoute: "/",
           routes: {
             "/SignInScreen": (context) => SignInScreenMobile(),
@@ -55,7 +67,7 @@ class MyApp extends StatelessWidget {
             "/SignUpScreen": (context) => SignUpScreenMobile(),
             "/EmailVerificationLinkScreen": (context) => EmailVerificationLinkMobile(),
             "/ForgotPasswordScreen": (context) => ForgotPasswordMobile(),
-            "SplashScreen": (context) => SplashScreen()
+            "SplashScreen": (context) => SplashScreen(),
           }
         );
       },
