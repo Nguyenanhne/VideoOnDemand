@@ -59,7 +59,7 @@ class MyApp extends StatelessWidget {
             colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple)
                 .copyWith(background: Colors.black),
           ),
-          home: const DetailedMovieScreenMobile(),
+          home: const BottomNavBar(),
           initialRoute: "/",
           routes: {
             "/SignInScreen": (context) => SignInScreenMobile(),

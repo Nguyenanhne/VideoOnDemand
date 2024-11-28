@@ -30,13 +30,13 @@ class _SignUpScreenMobileState extends State<SignUpScreenMobile> {
   final Auth firebaseAuth = Auth();
 
   var errorStyle = TextStyle(
-      fontSize: 12.sp,
+      fontSize: 12,
       color: Colors.red,
       fontFamily: GoogleFonts.roboto().fontFamily
   );
 
   var contentStyle = TextStyle(
-      fontSize: 14.sp,
+      fontSize: 14,
       color: Colors.black,
       fontFamily: GoogleFonts.roboto().fontFamily
   );
@@ -84,11 +84,12 @@ class _SignUpScreenMobileState extends State<SignUpScreenMobile> {
                         child: Text(
                           "Bạn đã sẵn sàng xem chưa",
                           style: TextStyle(
-                              fontSize: 28.sp,
+                              fontSize: 28,
                               fontFamily: GoogleFonts.roboto().fontFamily,
                               fontWeight: FontWeight.bold,
                               color: Colors.black
                           ),
+                          maxLines: 1,
                         ),
                       ),
                     ),
@@ -123,7 +124,7 @@ class _SignUpScreenMobileState extends State<SignUpScreenMobile> {
                             fillColor: Colors.grey[100],
                             filled: true,
                             labelText: "Nhập email của bạn",
-                            labelStyle: TextStyle(color: Colors.black, fontFamily: GoogleFonts.roboto().fontFamily, fontSize: 16.sp),
+                            labelStyle: TextStyle(color: Colors.black, fontFamily: GoogleFonts.roboto().fontFamily, fontSize: 16),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(5),
                             ),
@@ -144,7 +145,7 @@ class _SignUpScreenMobileState extends State<SignUpScreenMobile> {
                             fillColor: Colors.grey[100],
                             filled: true,
                             labelText: "Nhập mật khẩu",
-                            labelStyle: TextStyle(color: Colors.black, fontFamily: GoogleFonts.roboto().fontFamily, fontSize: 16.sp),
+                            labelStyle: TextStyle(color: Colors.black, fontFamily: GoogleFonts.roboto().fontFamily, fontSize: 16),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(5),
                             ),
@@ -174,7 +175,7 @@ class _SignUpScreenMobileState extends State<SignUpScreenMobile> {
                             fillColor: Colors.grey[100],
                             filled: true,
                             labelText: "Nhập tên hiển thị",
-                            labelStyle: TextStyle(color: Colors.black, fontFamily: GoogleFonts.roboto().fontFamily, fontSize: 16.sp),
+                            labelStyle: TextStyle(color: Colors.black, fontFamily: GoogleFonts.roboto().fontFamily, fontSize: 16),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(5),
                             ),
@@ -224,7 +225,7 @@ class _SignUpScreenMobileState extends State<SignUpScreenMobile> {
                             "Bắt đầu",
                             style: TextStyle(
                               color: Colors.white,
-                              fontSize: 16.sp,
+                              fontSize: 16,
                               fontWeight: FontWeight.bold,
                               fontFamily: GoogleFonts.roboto().fontFamily,
                             ),

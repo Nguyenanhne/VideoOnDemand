@@ -19,6 +19,8 @@ class DetailedMovieScreenMobile extends StatefulWidget {
 }
 
 class _DetailedMovieScreenMobileState extends State<DetailedMovieScreenMobile> {
+  int activeEpisode = 0;
+
   final contentStyle = TextStyle(
       fontFamily: GoogleFonts.roboto().fontFamily,
       fontSize: 14.sp,
@@ -37,7 +39,7 @@ class _DetailedMovieScreenMobileState extends State<DetailedMovieScreenMobile> {
   late final TabController tabController;
 
   List likesList = [
-    {"icon": Icons.add, "text": "Xem sau"},
+    {"icon": Icons.add, "text": "Danh sách"},
     {"icon": Icons.thumb_up_alt_outlined, "text": "Đánh giá"},
     {"icon": Icons.send_outlined, "text": "Chia sẻ"},
     {"icon": Icons.comment, "text": "Bình luận"},
@@ -379,39 +381,61 @@ class _DetailedMovieScreenMobileState extends State<DetailedMovieScreenMobile> {
                       }),
                     ),
                   ),
-                  // Row(
-                  //   mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  //   children: List.generate(optionList.length, (index) => GestureDetector(
-                  //     child: Text(
-                  //       optionList[index],
-                  //       style: contentStyle.copyWith(fontSize: 13.sp),
-                  //     ),
-                  //   )),
-                  // )
                 ],
               ),
             ),
           ),
           SliverToBoxAdapter(
-            child: SizedBox(
-              height: 18.sp,
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 10.w),
-                child: ListView.separated(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
+              child: SizedBox(
+                height: 50,
+                child: ListView.builder(
                   scrollDirection: Axis.horizontal,
                   itemBuilder: (BuildContext context, int index){
-                    return Text(
-                      optionList[index],
-                      style: contentStyle.copyWith(fontSize: 15.sp),
+                    return InkWell(
+                      onTap: (){
+                        setState(() {
+                          activeEpisode = index;
+                        });
+                      },
+                      child: Container(
+                        padding: EdgeInsets.symmetric(horizontal: 20.w),
+                        decoration: BoxDecoration(
+                            border: Border(
+                                top: BorderSide(
+                                    width: 4.h,
+                                    color: activeEpisode == index
+                                        ? Colors.red
+                                        .withOpacity(0.8)
+                                        : Colors.transparent
+                                )
+                            )
+                        ),
+                        child: Center(
+                          child: Text(
+                            optionList[index],
+                            style: contentStyle.copyWith(fontSize: 15.sp,                                             color: activeEpisode == index
+                                ? Colors.white.withOpacity(0.9)
+                                : Colors.white.withOpacity(0.5)
+                            ),
+                          ),
+                        ),
+                      ),
                     );
-                  },
-                  separatorBuilder: (BuildContext context, int index){
-                    return SizedBox(width: 20.w);
                   },
                   itemCount: optionList.length),
               ),
             ),
-          )
+          ),
+          SliverList(
+            delegate: SliverChildBuilderDelegate(
+                  (BuildContext context, int index) {
+                return MovieAlbum();
+              },
+              childCount: 50,
+            ),
+          ),
         ],
       ),
     );
