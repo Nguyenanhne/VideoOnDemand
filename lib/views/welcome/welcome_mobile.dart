@@ -92,7 +92,7 @@ class _WelcomeScreenMobileState extends State<WelcomeScreenMobile> {
             ),
           ],
         ),
-        body:            Stack(
+        body: Stack(
           children: [
             PageView(
               children: [

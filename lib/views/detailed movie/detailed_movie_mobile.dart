@@ -62,7 +62,6 @@ class _DetailedMovieScreenMobileState extends State<DetailedMovieScreenMobile> {
         - AppBar().preferredSize.height
         - MediaQuery.of(context).padding.top;
 
-    final scrollController = ScrollController();
 
     final widthScreen = MediaQuery.of(context).size.width;
 
