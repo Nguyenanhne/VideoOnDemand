@@ -47,6 +47,7 @@ dependencies:
   tap_debouncer: ^2.2.0
   provider: ^6.1.2
   readmore: ^3.0.0
+  video_player: ^2.9.2
 
 dev_dependencies:
   flutter_test:

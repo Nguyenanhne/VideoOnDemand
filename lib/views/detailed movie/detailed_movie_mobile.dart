@@ -11,6 +11,8 @@ import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:readmore/readmore.dart';
 
+import '../../widgets/movie_detail/text.dart';
+
 class DetailedMovieScreenMobile extends StatefulWidget {
   const DetailedMovieScreenMobile({super.key});
 
@@ -34,7 +36,7 @@ class _DetailedMovieScreenMobileState extends State<DetailedMovieScreenMobile> {
 
   final List<String> listActor = ["Nguyen Van A", "Nguyen Van B", "Nguyen Van C",
     "Nguyen Van A", "Nguyen Van B", "Nguyen Van C",
-    "Nguyen Van A", "Nguyen Van B", "Nguyen Van C"];
+    "Nguyen Van A", "Nguyen Van B", "Nguyen Van C","Nguyen Van C","Nguyen Van C","Nguyen Van C"];
 
   late final TabController tabController;
 
@@ -290,15 +292,13 @@ class _DetailedMovieScreenMobileState extends State<DetailedMovieScreenMobile> {
                     ),
                   ),
                   GestureDetector(
-                    child: ReadMoreText(
+                    child: Text(
                       des,
                       style: contentStyle.copyWith(fontSize: 13.sp),
-                      trimLines: 3,
-                      trimMode: TrimMode.Line,
-                      colorClickableText: Colors.blue,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 3,
                     ),
                       onTap: () => showDesBottomSheet(context),
-
                   ),
                   Padding(
                     padding: EdgeInsets.symmetric(vertical: 5.h),
@@ -316,15 +316,14 @@ class _DetailedMovieScreenMobileState extends State<DetailedMovieScreenMobile> {
                           Expanded(
                             child: Padding(
                               padding: EdgeInsets.only(left: 10.w),
-                              child: ReadMoreText(
+                              child: Text(
                                 listActor.join(", "),
-                                style: contentStyle.copyWith(fontSize: 13.sp, overflow: TextOverflow.ellipsis),
-                                trimLines: 1,
-                                trimMode: TrimMode.Line,
-                                colorClickableText: Colors.blue,
+                                maxLines: 2,
+                                style: contentStyle.copyWith(fontSize: 13.sp),
+                                overflow: TextOverflow.ellipsis,
                               ),
                             ),
-                          ),
+                          )
                         ],
                       ),
                     ),
@@ -343,12 +342,11 @@ class _DetailedMovieScreenMobileState extends State<DetailedMovieScreenMobile> {
                         Expanded(
                           child: Padding(
                             padding: EdgeInsets.only(left: 10.w),
-                            child: ReadMoreText(
+                            child: Text(
                               listActor.join(", "),
                               style: contentStyle.copyWith(fontSize: 13.sp, overflow: TextOverflow.ellipsis),
-                              trimLines: 1,
-                              trimMode: TrimMode.Line,
-                              colorClickableText: Colors.blue,
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
                             ),
                           ),
                         ),

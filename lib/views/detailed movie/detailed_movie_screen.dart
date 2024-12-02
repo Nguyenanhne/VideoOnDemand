@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class WelcomeScreen extends StatelessWidget {
-  const WelcomeScreen({super.key, required this.mobileBody, required this.tabletBody, required this.webBody});
+class DetailedMovieScreen extends StatelessWidget {
+  const DetailedMovieScreen({super.key, required this.mobileBody, required this.tabletBody, required this.webBody});
   final Widget mobileBody;
   final Widget tabletBody;
   final Widget webBody;

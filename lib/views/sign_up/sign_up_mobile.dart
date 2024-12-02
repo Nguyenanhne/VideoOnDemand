@@ -21,7 +21,6 @@ class SignUpScreenMobile extends StatefulWidget {
 }
 
 class _SignUpScreenMobileState extends State<SignUpScreenMobile> {
-  final SignUpViewModel signUpVM = SignUpViewModel();
   final formKey = GlobalKey<FormState>();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();

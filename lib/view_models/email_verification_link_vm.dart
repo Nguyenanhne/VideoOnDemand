@@ -2,6 +2,8 @@ import 'package:du_an_cntt/views/login/sign_in_mobile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
+
+import '../views/login/sign_in_screen.dart';
 class EmailVerificationLinkViewModel extends ChangeNotifier{
   Timer? timer;
   bool isEmailVerified = false;

@@ -30,13 +30,6 @@ class _EmailVerificationLinkMobileState extends State<EmailVerificationLinkMobil
   void initState() {
     super.initState();
     firebaseAuth.sendEmailVerificationLink();
-    // timer = Timer.periodic(Duration(seconds: 3), (timer) {
-    //   print("countdown");
-    //   FirebaseAuth.instance.currentUser?.reload();
-    //   if(FirebaseAuth.instance.currentUser!.emailVerified){
-    //     timer.cancel();
-    //   }
-    // });
     viewModel.startEmailVerificationTimer(
       context,
       () {
