@@ -1,13 +1,10 @@
 import 'package:du_an_cntt/helper/navigator.dart';
-import 'package:du_an_cntt/view_models/signup_vm.dart';
 import 'package:du_an_cntt/views/email_verification_link/email_verification_link_mobile.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:quickalert/quickalert.dart';
 
 import '../../services/firebase_authentication.dart';

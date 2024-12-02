@@ -30,5 +30,10 @@ class VideoViewModel extends ChangeNotifier {
       notifyListeners();
     }
   }
+  @override
+  void dispose(){
+    controller.dispose();
+    super.dispose();
+  }
 }
 

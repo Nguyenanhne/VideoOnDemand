@@ -1,7 +1,9 @@
 import 'package:du_an_cntt/view_models/home_vm.dart';
 import 'package:du_an_cntt/view_models/movie_detail_vm.dart';
 import 'package:du_an_cntt/view_models/video_vm.dart';
+import 'package:du_an_cntt/views/comment/comment_screen_mobile.dart';
 import 'package:du_an_cntt/views/detailed%20movie/detailed_movie_mobile.dart';
+import 'package:du_an_cntt/views/detailed%20movie/detailed_movie_screen.dart';
 import 'package:du_an_cntt/views/email_verification_link/email_verification_link_mobile.dart';
 import 'package:du_an_cntt/views/forgot_password/forgot_password_mobile.dart';
 import 'package:du_an_cntt/views/home/home_mobile.dart';
@@ -71,7 +73,7 @@ class MyApp extends StatelessWidget {
             colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple)
                 .copyWith(background: Colors.black),
           ),
-          home: VideoMobileScreen(),
+          home: CommentScreenMobile(),
           initialRoute: "/",
           routes: {
             "/SignInScreen": (context) => SignInScreenMobile(),
@@ -79,7 +81,7 @@ class MyApp extends StatelessWidget {
             "/SignUpScreen": (context) => SignUpScreenMobile(),
             "/EmailVerificationLinkScreen": (context) => EmailVerificationLinkMobile(),
             "/ForgotPasswordScreen": (context) => ForgotPasswordMobile(),
-            "SplashScreen": (context) => SplashMobileScreen(),
+            "/SplashScreen": (context) => SplashMobileScreen(),
           }
         );
       },

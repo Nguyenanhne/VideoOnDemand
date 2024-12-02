@@ -17,20 +17,15 @@ class VideoMobileScreen extends StatefulWidget {
 class _VideoMobileScreenState extends State<VideoMobileScreen> {
   // late VideoPlayerController controller;
   late Future<void> initializeVideoPlayerFuture;
-
+  var iconColor = Colors.white;
+  var iconSize = 50.0;
   @override
   void dispose() {
-    // controller.dispose();
     super.dispose();
   }
 
   @override
   void initState() {
-    // controller = VideoPlayerController.networkUrl(
-    //   Uri.parse(
-    //     'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
-    //   ),
-    // );
     final viewModel = Provider.of<VideoViewModel>(context, listen: false);
     initializeVideoPlayerFuture = viewModel.initializeVideo(
       'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
@@ -48,21 +43,6 @@ class _VideoMobileScreenState extends State<VideoMobileScreen> {
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
 
     return Scaffold(
-      floatingActionButton: Center(
-        child: FloatingActionButton(
-          onPressed: () {
-            if (viewModel.controller.value.isPlaying){
-              viewModel.pause();
-            }
-            else{
-              viewModel.play();
-            }
-          },
-          child: Icon(
-            viewModel.controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
-          ),
-        ),
-      ),
       body: FutureBuilder(
         future: initializeVideoPlayerFuture,
         builder: (context, snapshot){
@@ -84,6 +64,41 @@ class _VideoMobileScreenState extends State<VideoMobileScreen> {
                     ),
                   ),
                 ),
+                Center(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      IconButton(
+                        onPressed: (){},
+                        icon: Icon(
+                          Icons.replay_10,
+                          size: iconSize,
+                          color: iconColor,
+                        )
+                      ),
+                      IconButton(
+                        onPressed: (){},
+                        icon: Icon(
+                          Icons.pause,
+                          size: iconSize,
+                          color: iconColor,
+                        )
+                      ),
+                      IconButton(
+                        onPressed: (){},
+                        icon: Transform(
+                          alignment: Alignment.center,
+                          transform: Matrix4.rotationY(3.14159), // Lật icon theo chiều ngang
+                          child: Icon(
+                            Icons.replay_10,
+                            size: iconSize,
+                            color: iconColor,
+                          ),
+                        )
+                      )
+                    ],
+                  ),
+                )
               ],
             );
           }
