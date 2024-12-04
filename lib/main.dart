@@ -73,16 +73,16 @@ class MyApp extends StatelessWidget {
             colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple)
                 .copyWith(background: Colors.black),
           ),
-          home: CommentScreenMobile(),
-          initialRoute: "/",
-          routes: {
-            "/SignInScreen": (context) => SignInScreenMobile(),
-            "/HomeScreen": (context) => HomeScreenMobile(),
-            "/SignUpScreen": (context) => SignUpScreenMobile(),
-            "/EmailVerificationLinkScreen": (context) => EmailVerificationLinkMobile(),
-            "/ForgotPasswordScreen": (context) => ForgotPasswordMobile(),
-            "/SplashScreen": (context) => SplashMobileScreen(),
-          }
+          home: VideoMobileScreen(),
+          // initialRoute: "/",
+          // routes: {
+          //   "/SignInScreen": (context) => SignInScreen(),
+          //   "/HomeScreen": (context) => HomeScreenMobile(),
+          //   "/SignUpScreen": (context) => SignUpScreenMobile(),
+          //   "/EmailVerificationLinkScreen": (context) => EmailVerificationLinkMobile(),
+          //   "/ForgotPasswordScreen": (context) => ForgotPasswordMobile(),
+          //   "/SplashScreen": (context) => SplashMobileScreen(),
+          // }
         );
       },
     );

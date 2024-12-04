@@ -1,3 +1,5 @@
+import 'package:better_player/better_player.dart';
+import 'package:chewie/chewie.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -23,14 +25,22 @@ class _VideoMobileScreenState extends State<VideoMobileScreen> {
   void dispose() {
     super.dispose();
   }
+  late VideoPlayerController _videoPlayerController;
+  late ChewieController _chewieController;
 
   @override
   void initState() {
     final viewModel = Provider.of<VideoViewModel>(context, listen: false);
     initializeVideoPlayerFuture = viewModel.initializeVideo(
-      'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
+      'http://192.168.5.1:3000/videos/input_video.mp4',
     );
-
+    // _videoPlayerController = VideoPlayerController.network('https://www.example.com/video.mp4');
+    // _chewieController = ChewieController(
+    //   videoPlayerController: _videoPlayerController,
+    //   autoPlay: true,
+    //   looping: true,
+    //   aspectRatio: 16 / 9,
+    // );
   }
   @override
   Widget build(BuildContext context) {
@@ -43,6 +53,11 @@ class _VideoMobileScreenState extends State<VideoMobileScreen> {
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
 
     return Scaffold(
+      // body: Center(
+      //   child: Chewie(
+      //     controller: _chewieController,
+      //   ),
+      // ),
       body: FutureBuilder(
         future: initializeVideoPlayerFuture,
         builder: (context, snapshot){
@@ -77,7 +92,14 @@ class _VideoMobileScreenState extends State<VideoMobileScreen> {
                         )
                       ),
                       IconButton(
-                        onPressed: (){},
+                        onPressed: (){
+                          if(viewModel.isPlaying){
+                            viewModel.pause();
+                          }
+                          else{
+                            viewModel.play();
+                          }
+                        },
                         icon: Icon(
                           Icons.pause,
                           size: iconSize,
@@ -88,7 +110,7 @@ class _VideoMobileScreenState extends State<VideoMobileScreen> {
                         onPressed: (){},
                         icon: Transform(
                           alignment: Alignment.center,
-                          transform: Matrix4.rotationY(3.14159), // Lật icon theo chiều ngang
+                          transform: Matrix4.rotationY(3.14159),
                           child: Icon(
                             Icons.replay_10,
                             size: iconSize,

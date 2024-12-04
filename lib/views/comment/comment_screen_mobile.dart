@@ -1,10 +1,13 @@
+import 'package:custom_rating_bar/custom_rating_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../helper/navigator.dart';
 import '../../utils.dart';
+import '../../widgets/comment and rating/rating_progress_indicator.dart';
 
 class CommentScreenMobile extends StatefulWidget {
   const CommentScreenMobile({super.key});
@@ -18,7 +21,7 @@ class _CommentScreenMobileState extends State<CommentScreenMobile> {
     fontFamily: GoogleFonts.roboto().fontFamily,
     color: Colors.black
   );
-
+  var rate = 4.8;
   @override
   Widget build(BuildContext context) {
     final heightScreen = MediaQuery.of(context).size.height
@@ -34,15 +37,15 @@ class _CommentScreenMobileState extends State<CommentScreenMobile> {
       {"email": "anhlop755@gmai.com", "comment":"Phim hay qua a oi", "rate": 5},
       {"email": "anhlop755@gmai.com", "comment":"Phim hay qua a oi", "rate": 3},
       {"email": "anhlop755@gmai.com", "comment":"Phim hay qua a oi", "rate": 1},
-      {"email": "anhlop755@gmai.com", "comment":"Phim hay qua a oi", "rate": 1},
+      {"email": "anhlop755@gmai.com", "comment":"Phim hay qua a oi, Phim hay qua a oi,Phim hay qua a oi", "rate": 1},
       {"email": "anhlop755@gmai.com", "comment":"Phim hay qua a oi", "rate": 1},
     ];
 
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        titleSpacing: 0,
         backgroundColor: Colors.black,
+        titleSpacing: 0,
         elevation: 0,
         title: Text(
           "Đánh giá phim Titan",
@@ -55,65 +58,118 @@ class _CommentScreenMobileState extends State<CommentScreenMobile> {
           },
         ),
       ),
-      body: Column(
-        children: [
-          Expanded(
-            flex: 8,
-            child: ListView.separated(
-              itemBuilder: (context, index){
-                return SizedBox(
-                  // height: heightScreen*0.1,
-                  child: ListTile(
-                    title: Row(
-                      children: [
-                        Text(
-                          comment[index]["email"],
-                          style: contentStyle.copyWith(
-                            fontSize: 15.sp,
-                            fontWeight: FontWeight.bold
-                          ),
+      body: Padding(
+        padding: EdgeInsets.symmetric(vertical: 15.h, horizontal: 15.w),
+        child: Column(
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  flex: 1,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        rate.toString(),
+                        style: contentStyle.copyWith(
+                          fontSize: 50.sp,
+                          fontWeight: FontWeight.bold
                         ),
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 5.w),
-                          child: Icon(
-                            Icons.star,
-                            color: Colors.yellow[900],
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 2.w),
-                          child: Text(
-                            comment[index]["rate"].toString(),
-                            style: contentStyle.copyWith(
-                                color: Colors.yellow[900],
-                                fontSize: 14.sp,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    subtitle: Text(
-                      comment[index]["comment"] ,
-                      style: contentStyle.copyWith(
-                          fontSize: 13.sp
                       ),
-                    ),
-                    leading: CircleAvatar(),
+                      RatingBar.readOnly(
+                        filledIcon: Icons.star,
+                        emptyIcon: Icons.star_border,
+                        initialRating: 4,
+                        maxRating: 5,
+                        size: 20,
+                        alignment: Alignment.center,
+                      )
+                    ],
                   ),
-                );
-              },
-              separatorBuilder: (context, index) => const Divider(
-                color: Colors.black,
-              ),
-              itemCount: comment.length)
-          ),
-          Expanded(
-            child: Container(
-              color: Colors.red,
+                ),
+                Expanded(
+                  flex: 2,
+                  child: Column(
+                    children: [
+                      RatingProgressIndicator(rating: '5', realValue: 0.5),
+                      RatingProgressIndicator(rating: '4', realValue: 0.3),
+                      RatingProgressIndicator(rating: '3', realValue: 0.1),
+                      RatingProgressIndicator(rating: '2', realValue: 0.3),
+                      RatingProgressIndicator(rating: '1', realValue: 0.4),
+                    ],
+                  )
+                )
+              ],
             ),
-          )
-        ],
+            SizedBox(height: 20.h),
+            Expanded(
+              flex: 8,
+              child: ListView.separated(
+                itemBuilder: (context, index){
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ListTile(
+                        title: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              comment[index]["email"],
+                              softWrap: true,
+                              style: contentStyle.copyWith(
+                                fontSize: 13.sp,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                        leading: Image.asset(
+                          "assets/user.jpg",
+                          fit: BoxFit.fitWidth,
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.symmetric(vertical: 5.h),
+                        child: Row(
+                          children: [
+                            RatingBar.readOnly(
+                              filledIcon: Icons.star,
+                              emptyIcon: Icons.star_border,
+                              initialRating: 4,
+                              maxRating: 5,
+                              size: 20,
+                            ),
+                            Expanded(
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 10.w),
+                                child: Text(
+                                  "01 Nov 2023",
+                                  style: contentStyle.copyWith(fontSize: 13.sp),
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                      Text(
+                        comment[index]["comment"] ,
+                        style: contentStyle.copyWith(
+                            fontSize: 13.sp
+                        ),
+                      )
+                    ],
+                  );
+                },
+                separatorBuilder: (context, index) => SizedBox(
+                  height: 10.h,
+                ),
+                itemCount: comment.length)
+            ),
+
+          ],
+        ),
       ),
     );
   }
 }
+

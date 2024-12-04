@@ -359,6 +359,9 @@ class _DetailedMovieScreenMobileState extends State<DetailedMovieScreenMobile> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: List.generate(likesList.length, (index) {
                         return GestureDetector(
+                          onTap: (){
+                            viewModel.likeListOntap(context, index);
+                          },
                           child: Column(
                             children: [
                               Icon(
