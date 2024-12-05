@@ -48,6 +48,10 @@ dependencies:
   provider: ^6.1.2
   readmore: ^3.0.0
   video_player: ^2.9.2
+  custom_rating_bar: ^3.0.0
+  lecle_yoyo_player: ^0.0.8
+  better_player: ^0.0.63
+  chewie: ^1.8.5
 
 dev_dependencies:
   flutter_test:

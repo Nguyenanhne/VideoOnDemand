@@ -8,12 +8,6 @@ class VideoViewModel extends ChangeNotifier {
   bool _isPlaying = false;
   bool get isPlaying => _isPlaying;
 
-  Future<void> initializeVideo(String url) async {
-    _controller = VideoPlayerController.networkUrl(Uri.parse(url));
-    await _controller.initialize();
-    notifyListeners();
-  }
-
   void play() {
     if (!_controller.value.isPlaying) {
       _controller.play();

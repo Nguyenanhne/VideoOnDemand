@@ -1,17 +1,7 @@
 import 'package:du_an_cntt/view_models/home_vm.dart';
 import 'package:du_an_cntt/view_models/movie_detail_vm.dart';
 import 'package:du_an_cntt/view_models/video_vm.dart';
-import 'package:du_an_cntt/views/comment/comment_screen_mobile.dart';
-import 'package:du_an_cntt/views/detailed%20movie/detailed_movie_mobile.dart';
-import 'package:du_an_cntt/views/detailed%20movie/detailed_movie_screen.dart';
-import 'package:du_an_cntt/views/email_verification_link/email_verification_link_mobile.dart';
-import 'package:du_an_cntt/views/forgot_password/forgot_password_mobile.dart';
-import 'package:du_an_cntt/views/home/home_mobile.dart';
-import 'package:du_an_cntt/views/login/sign_in_mobile.dart';
-import 'package:du_an_cntt/views/login/sign_in_screen.dart';
-import 'package:du_an_cntt/views/sign_up/sign_up_mobile.dart';
 import 'package:du_an_cntt/views/splash/splash_mobile.dart';
-import 'package:du_an_cntt/views/bottom_navbar.dart';
 import 'package:du_an_cntt/views/video.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
