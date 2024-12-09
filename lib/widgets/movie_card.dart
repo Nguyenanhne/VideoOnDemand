@@ -1,7 +1,9 @@
+import 'package:du_an_cntt/view_models/movie_card_vm.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 
 import '../models/movie_model.dart';
 class MovieCardWidget extends StatelessWidget {
@@ -11,6 +13,7 @@ class MovieCardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    MovieCardViewModel viewModel = Provider.of<MovieCardViewModel>(context);
     return FutureBuilder(
       future: movie,
       builder: (context, snapshot){
@@ -32,11 +35,16 @@ class MovieCardWidget extends StatelessWidget {
                 scrollDirection: Axis.horizontal,
                 itemCount: data!.length,
                 itemBuilder: (context, index){
-                  return Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20)
+                  return InkWell(
+                    onTap: (){
+                      viewModel.onTap(context);
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20)
+                      ),
+                      child: Image.network("https://image.tmdb.org/t/p/w500${data[index].posterPath}"),
                     ),
-                    child: Image.network("https://image.tmdb.org/t/p/w500${data[index].posterPath}"),
                   );
                 },
                 separatorBuilder: (BuildContext context, int index) {

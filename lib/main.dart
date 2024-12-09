@@ -1,5 +1,6 @@
 import 'package:du_an_cntt/view_models/email_verification_link_vm.dart';
 import 'package:du_an_cntt/view_models/home_vm.dart';
+import 'package:du_an_cntt/view_models/movie_card_vm.dart';
 import 'package:du_an_cntt/view_models/movie_detail_vm.dart';
 import 'package:du_an_cntt/view_models/sign_in_vm.dart';
 import 'package:du_an_cntt/view_models/signup_vm.dart';
@@ -37,8 +38,8 @@ void main() async {
             ChangeNotifierProvider(create: (_) => VideoViewModel()),
             ChangeNotifierProvider(create: (_) => SignUpViewModel()),
             ChangeNotifierProvider(create: (_) => SignInViewModel()),
-            ChangeNotifierProvider(create: (_) => EmailVerificationLinkViewModel())
-
+            ChangeNotifierProvider(create: (_) => EmailVerificationLinkViewModel()),
+            ChangeNotifierProvider(create: (_) => MovieCardViewModel())
           ],
           child: MyApp()
           ,

@@ -1,10 +1,12 @@
+import 'package:du_an_cntt/views/detailed%20movie/detailed_movie_mobile.dart';
+import 'package:du_an_cntt/views/detailed%20movie/detailed_movie_tablet.dart';
 import 'package:flutter/material.dart';
 
 class DetailedMovieScreen extends StatelessWidget {
-  const DetailedMovieScreen({super.key, required this.mobileBody, required this.tabletBody, required this.webBody});
-  final Widget mobileBody;
-  final Widget tabletBody;
-  final Widget webBody;
+  DetailedMovieScreen({super.key});
+  final Widget mobileBody = DetailedMovieScreenMobile();
+  final Widget tabletBody = DetailedMovieScreenTablet();
+  final Widget webBody = DetailedMovieScreenTablet();
 
   @override
   Widget build(BuildContext context) {
