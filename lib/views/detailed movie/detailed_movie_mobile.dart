@@ -47,17 +47,7 @@ class _DetailedMovieScreenMobileState extends State<DetailedMovieScreenMobile> {
     {"icon": Icons.comment, "text": "Bình luận"},
   ];
   List optionList = ["Các tập", "Trailer", "Nội dung tương tự"];
-  @override
-  // void initState() {
-  //   // TODO: implement initState
-  //   super.initState();
-  //   tabController = TabController(length: 3, vsync: null);
-  //   tabController.addListener(() {
-  //     if (tabController.indexIsChanging) {
-  //       print("Tab chuyển sang: ${tabController.index}");
-  //     }
-  //   });
-  //}
+
   @override
   Widget build(BuildContext context) {
     final heightScreen = MediaQuery.of(context).size.height

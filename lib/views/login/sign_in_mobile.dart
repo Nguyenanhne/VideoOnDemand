@@ -4,14 +4,18 @@ import 'package:du_an_cntt/view_models/sign_in_vm.dart';
 import 'package:du_an_cntt/views/email_verification_link/email_verification_link_mobile.dart';
 import 'package:du_an_cntt/views/forgot_password/forgot_password_mobile.dart';
 import 'package:du_an_cntt/views/sign_up/sign_up_mobile.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:quickalert/quickalert.dart';
 
 import '../../services/firebase_authentication.dart';
+import '../bottom_navbar.dart';
+import '../email_verification_link/email_verification_link_screen.dart';
 class SignInScreenMobile extends StatefulWidget {
   const SignInScreenMobile({super.key});
 
@@ -22,7 +26,6 @@ class SignInScreenMobile extends StatefulWidget {
 class _SignInScreenMobileState extends State<SignInScreenMobile> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final SignInViewModel signInViewModel = SignInViewModel();
 
   @override
   void dispose() {
@@ -32,6 +35,8 @@ class _SignInScreenMobileState extends State<SignInScreenMobile> {
   }
   @override
   Widget build(BuildContext context) {
+    final viewModel = Provider.of<SignInViewModel>(context);
+
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -107,19 +112,56 @@ class _SignInScreenMobileState extends State<SignInScreenMobile> {
                     padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        padding: EdgeInsets.symmetric(vertical: 10.h),
-                        elevation: 10,
-                        backgroundColor: Colors.black12,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(5)
-                        ),
-                        side: BorderSide(
-                          color: Colors.white,
-                          width: 1
-                        )
+                          padding: EdgeInsets.symmetric(vertical: 10.h),
+                          elevation: 10,
+                          backgroundColor: Colors.black12,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(5)
+                          ),
+                          side: BorderSide(
+                              color: Colors.white,
+                              width: 1
+                          )
                       ),
                       onPressed: () async {
-                        await signInViewModel.Login(context: context, email: emailController.text.trim(), password: passwordController.text.trim());
+
+                        showDialog(
+                          context: context,
+                          barrierDismissible: false,
+                          builder: (context){
+                            return Center(child: CircularProgressIndicator());
+                          }
+                        );
+                        User? user = await viewModel.Login(context: context, email: emailController.text.trim(), password: passwordController.text.trim());
+                        Navigator.pop(context);
+                        await Future.delayed(Duration(milliseconds: 500));
+                        if (user != null){
+                          QuickAlert.show(
+                              context: context,
+                              type: QuickAlertType.success,
+                              text: "Đăng nhập thành công",
+                              title: "THÀNH CÔNG",
+                              onConfirmBtnTap: () async {
+                                if (await Auth().isEmailVerified()){
+                                  await NavigatorHelper.navigateAndRemoveUntil(context, BottomNavBar());
+                                }
+                                else{
+                                  await NavigatorHelper.navigateAndRemoveUntil(context, EmailVerificationLink());
+                                }
+                              }
+                          );
+                        }
+                        else{
+                          QuickAlert.show(
+                              context: context,
+                              type: QuickAlertType.error,
+                              text: "Tên đăng nhập hoặc mật khẩu không hợp lệ",
+                              title: "THẤT BẠI",
+                              onConfirmBtnTap: () async {
+                                NavigatorHelper.goBack(context);
+                              }
+                          );
+                        }
                       },
                       child: Text(
                         "Bắt đầu",

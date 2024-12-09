@@ -1,13 +1,13 @@
 import 'dart:developer';
 
+import 'package:du_an_cntt/services/UserService.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Auth {
   final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
 
-  Future<String?> createUserWithEmailAndPassword({required String email, required String password}) async {
+  Future<String?> createUserWithEmailAndPassword({required String email, required String password, required fullName}) async {
     try {
        UserCredential userCredential = await firebaseAuth.createUserWithEmailAndPassword(
         email: email,
@@ -15,13 +15,17 @@ class Auth {
       );
 
       User? user = userCredential.user;
+      String uid = user!.uid;
 
       if (user != null) {
-       // Gửi email xác thực sau khi người dùng đăng ký thành công
-       await sendEmailVerificationLink();
-       return 'Đăng ký thành công! Email xác thực đã được gửi đến ${user.email}.';
+        UserService userService = UserService();
+        await userService.createUser(email, fullName, uid);
+
+        // Gửi email xác thực sau khi người dùng đăng ký thành công
+        await sendEmailVerificationLink();
+        return 'Đăng ký thành công! Email xác thực đã được gửi đến ${user.email}.';
       } else {
-       return 'Đăng ký thất bại! Không thể tạo người dùng.';
+        return 'Đăng ký thất bại! Không thể tạo người dùng.';
       }
       return "Success";
     } on FirebaseAuthException catch (e) {
@@ -36,7 +40,10 @@ class Auth {
       return e.toString();
     }
   }
+
+
   Future<String?> sendEmailVerificationLink() async{
+
     try {
       // Gửi email xác thực
       await firebaseAuth.currentUser?.sendEmailVerification();

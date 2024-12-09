@@ -1,10 +1,12 @@
+import 'package:du_an_cntt/views/email_verification_link/email_verification_link_mobile.dart';
+import 'package:du_an_cntt/views/email_verification_link/email_verification_link_tablet.dart';
 import 'package:flutter/material.dart';
 
 class EmailVerificationLink extends StatelessWidget {
-  const EmailVerificationLink({super.key, required this.mobileBody, required this.tabletBody, required this.webBody});
-  final Widget mobileBody;
-  final Widget tabletBody;
-  final Widget webBody;
+  EmailVerificationLink({super.key});
+  final Widget mobileBody= EmailVerificationLinkMobile();
+  final Widget tabletBody= EmailVerificationLinkScreenTablet();
+  final Widget webBody = EmailVerificationLinkScreenTablet();
 
   @override
   Widget build(BuildContext context) {

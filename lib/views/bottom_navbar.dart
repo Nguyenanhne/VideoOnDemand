@@ -4,6 +4,7 @@ import 'package:du_an_cntt/views/detailed%20movie/detailed_movie_tablet.dart';
 import 'package:du_an_cntt/views/home/home_mobile.dart';
 import 'package:du_an_cntt/views/home/home_screen.dart';
 import 'package:du_an_cntt/views/home/home_tablet.dart';
+import 'package:du_an_cntt/views/my_netflix/my_netflix_screen.dart';
 import 'package:du_an_cntt/views/news_and_hot/news_and_hot_mobile.dart';
 import 'package:du_an_cntt/views/news_and_hot/news_and_hot_screen.dart';
 import 'package:du_an_cntt/views/news_and_hot/news_and_hot_tablet.dart';
@@ -53,9 +54,10 @@ class BottomNavBar extends StatelessWidget {
         ),
         body: TabBarView(
           children: [
-            HomeScreen(mobileBody: HomeScreenMobile(), tabletBody: HomeScreenTablet(), webBody: Text("webBody")),
+            HomeScreen(),
             NewsAndHotScreen(mobileBody: NewsAndHotScreenMobile(), tabletBody: NewsAndHotScreenTablet(), webBody: Text("webBody")),
-            DetailedMovieScreen(mobileBody: DetailedMovieScreenMobile(), tabletBody: DetailedMovieScreenTablet(), webBody: Text("webBody")),
+            MyNetflixScreen()
+            // DetailedMovieScreen(mobileBody: DetailedMovieScreenMobile(), tabletBody: DetailedMovieScreenTablet(), webBody: Text("webBody")),
           ],
         ),
       )

@@ -1,10 +1,12 @@
+import 'package:du_an_cntt/views/home/home_mobile.dart';
+import 'package:du_an_cntt/views/home/home_tablet.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key, required this.mobileBody, required this.tabletBody, required this.webBody});
-  final Widget mobileBody;
-  final Widget tabletBody;
-  final Widget webBody;
+  HomeScreen({super.key});
+  final Widget mobileBody = HomeScreenMobile();
+  final Widget tabletBody = HomeScreenTablet();
+  final Widget webBody = HomeScreenTablet();
 
   @override
   Widget build(BuildContext context) {

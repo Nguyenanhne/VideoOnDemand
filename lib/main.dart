@@ -1,7 +1,15 @@
+import 'package:du_an_cntt/view_models/email_verification_link_vm.dart';
 import 'package:du_an_cntt/view_models/home_vm.dart';
 import 'package:du_an_cntt/view_models/movie_detail_vm.dart';
+import 'package:du_an_cntt/view_models/sign_in_vm.dart';
+import 'package:du_an_cntt/view_models/signup_vm.dart';
 import 'package:du_an_cntt/view_models/video_vm.dart';
+import 'package:du_an_cntt/views/bottom_navbar.dart';
+import 'package:du_an_cntt/views/email_verification_link/email_verification_link_screen.dart';
+import 'package:du_an_cntt/views/login/sign_in_screen.dart';
+import 'package:du_an_cntt/views/sign_up/sign_up_screen.dart';
 import 'package:du_an_cntt/views/splash/splash_mobile.dart';
+import 'package:du_an_cntt/views/splash/splash_screen.dart';
 import 'package:du_an_cntt/views/video.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -26,7 +34,11 @@ void main() async {
           providers: [
             ChangeNotifierProvider(create: (_) => DetailedMovieViewModel()),
             ChangeNotifierProvider(create: (_) => HomeViewModel()),
-            ChangeNotifierProvider(create: (_) => VideoViewModel())
+            ChangeNotifierProvider(create: (_) => VideoViewModel()),
+            ChangeNotifierProvider(create: (_) => SignUpViewModel()),
+            ChangeNotifierProvider(create: (_) => SignInViewModel()),
+            ChangeNotifierProvider(create: (_) => EmailVerificationLinkViewModel())
+
           ],
           child: MyApp()
           ,
@@ -63,7 +75,7 @@ class MyApp extends StatelessWidget {
             colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple)
                 .copyWith(background: Colors.black),
           ),
-          home: VideoMobileScreen(),
+          home: BottomNavBar(),
           // initialRoute: "/",
           // routes: {
           //   "/SignInScreen": (context) => SignInScreen(),
