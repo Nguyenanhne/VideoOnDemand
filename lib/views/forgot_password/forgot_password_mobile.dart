@@ -8,6 +8,7 @@ import 'package:quickalert/quickalert.dart';
 
 import '../../services/firebase_authentication.dart';
 import '../../utils.dart';
+import '../login/sign_in_screen.dart';
 
 class ForgotPasswordMobile extends StatefulWidget {
   const ForgotPasswordMobile({super.key});
@@ -146,7 +147,7 @@ class _ForgotPasswordMobileState extends State<ForgotPasswordMobile> {
                               title: "THÀNH CÔNG",
                               text: "Vui lòng kiểm tra email",
                               onConfirmBtnTap: (){
-                                NavigatorHelper.navigateAndRemoveUntil(context, SignInScreenMobile());
+                                NavigatorHelper.navigateAndRemoveUntil(context, SignInScreen());
                               }
                             );
                           }

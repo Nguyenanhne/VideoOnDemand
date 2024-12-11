@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:http/http.dart' as http;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -20,6 +21,13 @@ class _MainPosterState extends State<MainPoster> {
   );
   var borderRadius = 20.0;
   var blur = 1.0;
+
+  final String imageUrl =
+      "https://dash.cloudflare.com/eb069a237612be28cd34fc0b88c2e420/r2/default/buckets/doublea/objects/new.png";
+  final String accessToken = "jemiB5lPtciurtFRDmNMxIvMQRMGgw4ErqiMvH5T"; // Thay bằng token của bạn
+
+
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -33,7 +41,8 @@ class _MainPosterState extends State<MainPoster> {
         child: Stack(
           fit: StackFit.expand,
           children: [
-            Image.asset("assets/home_poster.jpg", fit: BoxFit.fill),
+            // Image.asset("assets/home_poster.jpg", fit: BoxFit.fill),
+            Image.network("https://dash.cloudflare.com/eb069a237612be28cd34fc0b88c2e420/r2/default/buckets/doublea/objects/new.png"),
             Align(
               alignment: Alignment.bottomCenter,
               child: Container(

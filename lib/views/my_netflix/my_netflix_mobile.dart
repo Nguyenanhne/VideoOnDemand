@@ -1,3 +1,4 @@
+import 'package:du_an_cntt/view_models/my_netflix_vm.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -27,7 +28,7 @@ class _MyNetflixScreenMobileState extends State<MyNetflixScreenMobile> {
 
     final widthScreen = MediaQuery.of(context).size.width;
 
-    // final viewModel = Provider.of<DetailedMovieViewModel>(context);
+    final viewModel = Provider.of<MyNetflixViewModel>(context);
 
     final heightBottomSheet = (MediaQuery.of(context).size.height - AppBar().preferredSize.height)/2.5;
 
@@ -46,18 +47,21 @@ class _MyNetflixScreenMobileState extends State<MyNetflixScreenMobile> {
             ),
             child: ListView(
               children: [
-                ListTile(
-                  leading: Icon(
-                    LineAwesomeIcons.edit_solid,
-                    size: 30,
-                    color: Colors.white,
-                  ),
-                  title: Text(
-                    "Quản lý hồ sơ",
-                    style: contentStyle.copyWith(
+                InkWell(
+                  onTap: (){},
+                  child: ListTile(
+                    leading: Icon(
+                      LineAwesomeIcons.edit_solid,
+                      size: 30,
                       color: Colors.white,
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.bold
+                    ),
+                    title: Text(
+                      "Quản lý hồ sơ",
+                      style: contentStyle.copyWith(
+                        color: Colors.white,
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.bold
+                      ),
                     ),
                   ),
                 ),
@@ -76,18 +80,23 @@ class _MyNetflixScreenMobileState extends State<MyNetflixScreenMobile> {
                     ),
                   ),
                 ),
-                ListTile(
-                  leading: Icon(
-                    LineAwesomeIcons.user,
-                    size: 30,
-                    color: Colors.white,
-                  ),
-                  title: Text(
-                    "Tài khoản",
-                    style: contentStyle.copyWith(
-                        color: Colors.white,
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.bold
+                InkWell(
+                  onTap: (){
+                    viewModel.accountOnTap(context);
+                  },
+                  child: ListTile(
+                    leading: Icon(
+                      LineAwesomeIcons.user,
+                      size: 30,
+                      color: Colors.white,
+                    ),
+                    title: Text(
+                      "Tài khoản",
+                      style: contentStyle.copyWith(
+                          color: Colors.white,
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.bold
+                      ),
                     ),
                   ),
                 ),

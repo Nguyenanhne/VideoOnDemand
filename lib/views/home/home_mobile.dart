@@ -1,4 +1,3 @@
-import 'package:du_an_cntt/services/api_services.dart';
 import 'package:du_an_cntt/view_models/home_vm.dart';
 import 'package:du_an_cntt/widgets/home/main_poster.dart';
 import 'package:du_an_cntt/widgets/movie_card.dart';
@@ -21,14 +20,11 @@ class HomeScreenMobile extends StatefulWidget {
 class _HomeScreenMobileState extends State<HomeScreenMobile> {
   late Future<MovieModel> upComingMovies;
   late Future<MovieModel> nowPlayingMovies;
-  ApiServices apiServices = ApiServices();
   late ScrollController scrollController;
 
   @override
   void initState() {
     super.initState();
-    upComingMovies = apiServices.getUpcomingMovies();
-    nowPlayingMovies = apiServices.getNowPlayingMovies();
     scrollController = ScrollController();
   }
 
@@ -155,18 +151,18 @@ class _HomeScreenMobileState extends State<HomeScreenMobile> {
                 child: MainPoster()
             ),
           ),
-          SliverToBoxAdapter(
-            child: SizedBox(
-              height: heightScreen*0.3,
-              child: MovieCardWidget(movie: upComingMovies, headerLineText: "Upcoming Movies"),
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: SizedBox(
-              height: heightScreen*0.3,
-              child: MovieCardWidget(movie: upComingMovies, headerLineText: "Upcoming Movies"),
-            ),
-          ),
+          // SliverToBoxAdapter(
+          //   child: SizedBox(
+          //     height: heightScreen*0.3,
+          //     child: MovieCardWidget(movie: upComingMovies, headerLineText: "Upcoming Movies"),
+          //   ),
+          // ),
+          // SliverToBoxAdapter(
+          //   child: SizedBox(
+          //     height: heightScreen*0.3,
+          //     child: MovieCardWidget(movie: upComingMovies, headerLineText: "Upcoming Movies"),
+          //   ),
+          // ),
         ],
       ),
     );

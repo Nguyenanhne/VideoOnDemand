@@ -2,12 +2,14 @@ import 'package:du_an_cntt/view_models/email_verification_link_vm.dart';
 import 'package:du_an_cntt/view_models/home_vm.dart';
 import 'package:du_an_cntt/view_models/movie_card_vm.dart';
 import 'package:du_an_cntt/view_models/movie_detail_vm.dart';
+import 'package:du_an_cntt/view_models/my_netflix_vm.dart';
 import 'package:du_an_cntt/view_models/sign_in_vm.dart';
 import 'package:du_an_cntt/view_models/signup_vm.dart';
 import 'package:du_an_cntt/view_models/video_vm.dart';
 import 'package:du_an_cntt/views/bottom_navbar.dart';
 import 'package:du_an_cntt/views/email_verification_link/email_verification_link_screen.dart';
 import 'package:du_an_cntt/views/login/sign_in_screen.dart';
+import 'package:du_an_cntt/views/my_account/my_account_screen.dart';
 import 'package:du_an_cntt/views/sign_up/sign_up_screen.dart';
 import 'package:du_an_cntt/views/splash/splash_mobile.dart';
 import 'package:du_an_cntt/views/splash/splash_screen.dart';
@@ -33,6 +35,7 @@ void main() async {
     runApp(
         MultiProvider(
           providers: [
+            ChangeNotifierProvider(create: (_) => MyNetflixViewModel()),
             ChangeNotifierProvider(create: (_) => DetailedMovieViewModel()),
             ChangeNotifierProvider(create: (_) => HomeViewModel()),
             ChangeNotifierProvider(create: (_) => VideoViewModel()),

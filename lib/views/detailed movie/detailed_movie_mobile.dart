@@ -53,14 +53,9 @@ class _DetailedMovieScreenMobileState extends State<DetailedMovieScreenMobile> {
     final heightScreen = MediaQuery.of(context).size.height
         - AppBar().preferredSize.height
         - MediaQuery.of(context).padding.top;
-
-
     final widthScreen = MediaQuery.of(context).size.width;
-
     final viewModel = Provider.of<DetailedMovieViewModel>(context);
-
     final heightBottomSheet = MediaQuery.of(context).size.height - AppBar().preferredSize.height;
-
     void showDesBottomSheet(BuildContext context) {
       showModalBottomSheet(
         context: context,
@@ -105,7 +100,6 @@ class _DetailedMovieScreenMobileState extends State<DetailedMovieScreenMobile> {
         },
       );
     };
-
     void showActorBottomSheet(BuildContext context) {
       showModalBottomSheet(
         context: context,
@@ -158,7 +152,6 @@ class _DetailedMovieScreenMobileState extends State<DetailedMovieScreenMobile> {
         },
       );
     }
-
     return Scaffold(
       appBar: AppBar(
         titleSpacing: 0,
