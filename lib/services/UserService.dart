@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:du_an_cntt/models/user_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+
+import '../models/film_model.dart';
 class UserService{
   FirebaseFirestore firestore = FirebaseFirestore.instance;
 

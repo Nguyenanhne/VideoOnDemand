@@ -44,6 +44,7 @@ class _HomeScreenMobileState extends State<HomeScreenMobile> {
 
     final style = TextStyle(
       fontFamily: GoogleFonts.roboto().fontFamily,
+      color: Colors.white
     );
 
     final provider = Provider.of<HomeViewModel>(context);

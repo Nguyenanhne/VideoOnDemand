@@ -42,7 +42,7 @@ class _MainPosterState extends State<MainPoster> {
           fit: StackFit.expand,
           children: [
             // Image.asset("assets/home_poster.jpg", fit: BoxFit.fill),
-            Image.network("https://dash.cloudflare.com/eb069a237612be28cd34fc0b88c2e420/r2/default/buckets/doublea/objects/new.png"),
+            Image.asset("assets/home_poster.jpg", fit: BoxFit.cover,),
             Align(
               alignment: Alignment.bottomCenter,
               child: Container(
