@@ -1,5 +1,4 @@
 
-import 'package:du_an_cntt/test.dart';
 import 'package:du_an_cntt/view_models/email_verification_link_vm.dart';
 import 'package:du_an_cntt/view_models/home_vm.dart';
 import 'package:du_an_cntt/view_models/movie_card_vm.dart';
@@ -9,6 +8,7 @@ import 'package:du_an_cntt/view_models/sign_in_vm.dart';
 import 'package:du_an_cntt/view_models/signup_vm.dart';
 import 'package:du_an_cntt/view_models/video_vm.dart';
 import 'package:du_an_cntt/views/detailed%20movie/detailed_movie_screen.dart';
+import 'package:du_an_cntt/views/video.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -23,28 +23,44 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  SystemChrome.setPreferredOrientations(
-    [
-      DeviceOrientation.portraitUp
-    ]
-  ).then((_){
-    runApp(
-        MultiProvider(
-          providers: [
-            ChangeNotifierProvider(create: (_) => MyNetflixViewModel()),
-            ChangeNotifierProvider(create: (_) => DetailedMovieViewModel()),
-            ChangeNotifierProvider(create: (_) => HomeViewModel()),
-            ChangeNotifierProvider(create: (_) => VideoViewModel()),
-            ChangeNotifierProvider(create: (_) => SignUpViewModel()),
-            ChangeNotifierProvider(create: (_) => SignInViewModel()),
-            ChangeNotifierProvider(create: (_) => EmailVerificationLinkViewModel()),
-            ChangeNotifierProvider(create: (_) => MovieCardViewModel())
-          ],
-          child: MyApp()
-          ,
-        )
-    );
-  });
+  runApp(
+      MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (_) => MyNetflixViewModel()),
+          ChangeNotifierProvider(create: (_) => DetailedMovieViewModel()),
+          ChangeNotifierProvider(create: (_) => HomeViewModel()),
+          ChangeNotifierProvider(create: (_) => VideoViewModel()),
+          ChangeNotifierProvider(create: (_) => SignUpViewModel()),
+          ChangeNotifierProvider(create: (_) => SignInViewModel()),
+          ChangeNotifierProvider(create: (_) => EmailVerificationLinkViewModel()),
+          ChangeNotifierProvider(create: (_) => MovieCardViewModel())
+        ],
+        child: MyApp()
+        ,
+      )
+  );
+  // SystemChrome.setPreferredOrientations(
+  //   [
+  //     DeviceOrientation.portraitUp,
+  //   ]
+  // ).then((_){
+  //   runApp(
+  //       MultiProvider(
+  //         providers: [
+  //           ChangeNotifierProvider(create: (_) => MyNetflixViewModel()),
+  //           ChangeNotifierProvider(create: (_) => DetailedMovieViewModel()),
+  //           ChangeNotifierProvider(create: (_) => HomeViewModel()),
+  //           ChangeNotifierProvider(create: (_) => VideoViewModel()),
+  //           ChangeNotifierProvider(create: (_) => SignUpViewModel()),
+  //           ChangeNotifierProvider(create: (_) => SignInViewModel()),
+  //           ChangeNotifierProvider(create: (_) => EmailVerificationLinkViewModel()),
+  //           ChangeNotifierProvider(create: (_) => MovieCardViewModel())
+  //         ],
+  //         child: MyApp()
+  //         ,
+  //       )
+  //   );
+  // });
 }
 
 class MyApp extends StatelessWidget {
@@ -56,10 +72,11 @@ class MyApp extends StatelessWidget {
     return ScreenUtilInit(
       builder: (_,child){
         return MaterialApp(
+          debugShowCheckedModeBanner: false,
           theme: ThemeData(
             scaffoldBackgroundColor: Colors.black,
           ),
-          home: DetailedMovieScreen(),
+          home: VideoMobileScreen(),
           // initialRoute: "/",
           // routes: {
           //   "/SignInScreen": (context) => SignInScreen(),

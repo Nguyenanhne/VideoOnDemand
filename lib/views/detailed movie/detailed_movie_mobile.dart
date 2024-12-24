@@ -3,20 +3,14 @@ import 'package:du_an_cntt/utils.dart';
 import 'package:du_an_cntt/view_models/movie_detail_vm.dart';
 import 'package:du_an_cntt/widgets/movie_detail/movie_detail_button.dart';
 import 'package:du_an_cntt/widgets/movie_detail/movie_item.dart';
-import 'package:flick_video_player/flick_video_player.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:lecle_yoyo_player/lecle_yoyo_player.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:readmore/readmore.dart';
 import 'package:video_player/video_player.dart';
-
-import '../../widgets/movie_detail/text.dart';
-import '../trailer_video/flick_video_player_trailer.dart';
 
 class DetailedMovieScreenMobile extends StatefulWidget {
   DetailedMovieScreenMobile({super.key});
@@ -47,33 +41,28 @@ class _DetailedMovieScreenMobileState extends State<DetailedMovieScreenMobile> {
 
   List optionList = ["Các tập", "Trailer", "Nội dung tương tự"];
 
-  late FlickManager flickManager;
 
   late Future<void> filmDetailsFuture;
 
-  late VideoPlayerController videoPlayerController;
-  late ChewieController chewieController;
+  VideoPlayerController? _videoPlayerController;
+
+  ChewieController? _chewieController;
+
+  final Map<String, String> m3u8Urls = {
+    '144p': 'http://192.168.1.14:3000/videos/v0/playlist.m3u8',
+    // '360p': 'https://example.com/video-360p.m3u8',
+    // '720p': 'https://example.com/video-720p.m3u8',
+  };
+
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    videoPlayerController = VideoPlayerController.network(
-        'https://filmfinder.shop/videos/output.m3u8');
-    chewieController = ChewieController(
-      videoPlayerController: videoPlayerController,
-      autoPlay: true,
-      looping: true,
-      allowFullScreen: false,
-      aspectRatio: 16/9,
-      autoInitialize: true
-      // showControls: false,
-    );
+
   }
 
   void dispose() {
-    videoPlayerController.dispose();
-    chewieController.dispose();
     super.dispose();
   }
 
@@ -230,9 +219,21 @@ class _DetailedMovieScreenMobileState extends State<DetailedMovieScreenMobile> {
                         children: [
                           Container(
                             height: heightScreen*0.3,
-                            child: Chewie(
-                              controller: chewieController,
-                            ),
+                            // child: BetterPlayer.network(
+                            //   "http://192.168.1.14:3000/videos/master.m3u84",
+                            //   betterPlayerConfiguration: BetterPlayerConfiguration(
+                            //     aspectRatio: 16 / 9,
+                            //   ),
+                            // ),
+                            // child: Chewie(
+                            //   controller: chewieController,
+                            // ),
+                            // child: YoYoPlayer(
+                            //   url: 'https://filmfinder.shop/videos/master.m3u8',
+                            // ),
+                            // child: YoYoPlayer(
+                            //   url: "http://192.168.1.14:3000/videos/master.m3u8",
+                            // ),
                           ),
                           Padding(
                             padding: EdgeInsets.symmetric(vertical: 10.h),
