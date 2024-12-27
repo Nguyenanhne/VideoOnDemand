@@ -1,5 +1,6 @@
 import 'package:chewie/chewie.dart';
 import 'package:du_an_cntt/utils.dart';
+import 'package:du_an_cntt/view_models/home_vm.dart';
 import 'package:du_an_cntt/view_models/movie_detail_vm.dart';
 import 'package:du_an_cntt/widgets/movie_detail/movie_detail_button.dart';
 import 'package:du_an_cntt/widgets/movie_detail/movie_item.dart';
@@ -11,6 +12,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
+
+import '../../helper/navigator.dart';
 
 class DetailedMovieScreenMobile extends StatefulWidget {
   DetailedMovieScreenMobile({super.key});
@@ -175,9 +178,11 @@ class _DetailedMovieScreenMobileState extends State<DetailedMovieScreenMobile> {
       appBar: AppBar(
         titleSpacing: 0,
         backgroundColor: Colors.black,
-        leading: Icon(
-          Icons.arrow_back,
-          color: Color(colorAppbarIcon),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Color(colorAppbarIcon)),
+          onPressed: () {
+            NavigatorHelper.goBack(context);
+          },
         ),
         actions: [
           InkWell(
@@ -220,7 +225,7 @@ class _DetailedMovieScreenMobileState extends State<DetailedMovieScreenMobile> {
                           Container(
                             height: heightScreen*0.3,
                             // child: BetterPlayer.network(
-                            //   "http://192.168.1.14:3000/videos/master.m3u84",
+                            //   "  4",
                             //   betterPlayerConfiguration: BetterPlayerConfiguration(
                             //     aspectRatio: 16 / 9,
                             //   ),
@@ -370,34 +375,43 @@ class _DetailedMovieScreenMobileState extends State<DetailedMovieScreenMobile> {
                               ],
                             ),
                           ),
-                          Padding(
-                            padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 10.w),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: List.generate(likesList.length, (index) {
-                                return GestureDetector(
-                                  onTap: (){
-                                    viewModel.likeListOntap(context, index);
-                                  },
-                                  child: Column(
-                                    children: [
-                                      Icon(
-                                        likesList[index]['icon'],
-                                        size: 25.sp,
-                                        color: Colors.white.withOpacity(0.9),
-                                      ),
-                                      SizedBox(
-                                        height: 5.h,
-                                      ),
-                                      Text(likesList[index]['text'],
-                                          style: contentStyle.copyWith(fontSize: 13.sp, color: Colors.grey)
-                                      )
-                                    ],
-                                  ),
-                                );
-                              }),
-                            ),
-                          ),
+                          Consumer<DetailedMovieViewModel>(
+                            builder: (context, viewModel, child){
+                              return Padding(
+                                padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 10.w),
+                                child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: List.generate(likesList.length, (index) {
+                                      bool isLiked = viewModel.likesList[index]["isLiked"] ?? false;
+
+                                      return GestureDetector(
+                                        onTap: (){
+                                          viewModel.likeListOntap(index);
+                                        },
+                                        child: Column(
+                                          children: [
+                                            Icon(
+                                              likesList[index]['icon'],
+                                              size: 25.sp,
+                                              // color: Colors.white.withOpacity(0.9),
+                                              color:isLiked
+                                                  ? Colors.blue
+                                                  : Colors.white.withOpacity(0.9),
+                                            ),
+                                            SizedBox(
+                                              height: 5.h,
+                                            ),
+                                            Text(likesList[index]['text'],
+                                                style: contentStyle.copyWith(fontSize: 13.sp, color: Colors.grey)
+                                            )
+                                          ],
+                                        ),
+                                      );
+                                    })
+                                ),
+                              );
+                            },
+                          )
                         ],
                       ),
                     ),

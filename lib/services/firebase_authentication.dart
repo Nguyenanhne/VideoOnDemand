@@ -65,6 +65,10 @@ class Auth {
     try {
       final cred = await firebaseAuth.signInWithEmailAndPassword(
           email: email, password: password);
+
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString('userId', cred.user!.uid);
+
       return cred.user;
     } on FirebaseAuthException catch (e) {
       log("Tên đăng nhập hoặc mật khẩu không hợp lệ");

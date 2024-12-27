@@ -1,6 +1,8 @@
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 
 class HomeViewModel extends ChangeNotifier{
+
   Color? _appBarColor = Colors.transparent;
 
   Color? get appBarColor => _appBarColor;
@@ -21,5 +23,7 @@ class HomeViewModel extends ChangeNotifier{
       MaterialPageRoute(builder: (context) => targetScreen),
     );
   }
+
+
 
 }

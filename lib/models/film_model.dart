@@ -34,9 +34,9 @@ class FilmModel {
   }
 
   // Create FilmModel from Map
-  factory FilmModel.fromMap(Map<String, dynamic> map) {
+  factory FilmModel.fromMap(Map<String, dynamic> map, String id) {
     return FilmModel(
-      id: map['id'] ?? '',
+      id: id,
       actors: (map['actors'] as String).split(', ').map((actor) => actor.trim()).toList(), // Chuyển chuỗi thành List<String>
       age: map['age'] ?? 0,
       description: map['description'] ?? '',

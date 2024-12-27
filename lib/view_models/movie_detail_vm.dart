@@ -21,19 +21,6 @@ class DetailedMovieViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void likeListOntap(BuildContext context, int index){
-    switch (index){
-      case 0:
-        print("Danh sach");
-      case 1:
-        print("Danh gia");
-      case 2:
-        print("Chia se");
-      case 3:
-        NavigatorHelper.navigateTo(context, CommentScreen());
-    }
-  }
-
   // Future<FilmModel?> fetchFilmDetails(String filmId) async {
   //   try {
   //     _film = await FilmService().fetchFilmById(filmId);
@@ -46,7 +33,6 @@ class DetailedMovieViewModel extends ChangeNotifier {
   // }
 
   Future<FilmModel?> getFilmDetails(String filmId) async {
-    final filmService = FilmService();
     FilmModel? film = await FilmService().fetchFilmById(filmId);
     if (film != null) {
         return film;
@@ -54,4 +40,23 @@ class DetailedMovieViewModel extends ChangeNotifier {
     print('Film not found!');
     return null;
   }
+
+  List<Map<String, dynamic>> likesList = [
+  {"icon": Icons.add, "text": "Danh sách", "liked": false},
+  {"icon": Icons.thumb_up_alt_outlined, "text": "Đánh giá", "liked": false},
+  {"icon": Icons.send_outlined, "text": "Chia sẻ", "liked": false},
+  {"icon": Icons.comment, "text": "Bình luận", "liked": false},
+  ];
+
+  void likeListOntap(int index) {
+    likesList[index]['liked'] = !likesList[index]['liked'];
+
+  if (likesList[index]['liked']) {
+    likesList[index]['icon'] = Icons.thumb_up;
+  } else {
+    likesList[index]['icon'] = Icons.thumb_up_alt_outlined;
+  }
+    notifyListeners();
+  }
+
 }
