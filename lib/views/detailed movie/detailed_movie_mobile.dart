@@ -14,6 +14,7 @@ import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
 
 import '../../helper/navigator.dart';
+import '../../services/MyListService.dart';
 
 class DetailedMovieScreenMobile extends StatefulWidget {
   DetailedMovieScreenMobile({super.key});
@@ -44,9 +45,6 @@ class _DetailedMovieScreenMobileState extends State<DetailedMovieScreenMobile> {
 
   List optionList = ["Các tập", "Trailer", "Nội dung tương tự"];
 
-
-  late Future<void> filmDetailsFuture;
-
   VideoPlayerController? _videoPlayerController;
 
   ChewieController? _chewieController;
@@ -57,12 +55,22 @@ class _DetailedMovieScreenMobileState extends State<DetailedMovieScreenMobile> {
     // '720p': 'https://example.com/video-720p.m3u8',
   };
 
-
+  late Future filmDetailsFuture;
+  late Future isFilmInMyList;
+  late Future<List<dynamic>> combinedFuture;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
 
+    final viewModel = Provider.of<DetailedMovieViewModel>(context, listen: false);
+    
+    // filmDetailsFuture = viewModel.getFilmDetails(filmID);
+    // isFilmInMyList = viewModel.getAddToListStatus(filmID, "4f4GtMZFf5UvrhiFbGLDYHZmmzB3");
+    combinedFuture = Future.wait([
+      viewModel.getFilmDetails(filmID),
+      viewModel.getAddToListStatus(filmID, "4f4GtMZFf5UvrhiFbGLDYHZmmzB3"),
+    ]);
   }
 
   void dispose() {
@@ -172,7 +180,6 @@ class _DetailedMovieScreenMobileState extends State<DetailedMovieScreenMobile> {
         },
       );
     }
-    final viewModel = Provider.of<DetailedMovieViewModel>(context, listen: false);
 
     return Scaffold(
       appBar: AppBar(
@@ -205,14 +212,15 @@ class _DetailedMovieScreenMobileState extends State<DetailedMovieScreenMobile> {
           SizedBox(width: 20.w)
         ],
       ),
-      body: FutureBuilder(
-          future: viewModel.getFilmDetails(filmID),
+      body: FutureBuilder<List<dynamic>>(
+          // future: viewModel.getFilmDetails(filmID),
+        future: combinedFuture,
           builder: (context, snapshot){
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(child: CircularProgressIndicator());
             }
             else{
-              final film = snapshot.data;
+              final film = snapshot.data![0];
               return CustomScrollView(
                 slivers: [
                   SliverToBoxAdapter (
@@ -381,33 +389,52 @@ class _DetailedMovieScreenMobileState extends State<DetailedMovieScreenMobile> {
                                 padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 10.w),
                                 child: Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: List.generate(likesList.length, (index) {
-                                      bool isLiked = viewModel.likesList[index]["isLiked"] ?? false;
-
-                                      return GestureDetector(
+                                    children: [
+                                      GestureDetector(
                                         onTap: (){
-                                          viewModel.likeListOntap(index);
+                                          viewModel.toggleHasInMyList();
                                         },
                                         child: Column(
                                           children: [
                                             Icon(
-                                              likesList[index]['icon'],
+                                              viewModel.hasInMyList ? Icons.check : Icons.add,
                                               size: 25.sp,
-                                              // color: Colors.white.withOpacity(0.9),
-                                              color:isLiked
-                                                  ? Colors.blue
-                                                  : Colors.white.withOpacity(0.9),
+                                              color: Colors.white.withOpacity(0.9),
                                             ),
                                             SizedBox(
                                               height: 5.h,
                                             ),
-                                            Text(likesList[index]['text'],
-                                                style: contentStyle.copyWith(fontSize: 13.sp, color: Colors.grey)
+                                            Text(
+                                              "Danh sách",
+                                              style: contentStyle.copyWith(fontSize: 13.sp, color: Colors.grey)
                                             )
                                           ],
                                         ),
-                                      );
-                                    })
+                                      )
+                                    ],
+                                    // children: List.generate(likesList.length, (index) {
+                                    //   // return GestureDetector(
+                                    //   //   onTap: (){
+                                    //   //     viewModel.likeListOntap(index);
+                                    //   //   },
+                                    //   //   child: Column(
+                                    //   //     children: [
+                                    //   //       Icon(
+                                    //   //         viewModel.likesList[index]["liked"] ?
+                                    //   //         viewModel.likesList[index]['icon'] : viewModel.likesList[index]['selectedIcon'],
+                                    //   //         size: 25.sp,
+                                    //   //         color: Colors.white.withOpacity(0.9),
+                                    //   //       ) ,
+                                    //   //       SizedBox(
+                                    //   //         height: 5.h,
+                                    //   //       ),
+                                    //   //       Text(viewModel.likesList[index]['text'],
+                                    //   //           style: contentStyle.copyWith(fontSize: 13.sp, color: Colors.grey)
+                                    //   //       )
+                                    //   //     ],
+                                    //   //   ),
+                                    //   // );
+                                    // })
                                 ),
                               );
                             },

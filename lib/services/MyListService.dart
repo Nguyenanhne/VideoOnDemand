@@ -71,4 +71,25 @@ class MyListService {
     }
   }
 
+  Future<bool> isFilmInMyList(String userID, String filmID) async {
+    try {
+      QuerySnapshot snapshot = await firestore
+          .collection('My List')
+          .where('userID', isEqualTo: userID)
+          .get();
+
+      if (snapshot.docs.isEmpty) {
+        print("No list found for user $userID.");
+        return false;
+      } else {
+        List<dynamic> filmIDs = snapshot.docs[0].get('filmID');
+        return filmIDs.contains(filmID);
+      }
+    } catch (e) {
+      print("Error checking film in My List: $e");
+      return false;
+    }
+  }
+
+
 }
