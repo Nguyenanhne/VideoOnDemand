@@ -1,4 +1,4 @@
-import 'package:du_an_cntt/models/film_model.dart';
+import 'package:du_an_cntt/models/movie_model.dart';
 import 'package:du_an_cntt/view_models/home_vm.dart';
 import 'package:du_an_cntt/widgets/home/main_poster.dart';
 import 'package:du_an_cntt/widgets/movie_card.dart';
@@ -10,7 +10,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
-import '../../services/FilmService.dart';
+import '../../services/MovieService.dart';
 
 class HomeScreenMobile extends StatefulWidget {
   const HomeScreenMobile({super.key});
@@ -20,14 +20,12 @@ class HomeScreenMobile extends StatefulWidget {
 }
 
 class _HomeScreenMobileState extends State<HomeScreenMobile> {
-  late Future<List<FilmModel>> films;
   late ScrollController scrollController;
 
   @override
   void initState() {
     super.initState();
     scrollController = ScrollController();
-    // films = FilmService().fetchListFilm();
   }
 
   @override
@@ -174,7 +172,7 @@ class _HomeScreenMobileState extends State<HomeScreenMobile> {
           SliverToBoxAdapter(
             child: SizedBox(
               height: heightScreen*0.3,
-              child: MovieCardWidget(movies: films, headerLineText: "Phim đang chiếu"),
+              child: MovieCardWidget(headerLineText: "Phim đang chiếu"),
             ),
           ),
           // SliverToBoxAdapter(

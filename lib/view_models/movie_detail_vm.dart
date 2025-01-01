@@ -4,8 +4,8 @@ import 'package:du_an_cntt/views/comment/comment_screen_mobile.dart';
 import 'package:du_an_cntt/views/comment/comment_screen_tablet.dart';
 import 'package:flutter/material.dart';
 
-import '../models/film_model.dart';
-import '../services/FilmService.dart';
+import '../models/movie_model.dart';
+import '../services/MovieService.dart';
 import '../views/comment/comment_screen.dart';
 
 class DetailedMovieViewModel extends ChangeNotifier {
@@ -13,9 +13,9 @@ class DetailedMovieViewModel extends ChangeNotifier {
 
   int get activeEpisode => _activeEpisode;
 
-  FilmModel? _film;
+  MovieModel? _film;
 
-  FilmModel? get film => _film;
+  MovieModel? get film => _film;
 
   bool _hasInMyList = false;
 
@@ -48,8 +48,8 @@ class DetailedMovieViewModel extends ChangeNotifier {
   //   }
   // }
 
-  Future<FilmModel?> getFilmDetails(String filmId) async {
-    FilmModel? film = await FilmService().fetchFilmById(filmId);
+  Future<MovieModel?> getFilmDetails(String filmId) async {
+    MovieModel? film = await MovieService().fetchFilmById(filmId);
     if (film != null) {
         return film;
     }

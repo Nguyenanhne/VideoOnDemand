@@ -1,4 +1,4 @@
-class FilmModel {
+class MovieModel {
   final String id;
   final List<String> actors;
   final String age;
@@ -9,7 +9,7 @@ class FilmModel {
   final String year;
   String url = "";
 
-  FilmModel({
+  MovieModel({
     required this.id,
     required this.actors,
     required this.age,
@@ -35,8 +35,8 @@ class FilmModel {
   }
 
   // Create FilmModel from Map
-  factory FilmModel.fromMap(Map<String, dynamic> map, String id) {
-    return FilmModel(
+  factory MovieModel.fromMap(Map<String, dynamic> map, String id) {
+    return MovieModel(
       id: id,
       actors: (map['actors'] as String).split(', ').map((actor) => actor.trim()).toList(),
       age: map['age'].toString() ?? '' ,

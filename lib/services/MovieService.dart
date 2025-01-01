@@ -1,18 +1,18 @@
 import "package:cloud_firestore/cloud_firestore.dart";
 import "package:firebase_storage/firebase_storage.dart";
 
-import "../models/film_model.dart";
+import "../models/movie_model.dart";
 
-class FilmService{
+class MovieService{
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   FirebaseStorage storage = FirebaseStorage.instance;
 
-  Future<FilmModel?> fetchFilmById(String id) async {
+  Future<MovieModel?> fetchFilmById(String id) async {
     try {
       final doc = await firestore.collection('Film').doc(id).get();
 
       if (doc.exists && doc.data() != null) {
-        return FilmModel.fromMap(doc.data()! as Map<String, dynamic>, doc.id);
+        return MovieModel.fromMap(doc.data()! as Map<String, dynamic>, doc.id);
       } else {
         print('Film not found');
         return null;
@@ -22,7 +22,7 @@ class FilmService{
       return null;
     }
   }
-  Future<List<FilmModel>> fetchListFilm({required int limit, required DocumentSnapshot? lastDocument}) async {
+  Future<List<MovieModel>> fetchListFilm({required int limit, required DocumentSnapshot? lastDocument}) async {
     try {
       Query query  = firestore.collection('Film').limit(limit);
 
@@ -32,8 +32,8 @@ class FilmService{
 
       final snapshot = await query.get();
 
-      List<FilmModel> films = snapshot .docs.map((doc) {
-        return FilmModel.fromMap(doc.data()! as Map<String, dynamic>, doc.id);
+      List<MovieModel> films = snapshot .docs.map((doc) {
+        return MovieModel.fromMap(doc.data()! as Map<String, dynamic>, doc.id);
       }).toList();
 
       //url image
