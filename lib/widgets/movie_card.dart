@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:du_an_cntt/models/film_model.dart';
 import 'package:du_an_cntt/view_models/movie_card_vm.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +19,10 @@ class MovieCardWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     MovieCardViewModel viewModel = Provider.of<MovieCardViewModel>(context, listen: false);
 
+    final heightScreen = MediaQuery.of(context).size.height
+        - AppBar().preferredSize.height
+        - MediaQuery.of(context).padding.top;
+
     return FutureBuilder<List<FilmModel>>(
       future: movies,
       builder: (context, snapshot) {
@@ -30,16 +35,12 @@ class MovieCardWidget extends StatelessWidget {
             child: Text('Error: ${snapshot.error}'),
           );
         }
-
         if (!snapshot.hasData || snapshot.data!.isEmpty) {
           return const Center(child: Text('No movies available'));
         }
-
         var data = snapshot.data;
-
         return Column(
           children: [
-            // Tiêu đề của danh sách phim
             Padding(
               padding: EdgeInsets.symmetric(vertical: 10.h),
               child: Text(
@@ -51,7 +52,6 @@ class MovieCardWidget extends StatelessWidget {
                 ),
               ),
             ),
-            // Danh sách phim theo chiều ngang
             Expanded(
               child: ListView.separated(
                 scrollDirection: Axis.horizontal,
@@ -60,41 +60,29 @@ class MovieCardWidget extends StatelessWidget {
                   FilmModel movie = data[index];
                   return InkWell(
                     onTap: () {
-                      viewModel.onTap(context);
+                      viewModel.onTap(context, movie.id);
                     },
                     child: SizedBox(
-                      width: 150.w,
-                      child: FutureBuilder<String>(
-                        future: viewModel.getImageUrl(movie.id),
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState == ConnectionState.waiting) {
-                            return Center(
-                              child: CircularProgressIndicator(),
-                            );
-                          }
-
-                          if (snapshot.hasError || !snapshot.hasData) {
-                            return Center(
-                              child: Icon(Icons.error), // Hiển thị khi có lỗi
-                            );
-                          }
-
-                          return Image.network(
-                            snapshot.data!,
-                            loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
-                              if (loadingProgress == null) {
-                                return child;
-                              } else {
-                                return Center(
-                                  child: CircularProgressIndicator(),
-                                );
-                              }
-                            },
-                          );
-                        },
+                      width: heightScreen * 0.15,
+                      child: Column(
+                        children: [
+                          Expanded(
+                            child: CachedNetworkImage(
+                              imageUrl: movie.url,
+                              placeholder: (context, url) => const Center(
+                                child: CircularProgressIndicator(),
+                              ),
+                              errorWidget: (context, url, error) => const Icon(
+                                Icons.error,
+                                color: Colors.red,
+                              ),
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          SizedBox(height: 5.h),
+                        ],
                       ),
                     ),
-
                   );
                 },
                 separatorBuilder: (context, index) {

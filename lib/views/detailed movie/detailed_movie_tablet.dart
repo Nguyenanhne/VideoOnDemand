@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 class DetailedMovieScreenTablet extends StatefulWidget {
-  const DetailedMovieScreenTablet({super.key});
+  final String movieID;
+  const DetailedMovieScreenTablet({super.key, required this.movieID});
 
   @override
   State<DetailedMovieScreenTablet> createState() => _DetailedMovieScreenTablet();

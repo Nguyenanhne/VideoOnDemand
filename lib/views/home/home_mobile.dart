@@ -27,7 +27,7 @@ class _HomeScreenMobileState extends State<HomeScreenMobile> {
   void initState() {
     super.initState();
     scrollController = ScrollController();
-    films = FilmService().fetchListFilm();
+    // films = FilmService().fetchListFilm();
   }
 
   @override
@@ -60,91 +60,6 @@ class _HomeScreenMobileState extends State<HomeScreenMobile> {
             provider.updateAppBarColor(offset);
           }),
         slivers: [
-          // SliverAppBar(
-          //   titleSpacing: 0,
-          //   elevation: 100,
-          //   floating: false,
-          //   pinned: true,
-          //   flexibleSpace: FlexibleSpaceBar(
-          //     background: Container(
-          //       color: Colors.transparent,
-          //     ),
-          //   ),
-          //   title: Container(
-          //     padding: EdgeInsets.zero,
-          //     child: Image.asset(
-          //       "assets/logo.png",
-          //       height: 50.h,
-          //       width: 120.w,
-          //     ),
-          //   ),
-          //   actions: [
-          //     InkWell(
-          //       onTap: () {},
-          //       child: const Icon(
-          //         LineAwesomeIcons.download_solid,
-          //         size: 30,
-          //         color: Colors.white,
-          //       ),
-          //     ),
-          //     SizedBox(width: 15.w),
-          //     InkWell(
-          //       onTap: () {},
-          //       child: const Icon(
-          //         Icons.search,
-          //         size: 30,
-          //         color: Colors.white,
-          //       ),
-          //     ),
-          //     SizedBox(width: 20.w),
-          //   ],
-          //   bottom: PreferredSize(
-          //     preferredSize: Size.fromHeight(50),
-          //     child: Padding(
-          //       padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
-          //       child: Row(
-          //         children: [
-          //           Container(
-          //             padding: EdgeInsets.symmetric(vertical: 5.h, horizontal: 15.w),
-          //             decoration: BoxDecoration(
-          //                 borderRadius: BorderRadius.circular(20),
-          //                 border: Border.all(color: Colors.white)
-          //             ),
-          //             child: Text(
-          //               "Phim T.hình",
-          //               style: style.copyWith(fontSize: 13.sp),
-          //             ),
-          //           ),
-          //           Padding(
-          //             padding: EdgeInsets.symmetric(horizontal: 10.w),
-          //             child: Container(
-          //               padding: EdgeInsets.symmetric(vertical: 5.h, horizontal: 15.w),
-          //               decoration: BoxDecoration(
-          //                   borderRadius: BorderRadius.circular(20),
-          //                   border: Border.all(color: Colors.white)
-          //               ),
-          //               child: Text(
-          //                 "Phim",
-          //                 style: style.copyWith(fontSize: 13.sp),
-          //               ),
-          //             ),
-          //           ),
-          //           Container(
-          //             padding: EdgeInsets.symmetric(vertical: 5.h, horizontal: 15.w),
-          //             decoration: BoxDecoration(
-          //                 borderRadius: BorderRadius.circular(20),
-          //                 border: Border.all(color: Colors.white)
-          //             ),
-          //             child: Text(
-          //               "Thể loại",
-          //               style: style.copyWith(fontSize: 13.sp),
-          //             ),
-          //           )
-          //         ],
-          //       ),
-          //     ),
-          //   ),
-          // ),
           Consumer<HomeViewModel>(
             builder: (context, provider, child){
               return SliverAppBar(
@@ -248,15 +163,14 @@ class _HomeScreenMobileState extends State<HomeScreenMobile> {
               );
             },
           ),
-          // Các SliverToBoxAdapter khác
-          SliverToBoxAdapter(
+
+           SliverToBoxAdapter(
             child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 15.h),
                 height: heightScreen*0.7,
                 child: MainPoster()
             ),
           ),
-
           SliverToBoxAdapter(
             child: SizedBox(
               height: heightScreen*0.3,

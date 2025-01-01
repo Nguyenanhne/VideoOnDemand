@@ -10,7 +10,6 @@ import 'package:du_an_cntt/view_models/signup_vm.dart';
 import 'package:du_an_cntt/view_models/video_vm.dart';
 import 'package:du_an_cntt/views/bottom_navbar.dart';
 import 'package:du_an_cntt/views/splash/splash_mobile.dart';
-import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:firebase_core/firebase_core.dart';

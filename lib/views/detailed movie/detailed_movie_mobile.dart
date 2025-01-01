@@ -17,16 +17,23 @@ import '../../helper/navigator.dart';
 import '../../services/MyListService.dart';
 
 class DetailedMovieScreenMobile extends StatefulWidget {
-  DetailedMovieScreenMobile({super.key});
+  final String movieID;
+  DetailedMovieScreenMobile({super.key, required this.movieID});
 
   @override
   State<DetailedMovieScreenMobile> createState() => _DetailedMovieScreenMobileState();
 }
 
 class _DetailedMovieScreenMobileState extends State<DetailedMovieScreenMobile> {
-  final filmID = "ENEg1MabihmmHmunqWtr";
+  late String movieID;
 
   int activeEpisode = 0;
+
+  late Future filmDetailsFuture;
+
+  late Future isFilmInMyList;
+
+  late Future<List<dynamic>> combinedFuture;
 
   final contentStyle = TextStyle(
       fontFamily: GoogleFonts.roboto().fontFamily,
@@ -55,24 +62,24 @@ class _DetailedMovieScreenMobileState extends State<DetailedMovieScreenMobile> {
     // '720p': 'https://example.com/video-720p.m3u8',
   };
 
-  late Future filmDetailsFuture;
-  late Future isFilmInMyList;
-  late Future<List<dynamic>> combinedFuture;
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    movieID = widget.movieID;
 
     final viewModel = Provider.of<DetailedMovieViewModel>(context, listen: false);
     
     // filmDetailsFuture = viewModel.getFilmDetails(filmID);
     // isFilmInMyList = viewModel.getAddToListStatus(filmID, "4f4GtMZFf5UvrhiFbGLDYHZmmzB3");
     combinedFuture = Future.wait([
-      viewModel.getFilmDetails(filmID),
-      viewModel.getAddToListStatus(filmID, "4f4GtMZFf5UvrhiFbGLDYHZmmzB3"),
+      viewModel.getFilmDetails(movieID),
+      viewModel.getAddToListStatus(movieID, "4f4GtMZFf5UvrhiFbGLDYHZmmzB3"),
     ]);
   }
 
+  @override
   void dispose() {
     super.dispose();
   }

@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:du_an_cntt/view_models/home_vm.dart';
 import 'package:du_an_cntt/view_models/movie_card_vm.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -30,7 +31,7 @@ class _MainPosterState extends State<MainPoster> {
   @override
   void initState() {
     // TODO: implement initState
-    _imageUrlFuture = Provider.of<MovieCardViewModel>(context, listen: false).getImageUrl("AQi6uEk1k23bEvu6t3zF");
+    _imageUrlFuture = Provider.of<MovieCardViewModel>(context, listen: false).getImageUrl("ENEg1MabihmmHmunqWtr");
 
     super.initState();
   }
@@ -56,19 +57,20 @@ class _MainPosterState extends State<MainPoster> {
               fit: StackFit.expand,
               children: [
                 // Image.asset("assets/home_poster.jpg", fit: BoxFit.fill),
-                Image.network(
-                  data,
-                  fit: BoxFit.cover,
-                  loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress){
-                    if (loadingProgress == null) {
-                      return child; // Khi ảnh đã tải xong
-                    } else {
-                      return Center(
-                        child: CircularProgressIndicator(),
-                      ); // Hiển thị CircularProgressIndicator khi ảnh đang tải
-                    }
-                  },
-                ),
+                // Image.network(
+                //   data,
+                //   fit: BoxFit.cover,
+                //   loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress){
+                //     if (loadingProgress == null) {
+                //       return child; // Khi ảnh đã tải xong
+                //     } else {
+                //       return Center(
+                //         child: CircularProgressIndicator(),
+                //       ); // Hiển thị CircularProgressIndicator khi ảnh đang tải
+                //     }
+                //   },
+                // ),
+                CachedNetworkImage(imageUrl: data),
                 // Image(
                 //   image: NetworkImage(imageUrl),
                 // ),
