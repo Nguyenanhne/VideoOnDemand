@@ -1,7 +1,6 @@
 import 'dart:ui'; // Để sử dụng BackdropFilter
 import 'package:du_an_cntt/utils.dart';
 import 'package:du_an_cntt/view_models/home_vm.dart';
-import 'package:du_an_cntt/views/login/sign_in_mobile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -10,6 +9,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 
 import '../../widgets/welcome/welcome_page.dart';
+import '../sign_in/sign_in_mobile.dart';
 import '../sign_up/sign_up_mobile.dart';
 
 class WelcomeScreenMobile extends StatefulWidget {

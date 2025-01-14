@@ -48,7 +48,7 @@ class WelcomePage extends StatelessWidget {
                     title,
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      fontSize: 30,
+                      fontSize: 14.sp,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
                       fontFamily: GoogleFonts.roboto().fontFamily,
@@ -77,6 +77,7 @@ class WelcomePage extends StatelessWidget {
                     style: TextStyle(
                       color: Colors.white,
                       fontFamily: GoogleFonts.roboto().fontFamily,
+                      fontSize: 13.sp,
                       shadows: const [
                         Shadow(
                           offset: Offset(2.0, 2.0),

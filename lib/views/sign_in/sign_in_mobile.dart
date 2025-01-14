@@ -12,6 +12,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:quickalert/quickalert.dart';
+import 'package:tap_debouncer/tap_debouncer.dart';
 
 import '../../services/firebase_authentication.dart';
 import '../bottom_navbar.dart';
@@ -107,73 +108,161 @@ class _SignInScreenMobileState extends State<SignInScreenMobile> {
                       ),
                     ),
                   ),
-                  Container(
-                    width: double.maxFinite,
-                    padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                          padding: EdgeInsets.symmetric(vertical: 10.h),
-                          elevation: 10,
-                          backgroundColor: Colors.black12,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(5)
-                          ),
-                          side: BorderSide(
-                              color: Colors.white,
-                              width: 1
-                          )
-                      ),
-                      onPressed: () async {
+                  // TapDebouncer(
+                  //   onTap: () async => await () async {
+                  //     showDialog(
+                  //         context: context,
+                  //         barrierDismissible: false,
+                  //         builder: (context){
+                  //           return Center(child: CircularProgressIndicator());
+                  //         }
+                  //     );
+                  //     User? user = await viewModel.Login(context: context, email: emailController.text.trim(), password: passwordController.text.trim());
+                  //     Navigator.pop(context);
+                  //     await Future.delayed(Duration(milliseconds: 500));
+                  //     if (user != null){
+                  //       QuickAlert.show(
+                  //           context: context,
+                  //           type: QuickAlertType.success,
+                  //           text: "Đăng nhập thành công",
+                  //           title: "THÀNH CÔNG",
+                  //           onConfirmBtnTap: () async {
+                  //             if (await Auth().isEmailVerified()){
+                  //               await NavigatorHelper.navigateAndRemoveUntil(context, BottomNavBar());
+                  //             }
+                  //             else{
+                  //               await NavigatorHelper.navigateAndRemoveUntil(context, EmailVerificationLink());
+                  //             }
+                  //           }
+                  //       );
+                  //     }
+                  //     else{
+                  //       QuickAlert.show(
+                  //           context: context,
+                  //           type: QuickAlertType.error,
+                  //           text: "Tên đăng nhập hoặc mật khẩu không hợp lệ",
+                  //           title: "THẤT BẠI",
+                  //           onConfirmBtnTap: () async {
+                  //             NavigatorHelper.goBack(context);
+                  //           }
+                  //       );
+                  //     }
+                  //   },
+                  //   builder: (BuildContext context, Future<void> Function()? onTap) {
+                  //     return Container(
+                  //       width: double.maxFinite,
+                  //       padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
+                  //       child: ElevatedButton(
+                  //         style: ElevatedButton.styleFrom(
+                  //             padding: EdgeInsets.symmetric(vertical: 10.h),
+                  //             elevation: 10,
+                  //             backgroundColor: Colors.black12,
+                  //             shape: RoundedRectangleBorder(
+                  //                 borderRadius: BorderRadius.circular(5)
+                  //             ),
+                  //             side: BorderSide(
+                  //                 color: Colors.white,
+                  //                 width: 1
+                  //             )
+                  //         ),
+                  //         onPressed: onTap,
+                  //         child: Text(
+                  //           "Bắt đầu",
+                  //           style: TextStyle(
+                  //             color: Colors.white,
+                  //             fontSize: 16.sp,
+                  //             fontWeight: FontWeight.bold,
+                  //             fontFamily: GoogleFonts.roboto().fontFamily,
+                  //           ),
+                  //         ),
+                  //       ),
+                  //     );
+                  //   },
+                  // ),
+                  TapDebouncer(
+                    onTap: () async {
+                      // Hiển thị dialog chờ xử lý
+                      showDialog(
+                        context: context,
+                        barrierDismissible: false,
+                        builder: (context) {
+                          return Center(child: CircularProgressIndicator());
+                        },
+                      );
 
-                        showDialog(
+                      // Gọi hàm đăng nhập
+                      User? user = await viewModel.Login(
+                        context: context,
+                        email: emailController.text.trim(),
+                        password: passwordController.text.trim(),
+                      );
+
+                      // Đóng dialog chờ
+                      Navigator.pop(context);
+
+                      // Tạm dừng ngắn để cải thiện trải nghiệm người dùng
+                      await Future.delayed(Duration(milliseconds: 500));
+
+                      if (user != null) {
+                        // Hiển thị thông báo thành công
+                        QuickAlert.show(
                           context: context,
-                          barrierDismissible: false,
-                          builder: (context){
-                            return Center(child: CircularProgressIndicator());
-                          }
+                          type: QuickAlertType.success,
+                          text: "Đăng nhập thành công",
+                          title: "THÀNH CÔNG",
+                          onConfirmBtnTap: () async {
+                            if (await Auth().isEmailVerified()) {
+                              await NavigatorHelper.navigateAndRemoveUntil(context, BottomNavBar());
+                            } else {
+                              await NavigatorHelper.navigateAndRemoveUntil(context, EmailVerificationLink());
+                            }
+                          },
                         );
-                        User? user = await viewModel.Login(context: context, email: emailController.text.trim(), password: passwordController.text.trim());
-                        Navigator.pop(context);
-                        await Future.delayed(Duration(milliseconds: 500));
-                        if (user != null){
-                          QuickAlert.show(
-                              context: context,
-                              type: QuickAlertType.success,
-                              text: "Đăng nhập thành công",
-                              title: "THÀNH CÔNG",
-                              onConfirmBtnTap: () async {
-                                if (await Auth().isEmailVerified()){
-                                  await NavigatorHelper.navigateAndRemoveUntil(context, BottomNavBar());
-                                }
-                                else{
-                                  await NavigatorHelper.navigateAndRemoveUntil(context, EmailVerificationLink());
-                                }
-                              }
-                          );
-                        }
-                        else{
-                          QuickAlert.show(
-                              context: context,
-                              type: QuickAlertType.error,
-                              text: "Tên đăng nhập hoặc mật khẩu không hợp lệ",
-                              title: "THẤT BẠI",
-                              onConfirmBtnTap: () async {
-                                NavigatorHelper.goBack(context);
-                              }
-                          );
-                        }
-                      },
-                      child: Text(
-                        "Bắt đầu",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16.sp,
-                          fontWeight: FontWeight.bold,
-                          fontFamily: GoogleFonts.roboto().fontFamily,
+                      } else {
+                        // Hiển thị thông báo thất bại
+                        QuickAlert.show(
+                          context: context,
+                          type: QuickAlertType.error,
+                          text: "Tên đăng nhập hoặc mật khẩu không hợp lệ",
+                          title: "THẤT BẠI",
+                          onConfirmBtnTap: () {
+                            NavigatorHelper.goBack(context);
+                          },
+                        );
+                      }
+                    },
+                    builder: (BuildContext context, Future<void> Function()? onTap) {
+                      return Container(
+                        width: double.maxFinite,
+                        padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            padding: EdgeInsets.symmetric(vertical: 10.h),
+                            elevation: 10,
+                            backgroundColor: Colors.black12,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            side: BorderSide(
+                              color: Colors.white,
+                              width: 1,
+                            ),
+                          ),
+                          onPressed: onTap,
+                          child: Text(
+                            "Bắt đầu",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: GoogleFonts.roboto().fontFamily,
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
+                      );
+                    },
                   ),
+
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 20.w),
                     child: Text(

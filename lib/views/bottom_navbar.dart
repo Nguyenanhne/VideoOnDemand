@@ -1,13 +1,8 @@
-import 'package:du_an_cntt/views/detailed%20movie/detailed_movie_mobile.dart';
-import 'package:du_an_cntt/views/detailed%20movie/detailed_movie_screen.dart';
-import 'package:du_an_cntt/views/detailed%20movie/detailed_movie_tablet.dart';
+
 import 'package:du_an_cntt/views/home/home_mobile.dart';
 import 'package:du_an_cntt/views/home/home_screen.dart';
 import 'package:du_an_cntt/views/home/home_tablet.dart';
 import 'package:du_an_cntt/views/my_netflix/my_netflix_screen.dart';
-import 'package:du_an_cntt/views/news_and_hot/news_and_hot_mobile.dart';
-import 'package:du_an_cntt/views/news_and_hot/news_and_hot_screen.dart';
-import 'package:du_an_cntt/views/news_and_hot/news_and_hot_tablet.dart';
 import 'package:du_an_cntt/views/search/search_mobile.dart';
 import 'package:du_an_cntt/views/search/search_screen.dart';
 import 'package:du_an_cntt/views/search/search_tablet.dart';
@@ -18,12 +13,41 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 
-class BottomNavBar extends StatelessWidget {
+class BottomNavBar extends StatefulWidget {
   BottomNavBar({super.key});
+
+  @override
+  State<BottomNavBar> createState() => _BottomNavBarState();
+}
+
+class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMixin{
   final style = TextStyle(
     fontSize: 10.sp,
     fontFamily: GoogleFonts.roboto().fontFamily
   );
+  late TabController tabController;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    tabController = TabController(length: 3, vsync: this);
+
+    tabController.addListener(() {
+      if (tabController.indexIsChanging) {
+        _reloadTabData(tabController.index);
+      }
+    });
+  }
+  void _reloadTabData(int tabIndex) {
+    print('Reloading data for tab $tabIndex');
+  }
+
+  @override
+  void dispose() {
+    tabController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -36,8 +60,8 @@ class BottomNavBar extends StatelessWidget {
               text: "Trang chủ",
             ),
             Tab(
-              icon: Icon(Icons.photo_library),
-              text: "Mới & Hot",
+              icon: Icon(Icons.search),
+              text: "Tìm kiếm",
             ),
             Tab(
               icon: Icon(Icons.person_3),
@@ -55,8 +79,8 @@ class BottomNavBar extends StatelessWidget {
         body: TabBarView(
           children: [
             HomeScreen(),
-            NewsAndHotScreen(mobileBody: NewsAndHotScreenMobile(), tabletBody: NewsAndHotScreenTablet(), webBody: Text("webBody")),
-            MyNetflixScreen()
+            SearchScreen(),
+            MyNetflixScreen() 
             // DetailedMovieScreen(mobileBody: DetailedMovieScreenMobile(), tabletBody: DetailedMovieScreenTablet(), webBody: Text("webBody")),
           ],
         ),

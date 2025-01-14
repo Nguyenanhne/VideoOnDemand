@@ -1,23 +1,15 @@
+import 'package:du_an_cntt/responsive.dart';
+import 'package:du_an_cntt/views/welcome/welcome_mobile.dart';
+import 'package:du_an_cntt/views/welcome/welcome_tablet.dart';
+import 'package:du_an_cntt/views/welcome/welcome_web.dart';
 import 'package:flutter/material.dart';
 
 class WelcomeScreen extends StatelessWidget {
-  const WelcomeScreen({super.key, required this.mobileBody, required this.tabletBody, required this.webBody});
-  final Widget mobileBody;
-  final Widget tabletBody;
-  final Widget webBody;
+  const WelcomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-        builder: (context, constraints) {
-          if (constraints.maxWidth < 500) {
-            return mobileBody;
-          } else if (constraints.maxWidth < 1100) {
-            return tabletBody;
-          } else {
-            return webBody;
-          }
-        }
-    );
+    return ResponsiveLayout(mobileLayout: WelcomeScreenMobile(), tabletLayout: WelcomeScreenTablet(), webLayout: WelComeScreenWeb());
   }
+
 }

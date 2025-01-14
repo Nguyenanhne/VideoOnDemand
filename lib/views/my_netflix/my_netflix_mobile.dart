@@ -1,3 +1,4 @@
+import 'package:du_an_cntt/services/MyListService.dart';
 import 'package:du_an_cntt/view_models/my_netflix_vm.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -5,8 +6,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:tap_debouncer/tap_debouncer.dart';
 
+import '../../services/firebase_authentication.dart';
 import '../../utils.dart';
+import '../../view_models/my_list_film_vm.dart';
+import '../../widgets/film_card.dart';
 class MyNetflixScreenMobile extends StatefulWidget {
   const MyNetflixScreenMobile({super.key});
 
@@ -19,12 +24,38 @@ class _MyNetflixScreenMobileState extends State<MyNetflixScreenMobile> {
     fontFamily: GoogleFonts.roboto().fontFamily,
     fontSize: 14.sp,
   );
+  late ScrollController myListFilmController;
+  late Future<void> fetchMyList;
+  late List<String> filmIds;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    final myListFilmsViewModel = Provider.of<MyListFilmViewModel>(context, listen: false);
+
+    fetchMyList = myListFilmsViewModel.fetchMyList();
+
+    myListFilmController = ScrollController()..addListener(myListFilmsOnScroll);
+  }
+  void myListFilmsOnScroll() {
+    final myListFilmsViewModel = Provider.of<MyListFilmViewModel>(context, listen: false);
+    if (myListFilmController.position.pixels == myListFilmController.position.maxScrollExtent && !myListFilmsViewModel.isLoading && myListFilmsViewModel.hasMore) {
+      myListFilmsViewModel.fetchMoreMyList();
+    }
+  }
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    myListFilmController.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     final heightScreen = MediaQuery.of(context).size.height
         - AppBar().preferredSize.height
         - MediaQuery.of(context).padding.top;
 
+    final firebaseAuth = Auth();
 
     final widthScreen = MediaQuery.of(context).size.width;
 
@@ -115,20 +146,31 @@ class _MyNetflixScreenMobileState extends State<MyNetflixScreenMobile> {
                     ),
                   ),
                 ),
-                ListTile(
-                  leading: Icon(
-                    LineAwesomeIcons.sign_out_alt_solid,
-                    size: 30,
-                    color: Colors.white,
-                  ),
-                  title: Text(
-                    "Đăng xuất",
-                    style: contentStyle.copyWith(
-                        color: Colors.white,
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.bold
-                    ),
-                  ),
+                TapDebouncer(
+                  onTap: () async {
+                    viewModel.ontapBackToLoginScreen(context);
+                    await firebaseAuth.signOut();
+                  }, // your tap handler moved here
+                  builder: (BuildContext context, TapDebouncerFunc? onTap) {
+                    return InkWell(
+                      onTap: onTap,
+                      child: ListTile(
+                        leading: Icon(
+                          LineAwesomeIcons.sign_out_alt_solid,
+                          size: 30,
+                          color: Colors.white,
+                        ),
+                        title: Text(
+                          "Đăng xuất",
+                          style: contentStyle.copyWith(
+                              color: Colors.white,
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.bold
+                          ),
+                        ),
+                      )
+                    );
+                  },
                 ),
               ],
             ),
@@ -175,6 +217,146 @@ class _MyNetflixScreenMobileState extends State<MyNetflixScreenMobile> {
                 ),
               )
           ),
+        ],
+      ),
+      body: CustomScrollView(
+        slivers: [
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 20.w),
+              child: Text(
+                "Danh sách phim xem sau",
+                style: TextStyle(
+                  fontSize: 18.sp,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
+          // FutureBuilder(
+          //     future: fetchMyList,
+          //     builder: (context, snapshot){
+          //       if (snapshot.connectionState == ConnectionState.waiting) {
+          //         return SliverToBoxAdapter(
+          //           child: Center(child: CircularProgressIndicator()),
+          //         );
+          //       } else if (snapshot.hasError) {
+          //         return SliverToBoxAdapter(
+          //           child: Center(child: Text('Error: ${snapshot.error}')),
+          //         );
+          //       }
+          //       else{
+          //         return  Consumer<MyListFilmViewModel>(
+          //           builder: (context, myListFilmsViewModel, child){
+          //             final movies = myListFilmsViewModel.films;
+          //             if (movies.isEmpty) {
+          //               return SliverToBoxAdapter(
+          //                 child: Center(child: Text("Bạn không có danh sách xem sau nào", style: contentStyle)),
+          //               );
+          //             }
+          //             return SliverToBoxAdapter(
+          //               child: SizedBox(
+          //                 height: heightScreen*0.23,
+          //                 child: ListView.separated(
+          //                   controller: myListFilmController,
+          //                   scrollDirection: Axis.horizontal,
+          //                   separatorBuilder: (context, index) => SizedBox(width: 10.w),
+          //                   itemCount: movies.length + (myListFilmsViewModel.isLoading ? 1 : 0),
+          //                   itemBuilder: (context, index) {
+          //                     if (index == movies.length) {
+          //                       return ClipRRect(
+          //                         borderRadius: BorderRadius.circular(5),
+          //                         child: Container(
+          //                           width: widthScreen*0.3,
+          //                           color: Colors.grey[800],
+          //                         ),
+          //                       );
+          //                     }
+          //                     final movie = movies[index];
+          //                     return FilmCard(
+          //                       movie: movie,
+          //                       onTap: () {
+          //                         myListFilmsViewModel.onTap(context, movie.id);
+          //                       },
+          //                     );
+          //                   },                  ),
+          //               ),
+          //             );
+          //           },
+          //         );
+          //       }
+          //     }
+          // ),
+          FutureBuilder(
+              future: fetchMyList,
+              builder: (context, snapshot){
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return SliverToBoxAdapter(
+                    child: Center(child: CircularProgressIndicator()),
+                  );
+                } else if (snapshot.hasError) {
+                  return SliverToBoxAdapter(
+                    child: Center(child: Text('Error: ${snapshot.error}')),
+                  );
+                }
+                else{
+                  return  Consumer<MyListFilmViewModel>(
+                    builder: (context, myListFilmsViewModel, child){
+                      final films = myListFilmsViewModel.films;
+                      if (films.isEmpty) {
+                        return SliverToBoxAdapter(
+                          child: Center(child: Text("Bạn không có danh sách xem sau nào", style: contentStyle)),
+                        );
+                      }
+                      return SliverToBoxAdapter(
+                        child: SizedBox(
+                          height: heightScreen*0.23,
+                          child: ListView.separated(
+                            controller: myListFilmController,
+                            scrollDirection: Axis.horizontal,
+                            separatorBuilder: (context, index) => SizedBox(width: 10.w),
+                            itemCount: films.length + (myListFilmsViewModel.isLoading ? 1 : 0),
+                            itemBuilder: (context, index) {
+                              if (index == films.length) {
+                                return ClipRRect(
+                                  borderRadius: BorderRadius.circular(5),
+                                  child: Container(
+                                    width: widthScreen*0.3,
+                                    color: Colors.grey[800],
+                                  ),
+                                );
+                              }
+                              final movie = films[index];
+                              return FilmCard(
+                                width: 0.3,
+                                movie: movie,
+                                onTap: () {
+                                  myListFilmsViewModel.onTap(context, movie.id);
+                                },
+                              );
+                            },                  ),
+                        ),
+                      );
+                    },
+                  );
+                }
+              }
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 20.w),
+              child: Text(
+                "Tiếp tục xem",
+                style: TextStyle(
+                  fontSize: 18.sp,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
+
         ],
       ),
     );

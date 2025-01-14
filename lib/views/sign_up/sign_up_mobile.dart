@@ -77,7 +77,7 @@ class _SignUpScreenMobileState extends State<SignUpScreenMobile> {
                   children: [
                     Container(height: MediaQuery.of(context).size.height/20),
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 20.w),
+                      padding: EdgeInsets.symmetric(horizontal: 20),
                       child: Text(
                         "Bạn đã sẵn sàng xem chưa",
                         style: TextStyle(
@@ -102,7 +102,7 @@ class _SignUpScreenMobileState extends State<SignUpScreenMobile> {
                     //   ),
                     // ),
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
+                      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                       child: TextFormField(
                         controller: emailController,
                         style: contentStyle,
@@ -129,7 +129,7 @@ class _SignUpScreenMobileState extends State<SignUpScreenMobile> {
                       ),
                     ),
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 20.w),
+                      padding: EdgeInsets.symmetric(horizontal: 20),
                       child: TextFormField(
                         controller: passwordController,
                         obscureText: true,
@@ -158,7 +158,7 @@ class _SignUpScreenMobileState extends State<SignUpScreenMobile> {
                       ),
                     ),
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
+                      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                       child: TextFormField(
                         controller: usenameController,
                         style: contentStyle,
@@ -182,10 +182,10 @@ class _SignUpScreenMobileState extends State<SignUpScreenMobile> {
                     ),
                     Container(
                       width: double.maxFinite,
-                      padding: EdgeInsets.symmetric(horizontal: 20.w),
+                      padding: EdgeInsets.symmetric(horizontal: 20),
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                            padding: EdgeInsets.symmetric(vertical: 10.h),
+                            padding: EdgeInsets.symmetric(vertical: 10),
                             // elevation: 10,
                             backgroundColor: Colors.red,
                             shape: RoundedRectangleBorder(

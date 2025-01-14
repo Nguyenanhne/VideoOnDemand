@@ -77,6 +77,10 @@ class Auth {
   Future<void> signOut()async {
     try{
       await FirebaseAuth.instance.signOut();
+
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.clear();
+
       final user = FirebaseAuth.instance.currentUser;
       if (user == null) {
         print("User logged out successfully.");
@@ -95,6 +99,19 @@ class Auth {
     }
     catch (e){
       print(e);
+    }
+  }
+  Future<String> getUserID() async {
+    try {
+      User? user = firebaseAuth.currentUser;
+      if (user != null) {
+        return user.uid;
+      } else {
+        throw Exception('User is not logged in');
+      }
+    } catch (e) {
+      print("Error fetching user ID: $e");
+      rethrow;
     }
   }
 }

@@ -1,14 +1,12 @@
 import 'package:du_an_cntt/helper/navigator.dart';
-import 'package:du_an_cntt/views/login/sign_in_mobile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:quickalert/quickalert.dart';
-
 import '../../services/firebase_authentication.dart';
 import '../../utils.dart';
-import '../login/sign_in_screen.dart';
+import '../sign_in/sign_in_screen.dart';
 
 class ForgotPasswordMobile extends StatefulWidget {
   const ForgotPasswordMobile({super.key});
