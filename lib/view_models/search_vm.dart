@@ -12,10 +12,15 @@ class SearchViewModel extends ChangeNotifier {
 
   List<FilmModel> _films = [];
 
-  List<String> _types = [];
+  List<String> _types = ["Thể loại"];
+
+  List<String> _years = ["Năm"];
 
   String? _selectedType;
+
   List<String>? _selectedTypes;
+
+  String? _selectedYear;
 
   bool _hasMore = true;
 
@@ -27,7 +32,13 @@ class SearchViewModel extends ChangeNotifier {
 
   bool _isLoading = false;
 
+  String? get selectedType => _selectedType;
+
+  String? get selectedYear => _selectedYear;
+
   List<String> get types =>_types;
+
+  List<String> get years => _years;
 
   bool get hasMore => _hasMore;
 
@@ -39,35 +50,29 @@ class SearchViewModel extends ChangeNotifier {
 
   List<FilmModel> get films => _films;
 
-  //
-  // Future<void> loadFilmsByType(String type) async {
-  //   selectedType = type;
-  //   _isLoading = true;
-  //   notifyListeners();
-  //
-  //   try {
-  //     _films = await filmService.searchByType(type);
-  //   } catch (e) {
-  //     _films = [];
-  //   } finally {
-  //     _isLoading = false;
-  //     notifyListeners();
-  //   }
-  // }
   void onTap(BuildContext context, String movieID){
     NavigatorHelper.navigateTo(context, DetailedFilmScreen(filmID: movieID));
   }
-  Future<void> getAllTypes() async {
-    _types =  await typeService.getAllTypes();
+
+  Future<void> getAllTypes() async  {
+    final buffer =  await typeService.getAllTypes();
+    _types.addAll(buffer);
   }
 
-  Future<void> searchFilmsByType(String type) async {
+  Future<void> getYears() async{
+    int currentYear = DateTime.now().year;
+    _years = List<String>.generate(10, (index) => (currentYear - 9 + index).toString());
+  }
+
+  Future<void> searchFilmsByTypeAndYear({required type, required year}) async {
+    _selectedYear = year;
     _selectedType = type;
     _isSearching = true;
     notifyListeners();
     _films.clear();
     try {
-      final result = await FilmService().searchByType(type, limit: 5, lastDocument: null);
+
+      final result = await FilmService().searchByTypeAndYear(type: type, year: year, limit: 5, lastDocument: null);
 
       final List<FilmModel> films = result['films'] as List<FilmModel>;
 
@@ -87,14 +92,15 @@ class SearchViewModel extends ChangeNotifier {
     }
   }
 
-  Future<void> searchMoreFilmsByType( {int limit = 5}) async {
+  Future<void> searchMoreFilmsByTypeAndYear( {int limit = 5}) async {
     if (_isLoading || !_hasMore) return;
     _isLoading = true;
     _errorMessage = null;
     notifyListeners();
     try {
-      final result = await FilmService().searchByType(
-        _selectedType!,
+      final result = await FilmService().searchByTypeAndYear(
+        year: _selectedYear!,
+        type: _selectedType!,
         limit: limit,
         lastDocument: _lastDocument,
       );
@@ -177,4 +183,9 @@ class SearchViewModel extends ChangeNotifier {
     }
   }
 
+  Future<void> reset() async{
+    films.clear();
+    _selectedType = null;
+    _selectedYear = null;
+  }
 }

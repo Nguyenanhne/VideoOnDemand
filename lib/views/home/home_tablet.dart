@@ -1,5 +1,5 @@
 import 'package:du_an_cntt/utils.dart';
-import 'package:du_an_cntt/view_models/up_coming_film_card_vm.dart';
+import 'package:du_an_cntt/view_models/showing_film_card_vm.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -33,10 +33,9 @@ class _HomeScreenTabletState extends State<HomeScreenTablet> {
     super.initState();
     homeScrollController = ScrollController();
 
-    final upComingFilmsViewModel = Provider.of<UpComingFilmsCardViewModel>(context, listen: false);
-    final searchViewModel = Provider.of<SearchViewModel>(context, listen: false);
+    final upComingFilmsViewModel = Provider.of<ShowingFilmsCardViewModel>(context, listen: false);
 
-    fetchRandomType = searchViewModel.searchFilmsByType("Hài hước");
+    final searchViewModel = Provider.of<SearchViewModel>(context, listen: false);
 
     if (upComingFilmsViewModel.films.isEmpty) {
       fetchUpComing = upComingFilmsViewModel.fetchFilms();
@@ -48,7 +47,7 @@ class _HomeScreenTabletState extends State<HomeScreenTablet> {
   }
 
   void upComingFilmsOnScroll() {
-    final upComingFilmsViewModel = Provider.of<UpComingFilmsCardViewModel>(context, listen: false);
+    final upComingFilmsViewModel = Provider.of<ShowingFilmsCardViewModel>(context, listen: false);
     if (upComingFilmsController.position.pixels == upComingFilmsController.position.maxScrollExtent && !upComingFilmsViewModel.isLoading && upComingFilmsViewModel.hasMore) {
       upComingFilmsViewModel.fetchMoreFilms();
     }
@@ -56,7 +55,7 @@ class _HomeScreenTabletState extends State<HomeScreenTablet> {
   void randomFilmOnScroll(){
     final searchViewModel = Provider.of<SearchViewModel>(context, listen: false);
     if (randomFilmController.position.pixels == randomFilmController.position.maxScrollExtent && !searchViewModel.isLoading && searchViewModel.hasMore) {
-      searchViewModel.searchMoreFilmsByType();
+      searchViewModel.searchMoreFilmsByTypeAndYear();
     }
   }
 
@@ -188,7 +187,7 @@ class _HomeScreenTabletState extends State<HomeScreenTablet> {
             child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 50.w, vertical: 15.h),
                 height: heightScreen*0.7,
-                child: MainPoster()
+                child: MainPoster(fontSize: 16, iconSize: 30)
             ),
           ),
           SliverToBoxAdapter(
@@ -213,7 +212,7 @@ class _HomeScreenTabletState extends State<HomeScreenTablet> {
                   );
                 }
                 else{
-                  return  Consumer<UpComingFilmsCardViewModel>(
+                  return  Consumer<ShowingFilmsCardViewModel>(
                     builder: (context, upComingFilmViewModel, child){
                       final movies = upComingFilmViewModel.films;
                       if (movies.isEmpty) {

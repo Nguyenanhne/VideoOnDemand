@@ -9,7 +9,6 @@ class TypeService {
       List<String> types = querySnapshot.docs.map((doc) {
         return doc['typeName'] as String;
       }).toList();
-
       return types;
     } catch (e) {
       print('Error fetching types: $e');

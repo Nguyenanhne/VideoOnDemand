@@ -17,14 +17,14 @@ class FilmCardVertical extends StatelessWidget {
   final double fontSize;
   FilmCardVertical({super.key, required this.url, required this.name, required this.types, required this.age, required this.ontap, required this.des, required this.width, required this.height, required this.fontSize});
 
-
-
   @override
   Widget build(BuildContext context) {
+
     final viewModel = Provider.of<HomeViewModel>(context, listen: false);
     final heightScreen = MediaQuery.of(context).size.height
         - AppBar().preferredSize.height
         - MediaQuery.of(context).padding.top;
+
     final style = TextStyle(
         fontFamily: GoogleFonts.roboto().fontFamily,
         color: Colors.grey,
@@ -36,16 +36,15 @@ class FilmCardVertical extends StatelessWidget {
       child: InkWell(
         onTap: ontap,
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          // crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                // Thumbnail
                 SizedBox(
-                  width: 150,
-                  height: 200,
+                  width: width,
+                  height: height,
                   child: CachedNetworkImage(
                     imageUrl: url,
                     placeholder: (context, url) => Center(
@@ -61,17 +60,17 @@ class FilmCardVertical extends StatelessWidget {
                     width: double.infinity,
                   ),
                 ),
-                // Title and Subtitle
+
                 Expanded(
                   child: Padding(
-                    padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 10),
+                    padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Text(
                           name,
-                          style: style.copyWith(color: Colors.white, fontWeight: FontWeight.bold),
+                          style: style.copyWith(color: Colors.white, fontWeight: FontWeight.bold, fontSize: fontSize + 2),
                         ),
                         SizedBox(height: 5),
                         Text(

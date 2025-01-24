@@ -69,14 +69,11 @@ class FilmModel {
   final String name;
   final String note;
   final String year;
-  final int likes;
-  final int dislikes;
+  final int viewTotal;
   final List<String> type;
   String url = "";
 
   FilmModel({
-    required this.likes,
-    required this.dislikes,
     required this.type,
     required this.id,
     required this.actors,
@@ -86,22 +83,22 @@ class FilmModel {
     required this.name,
     required this.note,
     required this.year,
+    required this.viewTotal
   });
 
   // Convert FilmModel to Map
   Map<String, dynamic> toMap() {
     return {
       'id': id,
-      'actors': actors.join(", "), // Ensure actors list is correctly converted
+      'actors': actors.join(", "),
       'age': age,
       'description': description,
       'director': director,
       'name': name,
       'note': note,
       'year': year,
-      'likes': likes,
-      'dislikes': dislikes,
-      'type': type, // Always ensure 'type' is a list, even if empty
+      'viewTotal': viewTotal,
+      'type': type
     };
   }
 
@@ -115,8 +112,7 @@ class FilmModel {
       director: map['director'] ?? '',
       name: map['name'] ?? '',
       note: map['note'] ?? '',
-      likes: map['likes'] ?? 0,
-      dislikes: map['dislikes'] ?? 0,
+      viewTotal: map['viewTotal'] ?? 0,
       year: map['year']?.toString() ?? '',
       type: map['type'] != null ? List<String>.from(map['type']) : [],
     );

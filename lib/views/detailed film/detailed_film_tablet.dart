@@ -358,7 +358,7 @@ class _DetailedMovieScreenTablet extends State<DetailedMovieScreenTablet> {
                                 textColor: Colors.black,
                                 iconColor: Colors.black,
                                 onPressed: (){
-                                  viewModel.playVideoOntap(context);
+                                  viewModel.playVideoOntap(context, filmID);
                                 },
                               ),
                             ),

@@ -1,12 +1,9 @@
 import 'package:du_an_cntt/helper/navigator.dart';
 import 'package:du_an_cntt/models/film_rating.dart';
 import 'package:du_an_cntt/services/MyListService.dart';
-import 'package:du_an_cntt/video.dart';
 import 'package:du_an_cntt/views/comment/comment_screen.dart';
-import 'package:du_an_cntt/views/home/home_screen.dart';
-import 'package:du_an_cntt/views/video.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../models/film_model.dart';
 import '../resume_dialog.dart';
 import '../services/FilmService.dart';
@@ -14,7 +11,6 @@ import '../services/RatingService.dart';
 import '../services/firebase_authentication.dart';
 
 class DetailedFilmViewModel extends ChangeNotifier {
-
   final myListService = MyListService();
   final ratingService = RatingService();
   final filmService = FilmService();
@@ -44,8 +40,8 @@ class DetailedFilmViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void playVideoOntap(BuildContext context){
-    NavigatorHelper.replaceWith(context, VideoPlayer());
+  void playVideoOntap(BuildContext context, String filmID){
+    NavigatorHelper.navigateTo(context, ResumeDialogPage(filmID:  filmID,));
 
   }
   void ratingOntap(BuildContext context, String filmID ){
@@ -53,13 +49,18 @@ class DetailedFilmViewModel extends ChangeNotifier {
   }
 
   Future<void> toggleHasInMyList(String filmID) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      print('User is not logged in');
+      return;
+    }
+    String userID = user.uid;
     _hasInMyList = !_hasInMyList;
 
     if (_hasInMyList) {
-      await myListService.addFilmToMyList(prefs.getString("userId").toString(), filmID);
+      await myListService.addFilmToMyList(userID, filmID);
     } else {
-      await myListService.removeFilmFromMyList(prefs.getString("userId").toString(), filmID);
+      await myListService.removeFilmFromMyList(userID, filmID);
     }
     notifyListeners();
   }
@@ -120,12 +121,15 @@ class DetailedFilmViewModel extends ChangeNotifier {
   }
 
   Future<FilmModel?> getFilmDetails(String filmID) async {
-    FilmModel? film = await FilmService().fetchFilmById(filmID);
+    FilmModel? film = await FilmService().fetchFilmByID(filmID);
     if (film != null) {
         return film;
     }
     print('Film not found!');
     return null;
+  }
+  Future<void> updateViewTotal(String filmID) async{
+    await filmService.updateTotalView(filmID);
   }
 
 }

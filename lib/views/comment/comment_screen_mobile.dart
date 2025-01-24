@@ -1,15 +1,12 @@
-import 'package:custom_rating_bar/custom_rating_bar.dart';
-import 'package:du_an_cntt/view_models/comment_vm.dart';
+import 'package:du_an_cntt/view_models/rating_vm.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-
 import '../../helper/navigator.dart';
 import '../../utils.dart';
-import '../../widgets/comment and rating/rating_progress_indicator.dart';
 
 class CommentScreenMobile extends StatefulWidget {
   CommentScreenMobile({super.key, required this.filmID});
@@ -28,25 +25,20 @@ class _CommentScreenMobileState extends State<CommentScreenMobile> {
   late Future<List<dynamic>> combinedFuture;
   late Future<void> loadLikes;
   late Future<void> loadDisLikes;
+  late Future<void> loadTotalView;
 
   @override
   void initState() {
     super.initState();
     filmID = widget.filmID;
-    final viewModel = Provider.of<CommentViewModel>(context, listen: false);
+    final viewModel = Provider.of<RatingViewModel>(context, listen: false);
     loadLikes = viewModel.fetchTotalLikesByFilmID(filmID);
     loadDisLikes = viewModel.fetchTotalDislikesByFilmID(filmID);
-    // combinedFuture = Future.wait([
-    //   viewModel.fetchTotalDislikesByFilmID(filmID),
-    //   viewModel.fetchTotalLikesByFilmID(filmID)
-    // ]);
+    loadTotalView = viewModel.fetchTotalViewByFilmID(filmID);
   }
   @override
   Widget build(BuildContext context) {
-    final heightScreen = MediaQuery.of(context).size.height
-        - AppBar().preferredSize.height
-        - MediaQuery.of(context).padding.top;
-    final widthScreen = MediaQuery.of(context).size.width;
+
     List comment =[
       {"email": "anhlop755@gmai.com", "comment":"Phim hay qua a oi", "rate": 1},
       {"email": "anhlop755@gmai.com", "comment":"Phim hay qua a oi", "rate": 3},
@@ -80,16 +72,51 @@ class _CommentScreenMobileState extends State<CommentScreenMobile> {
         ),
       ),
       body: Padding(
-        padding: EdgeInsets.symmetric(vertical: 15.h, horizontal: 15.w),
+        padding: EdgeInsets.symmetric(vertical: 15, horizontal: 15),
         child: Column(
           children: [
             Row(
               children: [
+                // Expanded(
+                //   child: ListTile(
+                //     contentPadding: EdgeInsets.zero,
+                //     leading: Icon(Icons.play_circle, color: Colors.blue, size: sizeIcon),
+                //     title: Text("500"),
+                //   ),
+                // ),
                 Expanded(
-                  child: ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    leading: Icon(Icons.play_circle, color: Colors.blue, size: sizeIcon),
-                    title: Text("500"),
+                  child: FutureBuilder<void>(
+                      future: loadTotalView,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return ListTile(
+                            contentPadding: EdgeInsets.zero,
+                            leading: Icon(Icons.play_circle, size: sizeIcon),
+                            title: CupertinoActivityIndicator(),
+                          );
+                        } else if (snapshot.hasError) {
+                          return ListTile(
+                            contentPadding: EdgeInsets.zero,
+                            leading: Icon(Icons.play_circle, size: sizeIcon),
+                            title: Text("error"),
+                          );
+                        } else {
+                          return Consumer<RatingViewModel>(
+                            builder: (context, viewModel, child){
+                              return ListTile(
+                                contentPadding: EdgeInsets.zero,
+                                leading: Icon(Icons.play_circle, size: sizeIcon),
+                                title: Text("${viewModel.viewTotal}"),
+                              );
+                            },
+                          );
+                        }
+                        return ListTile(
+                          contentPadding: EdgeInsets.zero,
+                          leading: Icon(Icons.thumb_up, color: Colors.grey,),
+                          title: Text("500"),
+                        );
+                      }
                   ),
                 ),
                 Expanded(
@@ -109,7 +136,7 @@ class _CommentScreenMobileState extends State<CommentScreenMobile> {
                           title: Text("error"),
                         );
                       } else {
-                        return Consumer<CommentViewModel>(
+                        return Consumer<RatingViewModel>(
                           builder: (context, viewModel, child){
                             return ListTile(
                               contentPadding: EdgeInsets.zero,
@@ -144,7 +171,7 @@ class _CommentScreenMobileState extends State<CommentScreenMobile> {
                             title: Text("error"),
                           );
                         } else {
-                          return Consumer<CommentViewModel>(
+                          return Consumer<RatingViewModel>(
                             builder: (context, viewModel, child){
                               return ListTile(
                                 contentPadding: EdgeInsets.zero,

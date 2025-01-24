@@ -1,19 +1,18 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:du_an_cntt/services/MyListService.dart';
+import 'package:du_an_cntt/services/FilmService.dart';
+import 'package:du_an_cntt/services/MyFilmWatchedService.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/foundation.dart';
 
 import '../helper/navigator.dart';
 import '../models/film_model.dart';
-import '../services/FilmService.dart';
 import '../views/detailed film/detailed_film_screen.dart';
 
-class MyListFilmViewModel extends ChangeNotifier{
-  MyListService _myListService = MyListService();
+class FilmWatchedCardViewModel extends ChangeNotifier{
+  MyFilmWatchedService _myFilmWatchedService =  MyFilmWatchedService();
   FilmService _filmService = FilmService();
 
-  ScrollController myListScrollController = ScrollController();
+  ScrollController filmWatchedScrollController = ScrollController();
 
   int _countFetch = 0;
 
@@ -40,32 +39,13 @@ class MyListFilmViewModel extends ChangeNotifier{
   }
 
   void _onScroll() {
-    if (myListScrollController.position.pixels == myListScrollController.position.maxScrollExtent &&
+    if (filmWatchedScrollController.position.pixels == filmWatchedScrollController.position.maxScrollExtent &&
         !isLoading &&
         hasMore) {
-      fetchMoreMyList();
+      fetchMoreFilmWatched();
     }
   }
-
-  // Future<void> fetchMyList() async {
-  //   try {
-  //     SharedPreferences prefs = await SharedPreferences.getInstance();
-  //     final userID = prefs.getString("userId").toString();
-  //
-  //     List<String> filmIDs = await _myListService.fetchMyListFilmIDs(userID);
-  //
-  //     _films = [];
-  //     for (var filmID in filmIDs) {
-  //       FilmModel? film = await _filmService.fetchFilmById(filmID);
-  //       if (film != null) {
-  //         films.add(film);
-  //       }
-  //     }
-  //   } catch (e) {
-  //     _errorMessage = 'Failed to fetch films: $e';
-  //   }
-  // }
-  Future<void> fetchMyList({int limit = 5}) async {
+  Future<void> fetchMyListFilmWatched({int limit = 5}) async {
     _filmIDs = [];
     _films = [];
     _countFetch = 0;
@@ -80,7 +60,7 @@ class MyListFilmViewModel extends ChangeNotifier{
       }
       String userID = user.uid;
       if (_filmIDs.isEmpty) {
-        _filmIDs = await _myListService.fetchMyListFilmIDs(userID);
+        _filmIDs = await _myFilmWatchedService.getListFilmIDbyUserID("userID");
         print(_filmIDs.length);
       }
 
@@ -92,7 +72,7 @@ class MyListFilmViewModel extends ChangeNotifier{
         }
         _countFetch ++;
       }
-      myListScrollController = ScrollController()..addListener(_onScroll);
+      filmWatchedScrollController = ScrollController()..addListener(_onScroll);
       _hasMore = _countFetch < _filmIDs.length;
     } catch (e) {
       _errorMessage = 'Lỗi khi tải phim: $e';
@@ -100,8 +80,7 @@ class MyListFilmViewModel extends ChangeNotifier{
       _isLoading = false;
     }
   }
-
-  Future<void> fetchMoreMyList() async {
+  Future<void> fetchMoreFilmWatched() async {
     print(_filmIDs.length);
     if (_isLoading || !_hasMore) return;
     try {
@@ -127,10 +106,9 @@ class MyListFilmViewModel extends ChangeNotifier{
       notifyListeners();
     }
   }
-
   @override
   void dispose() {
-    myListScrollController.dispose();
+    filmWatchedScrollController.dispose();
     super.dispose();
   }
 }

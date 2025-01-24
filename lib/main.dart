@@ -1,34 +1,41 @@
 
 import 'package:du_an_cntt/helper/navigator.dart';
-import 'package:du_an_cntt/test.dart';
-import 'package:du_an_cntt/video.dart';
-import 'package:du_an_cntt/view_models/comment_vm.dart';
 import 'package:du_an_cntt/view_models/email_verification_link_vm.dart';
 import 'package:du_an_cntt/view_models/film_detail_vm.dart';
+import 'package:du_an_cntt/view_models/film_watched_card_vm.dart';
 import 'package:du_an_cntt/view_models/home_vm.dart';
 import 'package:du_an_cntt/view_models/main_poster_vm.dart';
 import 'package:du_an_cntt/view_models/my_list_film_vm.dart';
+import 'package:du_an_cntt/view_models/rating_vm.dart';
 import 'package:du_an_cntt/view_models/search_vm.dart';
-import 'package:du_an_cntt/view_models/up_coming_film_card_vm.dart';
+import 'package:du_an_cntt/view_models/showing_film_card_vm.dart';
 import 'package:du_an_cntt/view_models/my_netflix_vm.dart';
 import 'package:du_an_cntt/view_models/sign_in_vm.dart';
 import 'package:du_an_cntt/view_models/signup_vm.dart';
 import 'package:du_an_cntt/view_models/video_vm.dart';
+import 'package:du_an_cntt/views/bottom_navbar.dart';
 import 'package:du_an_cntt/views/detailed%20film/detailed_film_screen.dart';
+import 'package:du_an_cntt/views/home/home_screen.dart';
+import 'package:du_an_cntt/views/my_netflix/my_netflix_screen.dart';
+import 'package:du_an_cntt/views/search/search_screen.dart';
 import 'package:du_an_cntt/views/welcome/welcome_screen.dart';
+import 'package:du_an_cntt/widgets/home/main_poster.dart';
+import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
+  );
+  await FirebaseAppCheck.instance.activate(
+    androidProvider: AndroidProvider.debug,
   );
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
   runApp(
@@ -41,11 +48,12 @@ void main() async {
         ChangeNotifierProvider(create: (_) => SignUpViewModel()),
         ChangeNotifierProvider(create: (_) => SignInViewModel()),
         ChangeNotifierProvider(create: (_) => EmailVerificationLinkViewModel()),
-        ChangeNotifierProvider(create: (_) => UpComingFilmsCardViewModel()),
+        ChangeNotifierProvider(create: (_) => ShowingFilmsCardViewModel()),
         ChangeNotifierProvider(create: (_) => MyListFilmViewModel()),
         ChangeNotifierProvider(create: (_) => SearchViewModel()),
-        ChangeNotifierProvider(create: (_) => CommentViewModel()),
-        ChangeNotifierProvider(create: (_) => MainPosterViewModel())
+        ChangeNotifierProvider(create: (_) => RatingViewModel()),
+        ChangeNotifierProvider(create: (_) => MainPosterViewModel()),
+        ChangeNotifierProvider(create: (_) => FilmWatchedCardViewModel())
       ],
       child: MyApp(),
     )
@@ -62,11 +70,15 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-
+  late Future<User?> checkLogin;
   Future<User?> checkLoginState() async {
     return FirebaseAuth.instance.currentUser;
   }
-
+  @override
+  void initState() {
+    checkLogin = checkLoginState();
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
@@ -76,28 +88,20 @@ class _MyAppState extends State<MyApp> {
           theme: ThemeData(
             scaffoldBackgroundColor: Colors.black
           ),
+          // home: HomeScreen(),
           home: FutureBuilder(
-            future: checkLoginState(),
+            future: checkLogin,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return Center(child: CircularProgressIndicator());
               } else if (snapshot.hasData && snapshot.data != null) {
-                return Test();
-                return DetailedFilmScreen(filmID: "10iPJ4Jh5omsZofD2kXW");
+                return HomeScreen();
                 // return CommentScreen(filmID: "10iPJ4Jh5omsZofD2kXW");
               } else {
                 return WelcomeScreen();
               }
             },
-          ),          // initialRoute: "/",
-          // routes: {
-          //   "/SignInScreen": (context) => SignInScreen(),
-          //   "/HomeScreen": (context) => HomeScreenMobile(),
-          //   "/SignUpScreen": (context) => SignUpScreenMobile(),
-          //   "/EmailVerificationLinkScreen": (context) => EmailVerificationLinkMobile(),
-          //   "/ForgotPasswordScreen": (context) => ForgotPasswordMobile(),
-          //   "/SplashScreen": (context) => SplashMobileScreen(),
-          // }
+          ),
         );
       },
     );

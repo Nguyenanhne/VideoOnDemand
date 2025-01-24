@@ -10,6 +10,7 @@ import 'package:tap_debouncer/tap_debouncer.dart';
 
 import '../../services/firebase_authentication.dart';
 import '../../utils.dart';
+import '../../view_models/film_watched_card_vm.dart';
 import '../../view_models/my_list_film_vm.dart';
 import '../../widgets/film_card.dart';
 class MyNetflixScreenMobile extends StatefulWidget {
@@ -23,32 +24,36 @@ class _MyNetflixScreenMobileState extends State<MyNetflixScreenMobile> {
   final contentStyle = TextStyle(
     fontFamily: GoogleFonts.roboto().fontFamily,
     fontSize: 14.sp,
+    color: Colors.white
   );
-  late ScrollController myListFilmController;
+  final titleStyle = TextStyle(
+    fontSize: 18.sp,
+    fontWeight: FontWeight.bold,
+    color: Colors.white,
+  );
+
+  final menuItemStyle = TextStyle(
+    fontSize: 16.sp,
+    fontWeight: FontWeight.bold,
+    color: Colors.white,
+  );
   late Future<void> fetchMyList;
-  late List<String> filmIds;
+  late Future<void> fetchFilmWatched;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     final myListFilmsViewModel = Provider.of<MyListFilmViewModel>(context, listen: false);
+    final myFilmWatched = Provider.of<FilmWatchedCardViewModel>(context, listen: false);
 
     fetchMyList = myListFilmsViewModel.fetchMyList();
-
-    myListFilmController = ScrollController()..addListener(myListFilmsOnScroll);
-  }
-  void myListFilmsOnScroll() {
-    final myListFilmsViewModel = Provider.of<MyListFilmViewModel>(context, listen: false);
-    if (myListFilmController.position.pixels == myListFilmController.position.maxScrollExtent && !myListFilmsViewModel.isLoading && myListFilmsViewModel.hasMore) {
-      myListFilmsViewModel.fetchMoreMyList();
-    }
+    fetchFilmWatched = myFilmWatched.fetchMyListFilmWatched();
   }
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
-    myListFilmController.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     final heightScreen = MediaQuery.of(context).size.height
@@ -226,11 +231,7 @@ class _MyNetflixScreenMobileState extends State<MyNetflixScreenMobile> {
               padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 20.w),
               child: Text(
                 "Danh sách phim xem sau",
-                style: TextStyle(
-                  fontSize: 18.sp,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
+                style: titleStyle,
               ),
             ),
           ),
@@ -297,7 +298,7 @@ class _MyNetflixScreenMobileState extends State<MyNetflixScreenMobile> {
                   );
                 } else if (snapshot.hasError) {
                   return SliverToBoxAdapter(
-                    child: Center(child: Text('Error: ${snapshot.error}')),
+                    child: Center(child: Text('Error: ${snapshot.error}', style: contentStyle,)),
                   );
                 }
                 else{
@@ -313,7 +314,7 @@ class _MyNetflixScreenMobileState extends State<MyNetflixScreenMobile> {
                         child: SizedBox(
                           height: heightScreen*0.23,
                           child: ListView.separated(
-                            controller: myListFilmController,
+                            controller: myListFilmsViewModel.myListScrollController,
                             scrollDirection: Axis.horizontal,
                             separatorBuilder: (context, index) => SizedBox(width: 10.w),
                             itemCount: films.length + (myListFilmsViewModel.isLoading ? 1 : 0),
@@ -348,15 +349,65 @@ class _MyNetflixScreenMobileState extends State<MyNetflixScreenMobile> {
               padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 20.w),
               child: Text(
                 "Tiếp tục xem",
-                style: TextStyle(
-                  fontSize: 18.sp,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
+                style: titleStyle,
               ),
             ),
           ),
-
+          FutureBuilder(
+              future: fetchFilmWatched,
+              builder: (context, snapshot){
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return SliverToBoxAdapter(
+                    child: Center(child: CircularProgressIndicator()),
+                  );
+                } else if (snapshot.hasError) {
+                  return SliverToBoxAdapter(
+                    child: Center(child: Text('Error: ${snapshot.error}', style: contentStyle,)),
+                  );
+                }
+                else{
+                  return  Consumer<FilmWatchedCardViewModel>(
+                    builder: (context, filmWatchedViewModel, child){
+                      final films = filmWatchedViewModel.films;
+                      if (films.isEmpty) {
+                        return SliverToBoxAdapter(
+                          child: Center(child: Text("Bạn không có danh sách tiếp tục xem nào", style: contentStyle)),
+                        );
+                      }
+                      return SliverToBoxAdapter(
+                        child: SizedBox(
+                          height: heightScreen*0.23,
+                          child: ListView.separated(
+                            controller: filmWatchedViewModel.filmWatchedScrollController,
+                            scrollDirection: Axis.horizontal,
+                            separatorBuilder: (context, index) => SizedBox(width: 10),
+                            itemCount: films.length + (filmWatchedViewModel.isLoading ? 1 : 0),
+                            itemBuilder: (context, index) {
+                              if (index == films.length) {
+                                return ClipRRect(
+                                  borderRadius: BorderRadius.circular(5),
+                                  child: Container(
+                                    width: widthScreen*0.3,
+                                    color: Colors.grey[800],
+                                  ),
+                                );
+                              }
+                              final movie = films[index];
+                              return FilmCard(
+                                width: 0.3,
+                                movie: movie,
+                                onTap: () {
+                                  filmWatchedViewModel.onTap(context, movie.id);
+                                },
+                              );
+                            },                  ),
+                        ),
+                      );
+                    },
+                  );
+                }
+              }
+          ),
         ],
       ),
     );

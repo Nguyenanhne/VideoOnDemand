@@ -1,4 +1,5 @@
 import 'package:du_an_cntt/view_models/home_vm.dart';
+import 'package:du_an_cntt/view_models/main_poster_vm.dart';
 import 'package:du_an_cntt/view_models/my_list_film_vm.dart';
 import 'package:du_an_cntt/view_models/search_vm.dart';
 import 'package:du_an_cntt/widgets/home/main_poster.dart';
@@ -12,7 +13,7 @@ import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
 import '../../services/FilmService.dart';
-import '../../view_models/up_coming_film_card_vm.dart';
+import '../../view_models/showing_film_card_vm.dart';
 import '../../widgets/film_card.dart';
 
 class HomeScreenMobile extends StatefulWidget {
@@ -24,52 +25,50 @@ class HomeScreenMobile extends StatefulWidget {
 
 class _HomeScreenMobileState extends State<HomeScreenMobile> {
   late ScrollController homeScrollController;
-  late ScrollController upComingFilmsController;
-  late ScrollController randomFilmController;
 
-  late Future<void> fetchUpComing;
-  late Future<void> fetchRandomType;
+  late Future<void> fetchShowing;
+  late Future<void> getAllTypes;
+  late Future<void> fetchFilmsByType;
+  late Future<void> fetchMainPoster;
+
+
+  final contentStyle = TextStyle(
+      fontFamily: GoogleFonts.roboto().fontFamily,
+      fontSize: 14.sp,
+      color: Colors.white
+  );
+  final titleStyle = TextStyle(
+    fontSize: 18.sp,
+    fontWeight: FontWeight.bold,
+    color: Colors.white,
+  );
 
   @override
   void initState() {
     super.initState();
 
-    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitDown, DeviceOrientation.portraitUp],);
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
 
-    homeScrollController = ScrollController();
+    final showingFilmsViewModel = Provider.of<ShowingFilmsCardViewModel>(context, listen: false);
 
-    final upComingFilmsViewModel = Provider.of<UpComingFilmsCardViewModel>(context, listen: false);
-    final searchViewModel = Provider.of<SearchViewModel>(context, listen: false);
+    final mainPosterViewModel = Provider.of<MainPosterViewModel>(context, listen: false);
 
-    fetchRandomType = searchViewModel.searchFilmsByType("Hài hước");
+    final homeViewModel = Provider.of<HomeViewModel>(context, listen: false);
 
-    if (upComingFilmsViewModel.films.isEmpty) {
-      fetchUpComing = upComingFilmsViewModel.fetchFilms();
-    } else {
-      fetchUpComing = Future.value();
-    }
-    upComingFilmsController = ScrollController()..addListener(upComingFilmsOnScroll);
-    randomFilmController = ScrollController()..addListener(randomFilmOnScroll);
-  }
-  
-  void upComingFilmsOnScroll() {
-    final upComingFilmsViewModel = Provider.of<UpComingFilmsCardViewModel>(context, listen: false);
-    if (upComingFilmsController.position.pixels == upComingFilmsController.position.maxScrollExtent && !upComingFilmsViewModel.isLoading && upComingFilmsViewModel.hasMore) {
-      upComingFilmsViewModel.fetchMoreFilms();
-    }
-  }
-  void randomFilmOnScroll(){
-    final searchViewModel = Provider.of<SearchViewModel>(context, listen: false);
-    if (randomFilmController.position.pixels == randomFilmController.position.maxScrollExtent && !searchViewModel.isLoading && searchViewModel.hasMore) {
-      searchViewModel.searchMoreFilmsByType();
-    }
+    fetchShowing = showingFilmsViewModel.fetchFilms();
+
+    fetchMainPoster = mainPosterViewModel.fetchRandomFilm();
+    getAllTypes = homeViewModel.getAllTypes();
+
+    getAllTypes.then((_){
+      fetchFilmsByType = homeViewModel.searchFilmsByAllTypes();
+    });
+
   }
 
   @override
   void dispose() {
     homeScrollController.dispose();
-    upComingFilmsController.dispose();
-    randomFilmController.dispose();
     super.dispose();
   }
 
@@ -81,31 +80,22 @@ class _HomeScreenMobileState extends State<HomeScreenMobile> {
 
     final widthScreen = MediaQuery.of(context).size.width;
 
-    final style = TextStyle(
-      fontFamily: GoogleFonts.roboto().fontFamily,
-      color: Colors.white
-    );
-
     final homeViewModel = Provider.of<HomeViewModel>(context, listen: false);
 
     return Scaffold(
       extendBodyBehindAppBar: true,
       body: CustomScrollView(
-        controller: homeScrollController
-          ..addListener(() {
-            final offset = homeScrollController.offset;
-            homeViewModel.updateAppBarColor(offset);
-          }),
+        controller: homeViewModel.homeScrollController,
         slivers: [
           Consumer<HomeViewModel>(
-            builder: (context, provider, child){
+            builder: (context, homeViewModel, child){
               return SliverAppBar (
                 automaticallyImplyLeading: false,
                 titleSpacing: 0,
                 elevation: 100,
                 floating: false,
                 pinned: true,
-                backgroundColor: provider.appBarColor,
+                backgroundColor: homeViewModel.appBarColor,
                 flexibleSpace: FlexibleSpaceBar(
                   background: Container(
                     color: Colors.transparent,
@@ -154,11 +144,7 @@ class _HomeScreenMobileState extends State<HomeScreenMobile> {
                           ),
                           child: Text(
                             "Phim T.hình",
-                            style: TextStyle(
-                              fontFamily: GoogleFonts.roboto().fontFamily,
-                              color: Colors.white,
-                              fontSize: 13.sp,
-                            ),
+                            style: contentStyle,
                           ),
                         ),
                         Padding(
@@ -171,11 +157,7 @@ class _HomeScreenMobileState extends State<HomeScreenMobile> {
                             ),
                             child: Text(
                               "Phim",
-                              style: TextStyle(
-                                fontFamily: GoogleFonts.roboto().fontFamily,
-                                color: Colors.white,
-                                fontSize: 13.sp,
-                              ),
+                              style: contentStyle,
                             ),
                           ),
                         ),
@@ -187,11 +169,7 @@ class _HomeScreenMobileState extends State<HomeScreenMobile> {
                           ),
                           child: Text(
                             "Thể loại",
-                            style: TextStyle(
-                              fontFamily: GoogleFonts.roboto().fontFamily,
-                              color: Colors.white,
-                              fontSize: 13.sp,
-                            ),
+                            style: contentStyle,
                           ),
                         ),
                       ],
@@ -201,28 +179,23 @@ class _HomeScreenMobileState extends State<HomeScreenMobile> {
               );
             },
           ),
-          SliverToBoxAdapter(
-            child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 15.h),
-                height: heightScreen*0.7,
-                child: MainPoster()
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 10.w),
-              child: Text(
-                "Phim đang chiếu",
-                style: TextStyle(
-                  fontSize: 18.sp,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
+          FutureBuilder(
+            future: fetchMainPoster,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return SliverToBoxAdapter(child: Center(child: CircularProgressIndicator()));
+              }
+              return SliverToBoxAdapter(
+                child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 15.h),
+                    height: heightScreen*0.7,
+                    child: MainPoster(fontSize: 16, iconSize: 30)
                 ),
-              ),
-            ),
+              );
+            }
           ),
           FutureBuilder(
-            future: fetchUpComing,
+            future: fetchShowing,
             builder: (context, snapshot){
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return SliverToBoxAdapter(
@@ -230,46 +203,75 @@ class _HomeScreenMobileState extends State<HomeScreenMobile> {
                 );
               } else if (snapshot.hasError) {
                 return SliverToBoxAdapter(
-                  child: Center(child: Text('Error: ${snapshot.error}')),
+                  child: Center(child: Text('Error: ${snapshot.error}', style: contentStyle)),
                 );
               }
               else{
-                return  Consumer<UpComingFilmsCardViewModel>(
-                  builder: (context, upComingFilmViewModel, child){
-                    final movies = upComingFilmViewModel.films;
+                return  Consumer<ShowingFilmsCardViewModel>(
+                  builder: (context, showingFilmViewModel, child){
+                    final movies = showingFilmViewModel.films;
                     if (movies.isEmpty) {
                       return SliverToBoxAdapter(
-                        child: Center(child: Text('Không có phim')),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 10.w),
+                              child: Text(
+                                "Phim đang chiếu",
+                                style: titleStyle,
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 10.w),
+                              child: Text('Hiện tại không có phim nào đang chiếu',
+                                style: contentStyle,
+                              ),
+                            ),
+                          ],
+                        ),
                       );
                     }
                     return SliverToBoxAdapter(
-                      child: SizedBox(
-                        height: heightScreen*0.23,
-                        child: ListView.separated(
-                          controller: upComingFilmsController,
-                          scrollDirection: Axis.horizontal,
-                          separatorBuilder: (context, index) => SizedBox(width: 10.w),
-                          itemCount: movies.length + (upComingFilmViewModel.isLoading ? 1 : 0),
-                          itemBuilder: (context, index) {
-                            if (index == movies.length) {
-                              return ClipRRect(
-                                borderRadius: BorderRadius.circular(5),
-                                child: Container(
-                                  width: widthScreen*0.3,
-                                  color: Colors.grey[800],
-                                ),
-                              );
-                            }
-                            final movie = movies[index];
-                            return FilmCard(
-                              width: 0.3,
-                              movie: movie,
-                              onTap: () {
-                                upComingFilmViewModel.onTap(context, movie.id);
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 10.w),
+                            child: Text(
+                              "Phim đang chiếu",
+                              style: titleStyle,
+                            ),
+                          ),
+                          SizedBox(
+                            height: heightScreen*0.23,
+                            child: ListView.separated(
+                              controller: showingFilmViewModel.showingFilmsController,
+                              scrollDirection: Axis.horizontal,
+                              separatorBuilder: (context, index) => SizedBox(width: 10.w),
+                              itemCount: movies.length + (showingFilmViewModel.isLoading ? 1 : 0),
+                              itemBuilder: (context, index) {
+                                if (index == movies.length) {
+                                  return ClipRRect(
+                                    borderRadius: BorderRadius.circular(5),
+                                    child: Container(
+                                      width: widthScreen*0.3,
+                                      color: Colors.grey[800],
+                                    ),
+                                  );
+                                }
+                                final movie = movies[index];
+                                return FilmCard(
+                                  width: 0.3,
+                                  movie: movie,
+                                  onTap: () {
+                                    showingFilmViewModel.onTap(context, movie.id);
+                                  },
+                                );
                               },
-                            );
-                          },
-                        ),
+                            ),
+                          ),
+                        ],
                       ),
                     );
                   },
@@ -278,89 +280,84 @@ class _HomeScreenMobileState extends State<HomeScreenMobile> {
             }
           ),
           FutureBuilder(
-              future: fetchRandomType,
-              builder: (context, snapshot){
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return SliverToBoxAdapter(child: CupertinoActivityIndicator());
-                }
+            future: getAllTypes,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
                 return SliverToBoxAdapter(
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 10.w),
-                    child: Text(
-                      "Hài hước",
-                      style: TextStyle(
-                        fontSize: 18.sp,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
+                  child: Center(child: CircularProgressIndicator()),
+                );
+              } else if (snapshot.hasError) {
+                return SliverToBoxAdapter(
+                  child: Center(child: Text('Error: ${snapshot.error}', style: contentStyle)),
                 );
               }
-          ),
-          FutureBuilder(
-              future: fetchRandomType,
-              builder: (context, snapshot){
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return SliverToBoxAdapter(
-                    child: Center(child: CupertinoActivityIndicator()),
-                  );
-                } else if (snapshot.hasError) {
-                  return SliverToBoxAdapter(
-                    child: Center(child: Text('Error: ${snapshot.error}')),
-                  );
-                }
-                else{
-                  return  Consumer<SearchViewModel>(
-                    builder: (context, searchViewModel, child){
-                      final movies = searchViewModel.films;
-                      if (movies.isEmpty) {
-                        return SliverToBoxAdapter(
-                          child: Center(child: Text('Không có phim')),
-                        );
-                      }
-                      return SliverToBoxAdapter(
-                        child: SizedBox(
-                          height: heightScreen*0.23,
-                          child: ListView.separated(
-                            controller: randomFilmController,
-                            scrollDirection: Axis.horizontal,
-                            separatorBuilder: (context, index) => SizedBox(width: 10.w),
-                            itemCount: movies.length + (searchViewModel.isLoading ? 1 : 0),
-                            itemBuilder: (context, index) {
-                              if (index == movies.length) {
-                                return ClipRRect(
-                                  borderRadius: BorderRadius.circular(5),
-                                  child: Container(
-                                    width: widthScreen*0.3,
-                                    color: Colors.grey[800],
-                                  ),
-                                );
-                              }
-                              final movie = movies[index];
-                              return FilmCard(
-                                width: 0.3,
-                                movie: movie,
-                                onTap: () {
-                                  searchViewModel.onTap(context, movie.id);
-                                },
-                              );
-                            },
+              return Consumer<HomeViewModel>(
+                builder: (context, homeViewModel, child) {
+                  return SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      childCount: homeViewModel.types.length,
+                          (context, index) {
+                        final typeName = homeViewModel.types[index].toString();
+                        return Padding(
+                          padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 10.w),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                typeName,
+                                style: TextStyle(
+                                  fontSize: 18.sp,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              homeViewModel.isLoading[typeName] == true
+                                ? Center(child: CircularProgressIndicator())
+                                  : (homeViewModel.filmsTypes[typeName]?.isEmpty ?? true)
+                                  ? Center(child: Padding(padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 10.w), child: Text("Hiện tại không có phim ${typeName} nào được chiếu!", style: contentStyle),))
+                                  : SizedBox(
+                                height: heightScreen * 0.23,
+                                child: ListView.separated(
+                                  controller: homeViewModel.scrollControllers[typeName],
+                                  scrollDirection: Axis.horizontal,
+                                  separatorBuilder: (context, index) => SizedBox(width: 10),
+                                  itemCount: (homeViewModel.filmsTypes[typeName]?.length ?? 0) +
+                                      ((homeViewModel.isMoreLoading[typeName] ?? false) ? 1 : 0),
+                                  itemBuilder: (context, index) {
+                                    if ( homeViewModel.filmsTypes[typeName]?.isEmpty ?? true){
+                                      return Text("Hiện tại không có phim ${typeName} nào được chiếu!", style: contentStyle);
+                                    }
+                                    else if (index == homeViewModel.filmsTypes[typeName]!.length) {
+                                      return ClipRRect(
+                                        borderRadius: BorderRadius.circular(5),
+                                        child: Container(
+                                          width: widthScreen * 0.3,
+                                          color: Colors.grey[800],
+                                        ),
+                                      );
+                                    }else{
+                                      final movie = homeViewModel.filmsTypes[typeName]![index];
+                                      return FilmCard(
+                                        width: 0.3,
+                                        movie: movie,
+                                        onTap: () {
+                                          homeViewModel.filmOnTap(context, movie.id);
+                                        },
+                                      );
+                                    }
+                                  },
+                                )
+                              ),
+                            ],
                           ),
-                        ),
-                      );
-                    },
+                        );
+                      },
+                    ),
                   );
-                }
-              }
-          ),
-
-          // SliverToBoxAdapter(
-          //   child: SizedBox(
-          //     height: heightScreen*0.23,
-          //     child: MovieCardWidget(),
-          //   ),
-          // ),
+                },
+              );
+            },
+          )
         ],
       ),
     );

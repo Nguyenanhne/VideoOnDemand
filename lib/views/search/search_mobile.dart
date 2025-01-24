@@ -19,19 +19,23 @@ class SearchScreenMobile extends StatefulWidget {
 class _SearchScreenMobileState extends State<SearchScreenMobile> {
   final TypeService typeService = TypeService();
   late Future<void> fetchTypes;
+  late Future<void> fetchYears;
+
   late ScrollController searchingFilmController;
 
   final contentStyle = TextStyle(
       fontFamily: GoogleFonts.roboto().fontFamily,
-      fontSize: 14.sp,
+      fontSize: 18,
       color: Colors.white
   );
-
+  final imageWidth = 150.0;
+  final imageHeight = 200.0;
   @override
   void initState() {
     final searchViewModel = Provider.of<SearchViewModel>(context, listen: false);
-    searchViewModel.films.clear();
+    searchViewModel.reset();
     fetchTypes = searchViewModel.getAllTypes();
+    fetchYears = searchViewModel.getYears();
     searchingFilmController = ScrollController()..addListener(searchingFilmsOnScroll);
     super.initState();
   }
@@ -39,17 +43,17 @@ class _SearchScreenMobileState extends State<SearchScreenMobile> {
   void searchingFilmsOnScroll() {
     final searchViewModel = Provider.of<SearchViewModel>(context, listen: false);
     if (searchingFilmController.position.pixels == searchingFilmController.position.maxScrollExtent && !searchViewModel.isLoading && searchViewModel.hasMore) {
-      searchViewModel.searchMoreFilmsByType();
+      searchViewModel.searchMoreFilmsByTypeAndYear();
     }
   }
   @override
   Widget build(BuildContext context) {
     final heightBottomSheet = MediaQuery.of(context).size.height - AppBar().preferredSize.height;
-    final widthScreen = MediaQuery.of(context).size.width;
 
     void showTypeBottomSheet(BuildContext context){
       final searchViewModel = Provider.of<SearchViewModel>(context, listen: false);
       final types = searchViewModel.types;
+
       showModalBottomSheet(
         context: context,
         isScrollControlled: true,
@@ -57,7 +61,7 @@ class _SearchScreenMobileState extends State<SearchScreenMobile> {
           return Container(
             height: heightBottomSheet,
             width: double.infinity,
-            padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 15.h),
+            padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
             decoration: BoxDecoration(
               color: Colors.grey[900],
               borderRadius: const BorderRadius.vertical(top: Radius.circular(16.0)),
@@ -69,8 +73,12 @@ class _SearchScreenMobileState extends State<SearchScreenMobile> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      "Thể loại",
-                      style: contentStyle.copyWith(fontSize: 18.sp, fontWeight: FontWeight.bold, color: Colors.white),
+                     "Thể loại",
+                      style: contentStyle.copyWith(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
                     ),
                     IconButton(
                       onPressed: () => Navigator.pop(context),
@@ -91,7 +99,7 @@ class _SearchScreenMobileState extends State<SearchScreenMobile> {
                     itemBuilder: (BuildContext context, int index) => InkWell(
                       onTap: (){
                         final selectedType = types[index];
-                        searchViewModel.searchFilmsByType(selectedType);
+                        searchViewModel.searchFilmsByTypeAndYear(type: selectedType, year: searchViewModel.selectedYear);
                         Navigator.pop(context);
                       },
                       child: Container(
@@ -111,26 +119,84 @@ class _SearchScreenMobileState extends State<SearchScreenMobile> {
         },
       );
     }
+    void showYearBottomSheet(BuildContext context){
+      final searchViewModel = Provider.of<SearchViewModel>(context, listen: false);
+      final years = searchViewModel.years;
 
-    final heightScreen = MediaQuery
-        .of(context)
-        .size
-        .height
-        - AppBar().preferredSize.height
-        - MediaQuery
-            .of(context)
-            .padding
-            .top;
-
+      showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        builder: (BuildContext context) {
+          return Container(
+            height: heightBottomSheet,
+            width: double.infinity,
+            padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+            decoration: BoxDecoration(
+              color: Colors.grey[900],
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(16.0)),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Năm",
+                      style: contentStyle.copyWith(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () => Navigator.pop(context),
+                      icon: const Icon(
+                        Icons.close_outlined,
+                        color: Colors.white,
+                      ) ,
+                    )
+                  ],
+                ),
+                SizedBox(height: 20.h),
+                Expanded(
+                  child: ListView.separated(
+                    separatorBuilder: (BuildContext context, int index) => const SizedBox(
+                      height: 10,
+                    ),
+                    itemCount: years.length,
+                    itemBuilder: (BuildContext context, int index) => InkWell(
+                      onTap: (){
+                        final selectedYear = years[index];
+                        searchViewModel.searchFilmsByTypeAndYear(type: searchViewModel.selectedType, year: selectedYear);
+                        Navigator.pop(context);
+                      },
+                      child: Container(
+                        padding: EdgeInsets.all(10),
+                        child: Text(
+                          years[index],
+                          style: contentStyle.copyWith(fontWeight: FontWeight.normal, color: Colors.white),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      );
+    }
     return Scaffold(
       appBar: AppBar(
         titleSpacing: 10.w,
         backgroundColor: Colors.black,
-        title: Text("Search", style: TextStyle(color: Colors.white)),
+        title: Text("Tìm Kiếm", style: TextStyle(color: Colors.white)),
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(50),
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
+            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
             child: Row(
               children: [
                 Container(
@@ -143,13 +209,40 @@ class _SearchScreenMobileState extends State<SearchScreenMobile> {
                     onTap: (){
                       showTypeBottomSheet(context);
                     },
-                    child: Text(
-                      "Thể loại",
-                      style: TextStyle(
-                        fontFamily: GoogleFonts.roboto().fontFamily,
-                        color: Colors.white,
-                        fontSize: 13.sp,
-                      ),
+                    child: Consumer<SearchViewModel>(
+                      builder: (context, searchViewModel, child) {
+                        return Text(
+                          searchViewModel.selectedType ?? "Thể loại",
+                          style: contentStyle.copyWith(
+                            fontSize: 16,
+                            color: Colors.white,
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+                SizedBox(width: 20),
+                Container(
+                  padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(color: Colors.white),
+                  ),
+                  child: GestureDetector(
+                    onTap: (){
+                      showYearBottomSheet(context);
+                    },
+                    child: Consumer<SearchViewModel>(
+                      builder: (context, searchViewModel, child) {
+                        return Text(
+                          searchViewModel.selectedYear ?? "Năm",
+                          style: contentStyle.copyWith(
+                            fontSize: 16,
+                            color: Colors.white,
+                          ),
+                        );
+                      },
                     ),
                   ),
                 ),
@@ -191,13 +284,14 @@ class _SearchScreenMobileState extends State<SearchScreenMobile> {
             itemCount: films.length + (searchingViewModel.isLoading ? 1 : 0),
             itemBuilder: (context, index) {
               if (index == films.length) {
-                return Container(
-                  margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                return Card(
+                  color: Colors.black,
+                  // margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                   child: Row(
                     children: [
                       Container(
-                        height: 150.w,
-                        width: 100.w,
+                        width: imageWidth,
+                        height: imageHeight,
                         color: Colors.grey[800],
                       ),
                       Expanded(child: Container())
@@ -206,21 +300,22 @@ class _SearchScreenMobileState extends State<SearchScreenMobile> {
                 );
               }
               final film = films[index];
-
-              // return FilmCardVertical(
-              //   width: widthScreen*0.3,
-              //   url: film.url,
-              //   age: film.age,
-              //   types: film.type.join(", "),
-              //   name: film.name,
-              //   des: film.description,
-              //   ontap: (){
-              //     searchingViewModel.onTap(context, films[index].id);
-              //   },
-              // );
-              // return ListTile(
-              //   title: Text(films[index].name, style: TextStyle(color: Colors.white),),
-              // );
+              return FilmCardVertical(
+                width: imageWidth,
+                height: imageHeight,
+                fontSize: 16,
+                url: film.url,
+                age: film.age,
+                types: film.type.join(", "),
+                name: film.name,
+                des: film.description,
+                ontap: (){
+                  searchingViewModel.onTap(context, films[index].id);
+                },
+              );
+              return ListTile(
+                title: Text(films[index].name, style: TextStyle(color: Colors.white),),
+              );
             },
           );
         },
@@ -237,12 +332,14 @@ class CustomSearchDelegate extends SearchDelegate {
       fontSize: 14.sp,
       color: Colors.white
   );
+  @override
+  String? get searchFieldLabel => "Tìm kiếm";
 
   @override
   List<Widget> buildActions(BuildContext context) {
     return [
       IconButton(
-        icon: const Icon(Icons.clear),
+        icon: const Icon(Icons.clear, color: Colors.black),
         onPressed: () {
           query = '';
         },
@@ -253,7 +350,7 @@ class CustomSearchDelegate extends SearchDelegate {
   @override
   Widget buildLeading(BuildContext context) {
     return IconButton(
-      icon: const Icon(Icons.arrow_back),
+      icon: const Icon(Icons.arrow_back, color: Colors.black,),
       onPressed: () {
         close(context, null);
       },
@@ -263,28 +360,6 @@ class CustomSearchDelegate extends SearchDelegate {
   @override
   Widget buildResults(BuildContext context) {
     return Center();
-    // return FutureBuilder<List<FilmModel>>(
-    //   future: _filmService.searchFilmNamesByName(query),
-    //   builder: (context, snapshot) {
-    //     if (snapshot.connectionState == ConnectionState.waiting) {
-    //       return const Center(child: CircularProgressIndicator());
-    //     } else if (snapshot.hasError) {
-    //       return Center(child: Text('Lỗi: ${snapshot.error}'));
-    //     } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-    //       return const Center(child: Text('Không có phim phù hợp.'));
-    //     }
-    //
-    //     final films = snapshot.data!;
-    //     return ListView.builder(
-    //       itemCount: films.length,
-    //       itemBuilder: (context, index) {
-    //         return ListTile(
-    //           title: Text(films[index].name, style: contentStyle),
-    //         );
-    //       },
-    //     );
-    //   },
-    // );
   }
 
   @override

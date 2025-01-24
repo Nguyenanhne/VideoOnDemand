@@ -73,8 +73,13 @@ class _DetailedMovieScreenMobileState extends State<DetailedMovieScreenMobile>  
     BetterPlayerConfiguration betterPlayerConfiguration = BetterPlayerConfiguration(
       aspectRatio: 16 / 9,
       fit: BoxFit.contain,
-      autoPlay: true,
+      autoPlay: false,
       looping: true,
+      controlsConfiguration: BetterPlayerControlsConfiguration(
+        enableOverflowMenu: false,
+        enableFullscreen: false,
+        enableProgressBar: false
+      )
     );
     betterPlayerDataSource = BetterPlayerDataSource(
       BetterPlayerDataSourceType.network,
@@ -328,9 +333,10 @@ class _DetailedMovieScreenMobileState extends State<DetailedMovieScreenMobile>  
                                 text: 'Phát',
                                 textColor: Colors.black,
                                 iconColor: Colors.black,
-                                onPressed: (){
+                                onPressed: () async {
                                   // betterPlayerController.pause();
-                                  viewModel.playVideoOntap(context);
+                                  await viewModel.updateViewTotal(filmID);
+                                  viewModel.playVideoOntap(context, filmID);
                                 },
                               ),
                             ),

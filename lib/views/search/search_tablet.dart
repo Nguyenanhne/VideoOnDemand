@@ -38,7 +38,7 @@ class _SearchScreenTabletState extends State<SearchScreenTablet> {
   void searchingFilmsOnScroll() {
     final searchViewModel = Provider.of<SearchViewModel>(context, listen: false);
     if (searchingFilmController.position.pixels == searchingFilmController.position.maxScrollExtent && !searchViewModel.isLoading && searchViewModel.hasMore) {
-      searchViewModel.searchMoreFilmsByType();
+      searchViewModel.searchMoreFilmsByTypeAndYear();
     }
   }
   @override
@@ -90,7 +90,7 @@ class _SearchScreenTabletState extends State<SearchScreenTablet> {
                     itemBuilder: (BuildContext context, int index) => InkWell(
                       onTap: (){
                         final selectedType = types[index];
-                        searchViewModel.searchFilmsByType(selectedType);
+                        // searchViewModel.searchFilmsByTypeAndYear(selectedType);
                         Navigator.pop(context);
                       },
                       child: Container(

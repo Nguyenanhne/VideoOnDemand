@@ -97,7 +97,6 @@ class MyListService {
   }
 
   Future<List<String>> fetchMyListFilmIDs(String userID) async {
-    print("1");
     try {
       QuerySnapshot snapshot = await firestore
           .collection('My List')

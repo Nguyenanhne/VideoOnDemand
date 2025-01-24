@@ -1,4 +1,3 @@
-import 'package:custom_rating_bar/custom_rating_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -8,8 +7,7 @@ import 'package:provider/provider.dart';
 
 import '../../helper/navigator.dart';
 import '../../utils.dart';
-import '../../view_models/comment_vm.dart';
-import '../../widgets/comment and rating/rating_progress_indicator.dart';
+import '../../view_models/rating_vm.dart';
 
 class CommentScreenTablet extends StatefulWidget {
   const CommentScreenTablet({super.key, required this.filmID});
@@ -34,7 +32,7 @@ class _CommentScreenTabletState extends State<CommentScreenTablet> {
   void initState() {
     super.initState();
     filmID = widget.filmID;
-    final viewModel = Provider.of<CommentViewModel>(context, listen: false);
+    final viewModel = Provider.of<RatingViewModel>(context, listen: false);
     loadLikes = viewModel.fetchTotalLikesByFilmID(filmID);
     loadDisLikes = viewModel.fetchTotalDislikesByFilmID(filmID);
   }
@@ -107,7 +105,7 @@ class _CommentScreenTabletState extends State<CommentScreenTablet> {
                             title: Text("error", style: contentStyle),
                           );
                         } else {
-                          return Consumer<CommentViewModel>(
+                          return Consumer<RatingViewModel>(
                             builder: (context, viewModel, child){
                               return ListTile(
                                 contentPadding: EdgeInsets.zero,
@@ -137,7 +135,7 @@ class _CommentScreenTabletState extends State<CommentScreenTablet> {
                             title: Text("error", style: contentStyle),
                           );
                         } else {
-                          return Consumer<CommentViewModel>(
+                          return Consumer<RatingViewModel>(
                             builder: (context, viewModel, child){
                               return ListTile(
                                 contentPadding: EdgeInsets.zero,

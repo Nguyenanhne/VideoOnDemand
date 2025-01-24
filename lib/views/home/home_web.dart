@@ -1,5 +1,4 @@
 import 'package:du_an_cntt/utils.dart';
-import 'package:du_an_cntt/view_models/up_coming_film_card_vm.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -12,6 +11,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 
 import '../../view_models/search_vm.dart';
+import '../../view_models/showing_film_card_vm.dart';
 import '../../widgets/film_card.dart';
 class HomeScreenWeb extends StatefulWidget {
   const HomeScreenWeb({super.key});
@@ -33,10 +33,10 @@ class _HomeScreenWebState extends State<HomeScreenWeb> {
     super.initState();
     homeScrollController = ScrollController();
 
-    final upComingFilmsViewModel = Provider.of<UpComingFilmsCardViewModel>(context, listen: false);
+    final upComingFilmsViewModel = Provider.of<ShowingFilmsCardViewModel>(context, listen: false);
     final searchViewModel = Provider.of<SearchViewModel>(context, listen: false);
 
-    fetchRandomType = searchViewModel.searchFilmsByType("Hài hước");
+    // fetchRandomType = searchViewModel.searchFilmsByTypeAndYear("Hài hước");
 
     if (upComingFilmsViewModel.films.isEmpty) {
       fetchUpComing = upComingFilmsViewModel.fetchFilms();
@@ -48,7 +48,7 @@ class _HomeScreenWebState extends State<HomeScreenWeb> {
   }
 
   void upComingFilmsOnScroll() {
-    final upComingFilmsViewModel = Provider.of<UpComingFilmsCardViewModel>(context, listen: false);
+    final upComingFilmsViewModel = Provider.of<ShowingFilmsCardViewModel>(context, listen: false);
     if (upComingFilmsController.position.pixels == upComingFilmsController.position.maxScrollExtent && !upComingFilmsViewModel.isLoading && upComingFilmsViewModel.hasMore) {
       upComingFilmsViewModel.fetchMoreFilms();
     }
@@ -56,7 +56,7 @@ class _HomeScreenWebState extends State<HomeScreenWeb> {
   void randomFilmOnScroll(){
     final searchViewModel = Provider.of<SearchViewModel>(context, listen: false);
     if (randomFilmController.position.pixels == randomFilmController.position.maxScrollExtent && !searchViewModel.isLoading && searchViewModel.hasMore) {
-      searchViewModel.searchMoreFilmsByType();
+      searchViewModel.searchMoreFilmsByTypeAndYear();
     }
   }
 
@@ -176,7 +176,7 @@ class _HomeScreenWebState extends State<HomeScreenWeb> {
             flex: 2,
             child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                child: MainPoster()
+                child: MainPoster(fontSize: 16, iconSize: 30)
             ),
           ),
           Expanded(
@@ -210,7 +210,7 @@ class _HomeScreenWebState extends State<HomeScreenWeb> {
                         );
                       }
                       else{
-                        return  Consumer<UpComingFilmsCardViewModel>(
+                        return  Consumer<ShowingFilmsCardViewModel>(
                           builder: (context, upComingFilmViewModel, child){
                             final movies = upComingFilmViewModel.films;
                             if (movies.isEmpty) {

@@ -5,7 +5,9 @@ import 'package:du_an_cntt/views/detailed%20film/detailed_film_screen.dart';
 import 'package:flutter/cupertino.dart';
 import '../models/film_model.dart';
 
-class UpComingFilmsCardViewModel extends ChangeNotifier{
+class ShowingFilmsCardViewModel extends ChangeNotifier{
+
+  ScrollController showingFilmsController = ScrollController();
 
   List<FilmModel> _films = [];
 
@@ -30,7 +32,6 @@ class UpComingFilmsCardViewModel extends ChangeNotifier{
   }
 
   Future<String> getImageUrl(String id) async {
-    // print(id);
     return FilmService().getImageUrl(id);
   }
 
@@ -65,24 +66,41 @@ class UpComingFilmsCardViewModel extends ChangeNotifier{
       notifyListeners();
     }
   }
+
   Future<void> fetchFilms() async {
+    print("fetch film");
     _films = [];
+    // try {
+    //   final result = await FilmService().fetchListFilm(limit: 5, lastDocument: null);
+    //
+    //   final List<FilmModel> films = result['films'] as List<FilmModel>;
+    //
+    //   final DocumentSnapshot? lastDocument = result['lastDocument'] as DocumentSnapshot?;
+    //
+    //   _films.addAll(films);
+    //
+    //   _lastDocument = lastDocument;
+    //
+    //   _hasMore = films.length == 5;
+    //
+    //   showingFilmsController = ScrollController()..addListener(_onScroll);
+    //
+    // } catch (e) {
+    //   _errorMessage = 'Failed to load movies: $e';
+    // }
+  }
 
-    try {
-      final result = await FilmService().fetchListFilm(limit: 5, lastDocument: null);
-
-      final List<FilmModel> films = result['films'] as List<FilmModel>;
-
-      final DocumentSnapshot? lastDocument = result['lastDocument'] as DocumentSnapshot?;
-
-      _films.addAll(films);
-
-      _lastDocument = lastDocument;
-
-      _hasMore = films.length == 5;
-
-    } catch (e) {
-      _errorMessage = 'Failed to load movies: $e';
+  void _onScroll() {
+    if (showingFilmsController.position.pixels == showingFilmsController.position.maxScrollExtent &&
+        !isLoading &&
+        hasMore) {
+      fetchMoreFilms();
     }
   }
+  @override
+  void dispose() {
+    showingFilmsController.dispose();
+    super.dispose();
+  }
+
 }
