@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:du_an_cntt/view_models/my_netflix_vm.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -13,15 +14,14 @@ import '../../view_models/film_watched_card_vm.dart';
 import '../../view_models/my_list_film_vm.dart';
 import '../../widgets/film_card.dart';
 
-class MyNetflixScreenTablet extends StatefulWidget {
-  const MyNetflixScreenTablet({super.key});
+class MyNetflixScreenWeb extends StatefulWidget {
+  const MyNetflixScreenWeb({super.key});
 
   @override
-  State<MyNetflixScreenTablet> createState() => _MyNetflixScreenTabletState();
+  State<MyNetflixScreenWeb> createState() => _MyNetflixScreenWebState();
 }
 
-class _MyNetflixScreenTabletState extends State<MyNetflixScreenTablet> {
-
+class _MyNetflixScreenWebState extends State<MyNetflixScreenWeb> {
   late Future<void> fetchMyList;
   late Future<void> fetchFilmWatched;
   @override
@@ -50,26 +50,26 @@ class _MyNetflixScreenTabletState extends State<MyNetflixScreenTablet> {
 
     final contentStyle = TextStyle(
         fontFamily: GoogleFonts.roboto().fontFamily,
-        fontSize: 12.sp,
+        fontSize: 20,
         color: Colors.white
     );
 
     final leadingTitle = TextStyle(
-        fontSize: 16.sp,
+        fontSize: 35,
         fontFamily: GoogleFonts.roboto().fontFamily,
         color: Colors.white,
         fontWeight: FontWeight.bold
     );
 
     final titleStyle = TextStyle(
-      fontSize: 14.sp,
+      fontSize: 25,
       fontWeight: FontWeight.bold,
       color: Colors.white,
     );
 
     final viewModel = Provider.of<MyNetflixViewModel>(context);
 
-    final heightBottomSheet = (MediaQuery.of(context).size.height - AppBar().preferredSize.height)/2.5;
+    final heightBottomSheet = (MediaQuery.of(context).size.height - AppBar().preferredSize.height)/2;
 
     void showBottomSheet(BuildContext context) {
       showModalBottomSheet(
@@ -96,11 +96,7 @@ class _MyNetflixScreenTabletState extends State<MyNetflixScreenTablet> {
                     ),
                     title: Text(
                       "Quản lý hồ sơ",
-                      style: contentStyle.copyWith(
-                          color: Colors.white,
-                          fontSize: 16.sp,
-                          fontWeight: FontWeight.bold
-                      ),
+                      style: titleStyle,
                     ),
                   ),
                 ),
@@ -112,11 +108,7 @@ class _MyNetflixScreenTabletState extends State<MyNetflixScreenTablet> {
                   ),
                   title: Text(
                     "Quản lý ứng dụng",
-                    style: contentStyle.copyWith(
-                        color: Colors.white,
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.bold
-                    ),
+                    style: titleStyle,
                   ),
                 ),
                 InkWell(
@@ -131,11 +123,7 @@ class _MyNetflixScreenTabletState extends State<MyNetflixScreenTablet> {
                     ),
                     title: Text(
                       "Tài khoản",
-                      style: contentStyle.copyWith(
-                          color: Colors.white,
-                          fontSize: 16.sp,
-                          fontWeight: FontWeight.bold
-                      ),
+                      style: titleStyle,
                     ),
                   ),
                 ),
@@ -147,11 +135,7 @@ class _MyNetflixScreenTabletState extends State<MyNetflixScreenTablet> {
                   ),
                   title: Text(
                     "Trợ giúp",
-                    style: contentStyle.copyWith(
-                        color: Colors.white,
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.bold
-                    ),
+                    style: titleStyle,
                   ),
                 ),
                 TapDebouncer(
@@ -170,11 +154,8 @@ class _MyNetflixScreenTabletState extends State<MyNetflixScreenTablet> {
                           ),
                           title: Text(
                             "Đăng xuất",
-                            style: contentStyle.copyWith(
-                                color: Colors.white,
-                                fontSize: 16.sp,
-                                fontWeight: FontWeight.bold
-                            ),
+                            style: titleStyle,
+
                           ),
                         )
                     );
@@ -316,7 +297,7 @@ class _MyNetflixScreenTabletState extends State<MyNetflixScreenTablet> {
                           child: ListView.separated(
                             controller: myListFilmsViewModel.myListScrollController,
                             scrollDirection: Axis.horizontal,
-                            separatorBuilder: (context, index) => SizedBox(width: 10.w),
+                            separatorBuilder: (context, index) => SizedBox(width: 5.w),
                             itemCount: films.length + (myListFilmsViewModel.isLoading ? 1 : 0),
                             itemBuilder: (context, index) {
                               if (index == films.length) {
@@ -330,7 +311,7 @@ class _MyNetflixScreenTabletState extends State<MyNetflixScreenTablet> {
                               }
                               final movie = films[index];
                               return FilmCard(
-                                width: 0.3,
+                                width: 0.15,
                                 movie: movie,
                                 onTap: () {
                                   myListFilmsViewModel.onTap(context, movie.id);
@@ -376,25 +357,25 @@ class _MyNetflixScreenTabletState extends State<MyNetflixScreenTablet> {
                       }
                       return SliverToBoxAdapter(
                         child: SizedBox(
-                          height: heightScreen*0.23,
+                          height: heightScreen*0.3,
                           child: ListView.separated(
                             controller: filmWatchedViewModel.filmWatchedScrollController,
                             scrollDirection: Axis.horizontal,
-                            separatorBuilder: (context, index) => SizedBox(width: 10),
+                            separatorBuilder: (context, index) => SizedBox(width: 5.w),
                             itemCount: films.length + (filmWatchedViewModel.isLoading ? 1 : 0),
                             itemBuilder: (context, index) {
                               if (index == films.length) {
                                 return ClipRRect(
                                   borderRadius: BorderRadius.circular(5),
                                   child: Container(
-                                    width: widthScreen*0.3,
+                                    width: widthScreen*0.15,
                                     color: Colors.grey[800],
                                   ),
                                 );
                               }
                               final movie = films[index];
                               return FilmCard(
-                                width: 0.3,
+                                width: 0.15,
                                 movie: movie,
                                 onTap: () {
                                   filmWatchedViewModel.onTap(context, movie.id);

@@ -7,4 +7,4 @@ const colorAppbarText = (0xFFFFFFFF);
 const colorAppbarIcon = (0xFFFFFFFF);
 const colorBg = (0xFFFFFFFF);
 
-const iconTabletSize = 40.0;
+const iconTabletSize = 50.0;

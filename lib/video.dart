@@ -1,4 +1,3 @@
-import 'package:better_player_enhanced/better_player.dart';
 import 'package:du_an_cntt/helper/navigator.dart';
 import 'package:du_an_cntt/utils.dart';
 import 'package:du_an_cntt/view_models/video_vm.dart';
@@ -6,7 +5,7 @@ import 'package:du_an_cntt/views/detailed%20film/detailed_film_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:better_player_enhanced/better_player.dart';
 
 class VideoPlayer extends StatefulWidget {
   final String filmID;

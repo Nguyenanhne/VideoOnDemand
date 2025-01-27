@@ -298,12 +298,12 @@ class _HomeScreenMobileState extends State<HomeScreenMobile> {
                       childCount: homeViewModel.types.length,
                           (context, index) {
                         final typeName = homeViewModel.types[index].toString();
-                        return Padding(
-                          padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 10.w),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 10.w),
+                              child: Text(
                                 typeName,
                                 style: TextStyle(
                                   fontSize: 18.sp,
@@ -311,45 +311,42 @@ class _HomeScreenMobileState extends State<HomeScreenMobile> {
                                   color: Colors.white,
                                 ),
                               ),
-                              homeViewModel.isLoading[typeName] == true
-                                ? Center(child: CircularProgressIndicator())
-                                  : (homeViewModel.filmsTypes[typeName]?.isEmpty ?? true)
-                                  ? Center(child: Padding(padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 10.w), child: Text("Hiện tại không có phim ${typeName} nào được chiếu!", style: contentStyle),))
-                                  : SizedBox(
-                                height: heightScreen * 0.23,
-                                child: ListView.separated(
-                                  controller: homeViewModel.scrollControllers[typeName],
-                                  scrollDirection: Axis.horizontal,
-                                  separatorBuilder: (context, index) => SizedBox(width: 10),
-                                  itemCount: (homeViewModel.filmsTypes[typeName]?.length ?? 0) +
-                                      ((homeViewModel.isMoreLoading[typeName] ?? false) ? 1 : 0),
-                                  itemBuilder: (context, index) {
-                                    if ( homeViewModel.filmsTypes[typeName]?.isEmpty ?? true){
-                                      return Text("Hiện tại không có phim ${typeName} nào được chiếu!", style: contentStyle);
-                                    }
-                                    else if (index == homeViewModel.filmsTypes[typeName]!.length) {
-                                      return ClipRRect(
-                                        borderRadius: BorderRadius.circular(5),
-                                        child: Container(
-                                          width: widthScreen * 0.3,
-                                          color: Colors.grey[800],
-                                        ),
-                                      );
-                                    }else{
-                                      final movie = homeViewModel.filmsTypes[typeName]![index];
-                                      return FilmCard(
-                                        width: 0.3,
-                                        movie: movie,
-                                        onTap: () {
-                                          homeViewModel.filmOnTap(context, movie.id);
-                                        },
-                                      );
-                                    }
-                                  },
-                                )
-                              ),
-                            ],
-                          ),
+                            ),
+                            homeViewModel.isLoading[typeName] == true
+                              ? Center(child: CircularProgressIndicator())
+                                : (homeViewModel.filmsTypes[typeName]?.isEmpty ?? true)
+                                ? Padding(padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 10.w), child: Text("Hiện tại không có phim ${typeName} nào được chiếu!", style: contentStyle))
+                                : SizedBox(
+                              height: heightScreen * 0.23,
+                              child: ListView.separated(
+                                controller: homeViewModel.scrollControllers[typeName],
+                                scrollDirection: Axis.horizontal,
+                                separatorBuilder: (context, index) => SizedBox(width: 10),
+                                itemCount: (homeViewModel.filmsTypes[typeName]?.length ?? 0) +
+                                    ((homeViewModel.isMoreLoading[typeName] ?? false) ? 1 : 0),
+                                itemBuilder: (context, index) {
+                                  if (index == homeViewModel.filmsTypes[typeName]!.length) {
+                                    return ClipRRect(
+                                      borderRadius: BorderRadius.circular(5),
+                                      child: Container(
+                                        width: widthScreen * 0.3,
+                                        color: Colors.grey[800],
+                                      ),
+                                    );
+                                  }else{
+                                    final movie = homeViewModel.filmsTypes[typeName]![index];
+                                    return FilmCard(
+                                      width: 0.3,
+                                      movie: movie,
+                                      onTap: () {
+                                        homeViewModel.filmOnTap(context, movie.id);
+                                      },
+                                    );
+                                  }
+                                },
+                              )
+                            ),
+                          ],
                         );
                       },
                     ),

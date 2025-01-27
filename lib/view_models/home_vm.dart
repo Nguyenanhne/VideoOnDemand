@@ -93,50 +93,50 @@ class HomeViewModel extends ChangeNotifier{
 
   Future<void> searchFilmsByAllTypes() async {
     _filmsTypes.clear();
-    // try {
-    //   for (final type in _types) {
-    //     _isLoading[type] = true;
-    //     notifyListeners();
-    //     try {
-    //       final result = await FilmService().searchByTypeAndYear(
-    //         type: type,
-    //         limit: 5,
-    //         lastDocument: null,
-    //         year: null
-    //       );
-    //
-    //       final List<FilmModel> films = result['films'] as List<FilmModel>;
-    //
-    //       final DocumentSnapshot? lastDocument = result['lastDocument'] as DocumentSnapshot?;
-    //
-    //       if (films.isNotEmpty) {
-    //         _filmsTypes[type] = films;
-    //         _lastDocument[type] = lastDocument;
-    //         _hasMore[type] = films.length == 5;
-    //       } else {
-    //         _hasMore[type] = false;
-    //       }
-    //       // scrollControllers[type] = ScrollController()
-    //       //   ..addListener(() {
-    //       //     if (scrollControllers[type]!.offset >=
-    //       //         scrollControllers[type]!.position.maxScrollExtent &&
-    //       //         !_isMoreLoading[type]! &&
-    //       //         _hasMore[type] == true) {
-    //       //       searchMoreFilmsByType(type);
-    //       //     }
-    //       //   });
-    //       _isLoading[type] = false;
-    //       notifyListeners();
-    //     } catch (e) {
-    //       print('Lỗi khi lấy phim cho thể loại $type: $e');
-    //     }finally{
-    //       _isLoading[type] = false;
-    //       notifyListeners();
-    //     }
-    //   }
-    // } catch (e) {
-    //   print('Lỗi khi lấy danh sách thể loại: $e');
-    // }
+    try {
+      for (final type in _types) {
+        _isLoading[type] = true;
+        notifyListeners();
+        try {
+          final result = await FilmService().searchByTypeAndYear(
+            type: type,
+            limit: 5,
+            lastDocument: null,
+            year: null
+          );
+
+          final List<FilmModel> films = result['films'] as List<FilmModel>;
+
+          final DocumentSnapshot? lastDocument = result['lastDocument'] as DocumentSnapshot?;
+
+          if (films.isNotEmpty) {
+            _filmsTypes[type] = films;
+            _lastDocument[type] = lastDocument;
+            _hasMore[type] = films.length == 5;
+          } else {
+            _hasMore[type] = false;
+          }
+          // scrollControllers[type] = ScrollController()
+          //   ..addListener(() {
+          //     if (scrollControllers[type]!.offset >=
+          //         scrollControllers[type]!.position.maxScrollExtent &&
+          //         !_isMoreLoading[type]! &&
+          //         _hasMore[type] == true) {
+          //       searchMoreFilmsByType(type);
+          //     }
+          //   });
+          _isLoading[type] = false;
+          notifyListeners();
+        } catch (e) {
+          print('Lỗi khi lấy phim cho thể loại $type: $e');
+        }finally{
+          _isLoading[type] = false;
+          notifyListeners();
+        }
+      }
+    } catch (e) {
+      print('Lỗi khi lấy danh sách thể loại: $e');
+    }
   }
 
   Future<void> searchMoreFilmsByType(String type, {int limit = 5}) async {

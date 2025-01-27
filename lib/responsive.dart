@@ -6,11 +6,11 @@ class ResponsiveLayout extends StatelessWidget {
   final Widget webLayout;
 
   const ResponsiveLayout({
-    Key? key,
+    super.key,
     required this.mobileLayout,
     required this.tabletLayout,
     required this.webLayout,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

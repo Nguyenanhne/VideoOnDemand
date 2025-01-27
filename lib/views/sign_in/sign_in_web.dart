@@ -2,6 +2,7 @@ import 'package:du_an_cntt/helper/navigator.dart';
 import 'package:du_an_cntt/utils.dart';
 import 'package:du_an_cntt/view_models/sign_in_vm.dart';
 import 'package:du_an_cntt/views/forgot_password/forgot_password_mobile.dart';
+import 'package:du_an_cntt/views/forgot_password/forgot_password_screen.dart';
 import 'package:du_an_cntt/views/sign_up/sign_up_mobile.dart';
 import 'package:du_an_cntt/views/sign_up/sign_up_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -29,11 +30,7 @@ class _SignInScreenWebState extends State<SignInScreenWeb> {
   final TextEditingController passwordController = TextEditingController();
   final SignInViewModel signInViewModel = SignInViewModel();
 
-  var contentStyle = TextStyle(
-      fontSize: 25,
-      color: Colors.grey[400],
-      fontFamily: GoogleFonts.roboto().fontFamily
-  );
+
   var contentPadding = 20.0;
   var horizontalPadding = 40.w;
   @override
@@ -46,6 +43,16 @@ class _SignInScreenWebState extends State<SignInScreenWeb> {
   Widget build(BuildContext context) {
     final viewModel = Provider.of<SignInViewModel>(context);
 
+    var labelStyle = TextStyle(
+        fontSize: 30,
+        color: Colors.grey[400],
+        fontFamily: GoogleFonts.roboto().fontFamily
+    );
+    var contentStyle = TextStyle(
+        fontSize: 20,
+        color: Colors.grey[400],
+        fontFamily: GoogleFonts.roboto().fontFamily
+    );
     return SafeArea(
       child: Scaffold(
           appBar: AppBar(
@@ -59,7 +66,7 @@ class _SignInScreenWebState extends State<SignInScreenWeb> {
               ),
             ),
             leading: IconButton(
-              icon: Icon(Icons.arrow_back, color: Color(colorAppbarIcon),size: iconTabletSize,),
+              icon: Icon(Icons.arrow_back, color: Color(colorAppbarIcon),size: iconTabletSize),
               onPressed: () {
                 NavigatorHelper.goBack(context);
               },
@@ -81,11 +88,12 @@ class _SignInScreenWebState extends State<SignInScreenWeb> {
                           fillColor: Colors.grey[800],
                           filled: true,
                           labelText: "Email hoặc số điện thoại",
-                          labelStyle: TextStyle(color: Colors.grey[400], fontFamily: GoogleFonts.roboto().fontFamily, fontSize: 25),
+                          labelStyle: labelStyle,
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(5),
                           ),
                           floatingLabelBehavior: FloatingLabelBehavior.auto,
+                          contentPadding: EdgeInsets.all(contentPadding)
                         ),
                       ),
                     ),
@@ -99,85 +107,15 @@ class _SignInScreenWebState extends State<SignInScreenWeb> {
                           fillColor: Colors.grey[800],
                           filled: true,
                           labelText: "Mật khẩu",
-                          labelStyle: TextStyle(color: Colors.grey[400], fontFamily: GoogleFonts.roboto().fontFamily, fontSize: 25),
+                          labelStyle: labelStyle,
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(5),
                           ),
                           floatingLabelBehavior: FloatingLabelBehavior.auto,
+                          contentPadding: EdgeInsets.all(contentPadding)
                         ),
                       ),
                     ),
-                    // TapDebouncer(
-                    //   onTap: () async => await () async {
-                    //     showDialog(
-                    //         context: context,
-                    //         barrierDismissible: false,
-                    //         builder: (context){
-                    //           return Center(child: CircularProgressIndicator());
-                    //         }
-                    //     );
-                    //     User? user = await viewModel.Login(context: context, email: emailController.text.trim(), password: passwordController.text.trim());
-                    //     Navigator.pop(context);
-                    //     await Future.delayed(Duration(milliseconds: 500));
-                    //     if (user != null){
-                    //       QuickAlert.show(
-                    //           context: context,
-                    //           type: QuickAlertType.success,
-                    //           text: "Đăng nhập thành công",
-                    //           title: "THÀNH CÔNG",
-                    //           onConfirmBtnTap: () async {
-                    //             if (await Auth().isEmailVerified()){
-                    //               await NavigatorHelper.navigateAndRemoveUntil(context, BottomNavBar());
-                    //             }
-                    //             else{
-                    //               await NavigatorHelper.navigateAndRemoveUntil(context, EmailVerificationLink());
-                    //             }
-                    //           }
-                    //       );
-                    //     }
-                    //     else{
-                    //       QuickAlert.show(
-                    //           context: context,
-                    //           type: QuickAlertType.error,
-                    //           text: "Tên đăng nhập hoặc mật khẩu không hợp lệ",
-                    //           title: "THẤT BẠI",
-                    //           onConfirmBtnTap: () async {
-                    //             NavigatorHelper.goBack(context);
-                    //           }
-                    //       );
-                    //     }
-                    //   },
-                    //   builder: (BuildContext context, Future<void> Function()? onTap) {
-                    //     return Container(
-                    //       width: double.maxFinite,
-                    //       padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
-                    //       child: ElevatedButton(
-                    //         style: ElevatedButton.styleFrom(
-                    //             padding: EdgeInsets.symmetric(vertical: 10.h),
-                    //             elevation: 10,
-                    //             backgroundColor: Colors.black12,
-                    //             shape: RoundedRectangleBorder(
-                    //                 borderRadius: BorderRadius.circular(5)
-                    //             ),
-                    //             side: BorderSide(
-                    //                 color: Colors.white,
-                    //                 width: 1
-                    //             )
-                    //         ),
-                    //         onPressed: onTap,
-                    //         child: Text(
-                    //           "Bắt đầu",
-                    //           style: TextStyle(
-                    //             color: Colors.white,
-                    //             fontSize: 16.sp,
-                    //             fontWeight: FontWeight.bold,
-                    //             fontFamily: GoogleFonts.roboto().fontFamily,
-                    //           ),
-                    //         ),
-                    //       ),
-                    //     );
-                    //   },
-                    // ),
                     TapDebouncer(
                       onTap: () async {
                         // Hiển thị dialog chờ xử lý
@@ -236,7 +174,7 @@ class _SignInScreenWebState extends State<SignInScreenWeb> {
                           padding: EdgeInsets.symmetric(horizontal: horizontalPadding, vertical: 20.h),
                           child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                              padding: EdgeInsets.symmetric(vertical: 10.h),
+                              padding: EdgeInsets.all(contentPadding),
                               elevation: 10,
                               backgroundColor: Colors.black12,
                               shape: RoundedRectangleBorder(
@@ -250,12 +188,7 @@ class _SignInScreenWebState extends State<SignInScreenWeb> {
                             onPressed: onTap,
                             child: Text(
                               "Bắt đầu",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 25,
-                                fontWeight: FontWeight.bold,
-                                fontFamily: GoogleFonts.roboto().fontFamily,
-                              ),
+                              style: labelStyle.copyWith(fontWeight: FontWeight.bold)
                             ),
                           ),
                         );
@@ -265,11 +198,7 @@ class _SignInScreenWebState extends State<SignInScreenWeb> {
                       padding: EdgeInsets.symmetric(horizontal: 20.w),
                       child: Text(
                         "Hoặc",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 25,
-                          fontFamily: GoogleFonts.roboto().fontFamily,
-                        ),
+                        style: labelStyle.copyWith(fontWeight: FontWeight.bold),
                       ),
                     ),
                     Container(
@@ -277,7 +206,7 @@ class _SignInScreenWebState extends State<SignInScreenWeb> {
                       padding: EdgeInsets.symmetric(horizontal: horizontalPadding, vertical: 20.h),
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                            padding: EdgeInsets.symmetric(vertical: 10.h),
+                            padding: EdgeInsets.all(contentPadding),
                             elevation: 10,
                             backgroundColor: Colors.grey[900],
                             shape: RoundedRectangleBorder(
@@ -289,16 +218,11 @@ class _SignInScreenWebState extends State<SignInScreenWeb> {
                             )
                         ),
                         onPressed: (){
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Coming soon")));
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Coming soon", style: contentStyle)));
                         },
                         child: Text(
                           "Dùng mã đăng nhập",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 25,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: GoogleFonts.roboto().fontFamily,
-                          ),
+                          style: labelStyle.copyWith(fontWeight: FontWeight.bold),
                         ),
                       ),
                     ),
@@ -306,15 +230,11 @@ class _SignInScreenWebState extends State<SignInScreenWeb> {
                       padding: EdgeInsets.symmetric(horizontal: horizontalPadding, vertical: 20.h),
                       child: GestureDetector(
                         onTap: (){
-                          NavigatorHelper.navigateTo(context, ForgotPasswordMobile());
+                          NavigatorHelper.navigateTo(context, ForgotPasswordScreen());
                         },
                         child: Text(
                           "Bạn quên mật khẩu?",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 25,
-                            fontFamily: GoogleFonts.roboto().fontFamily,
-                          ),
+                          style: labelStyle.copyWith(fontWeight: FontWeight.bold),
                         ),
                       ),
                     ),
@@ -326,11 +246,7 @@ class _SignInScreenWebState extends State<SignInScreenWeb> {
                         },
                         child: Text(
                           "Bạn mới sử dụng Netflix. Đăng ký ngay!",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 25,
-                            fontFamily: GoogleFonts.roboto().fontFamily,
-                          ),
+                          style: labelStyle.copyWith(fontWeight: FontWeight.bold),
                         ),
                       ),
                     ),

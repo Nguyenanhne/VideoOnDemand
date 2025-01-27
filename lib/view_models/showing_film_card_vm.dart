@@ -70,24 +70,24 @@ class ShowingFilmsCardViewModel extends ChangeNotifier{
   Future<void> fetchFilms() async {
     print("fetch film");
     _films = [];
-    // try {
-    //   final result = await FilmService().fetchListFilm(limit: 5, lastDocument: null);
-    //
-    //   final List<FilmModel> films = result['films'] as List<FilmModel>;
-    //
-    //   final DocumentSnapshot? lastDocument = result['lastDocument'] as DocumentSnapshot?;
-    //
-    //   _films.addAll(films);
-    //
-    //   _lastDocument = lastDocument;
-    //
-    //   _hasMore = films.length == 5;
-    //
-    //   showingFilmsController = ScrollController()..addListener(_onScroll);
-    //
-    // } catch (e) {
-    //   _errorMessage = 'Failed to load movies: $e';
-    // }
+    try {
+      final result = await FilmService().fetchListFilm(limit: 5, lastDocument: null);
+
+      final List<FilmModel> films = result['films'] as List<FilmModel>;
+
+      final DocumentSnapshot? lastDocument = result['lastDocument'] as DocumentSnapshot?;
+
+      _films.addAll(films);
+
+      _lastDocument = lastDocument;
+
+      _hasMore = films.length == 5;
+
+      showingFilmsController = ScrollController()..addListener(_onScroll);
+
+    } catch (e) {
+      _errorMessage = 'Failed to load movies: $e';
+    }
   }
 
   void _onScroll() {

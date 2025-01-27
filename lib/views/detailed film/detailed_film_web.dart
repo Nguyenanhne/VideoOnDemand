@@ -1,3 +1,4 @@
+import 'package:better_player_enhanced/better_player.dart';
 import 'package:chewie/chewie.dart';
 import 'package:du_an_cntt/utils.dart';
 import 'package:du_an_cntt/view_models/home_vm.dart';
@@ -11,12 +12,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tap_debouncer/tap_debouncer.dart';
-import 'package:video_player/video_player.dart';
 
 import '../../helper/navigator.dart';
-import '../../services/MyListService.dart';
 import '../../view_models/film_detail_vm.dart';
 import '../../view_models/search_vm.dart';
 import '../../widgets/flim_card_vertical.dart';
@@ -31,18 +29,18 @@ class DetailedMovieScreenWeb extends StatefulWidget {
 class _DetailedMovieScreenTablet extends State<DetailedMovieScreenWeb> {
   late String filmID;
   late String filmUrlVideo;
+  late String userID;
   int activeEpisode = 0;
+  List optionList = ["Các tập", "Trailer", "Nội dung tương tự"];
 
   late Future filmDetailsFuture;
   late Future<void> fetchSameFilms;
   late Future isFilmInMyList;
-
   late Future<List<dynamic>> combinedFuture;
 
-  late String userID;
-
-
   late ScrollController sameFilmsController;
+  late BetterPlayerController betterPlayerController;
+  late BetterPlayerDataSource betterPlayerDataSource;
 
   final contentStyle = TextStyle(
       fontFamily: GoogleFonts.roboto().fontFamily,
@@ -50,74 +48,60 @@ class _DetailedMovieScreenTablet extends State<DetailedMovieScreenWeb> {
       color: Colors.white
   );
 
-  List optionList = ["Các tập", "Trailer", "Nội dung tương tự"];
 
   void sameFilmsOnScroll() {
     final searchVM = Provider.of<SearchViewModel>(context, listen: false);
     if (sameFilmsController.position.pixels == sameFilmsController.position.maxScrollExtent && !searchVM.isLoading && searchVM.hasMore) {
-      print("${searchVM.hasMore}");
       searchVM.searchMoreFilmsByMultiType();
     }
   }
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
-
     sameFilmsController = ScrollController()..addListener(sameFilmsOnScroll);
     final filmVM = Provider.of<DetailedFilmViewModel>(context, listen: false);
-
     filmID = widget.filmID;
-    filmUrlVideo = "https://filmfinder.shop/videos/master.m3u8";
-
+    filmUrlVideo = "https://filmfinder.shop/input_video.mp4";
     combinedFuture = Future.wait([
       filmVM.getFilmDetails(filmID),
       filmVM.getAddToListStatus(filmID),
       filmVM.getRating(filmID)
     ]);
-    // BetterPlayerDataSource betterPlayerDataSource = BetterPlayerDataSource(
-    //   BetterPlayerDataSourceType.network,
-    //   filmUrlVideo,
-    //   cacheConfiguration: BetterPlayerCacheConfiguration(
-    //     useCache: true,
-    //     maxCacheSize: 100 * 1024 * 1024, // 100 MB
-    //     maxCacheFileSize: 10 * 1024 * 1024, // 10 MB
-    //     preCacheSize: 5 * 1024 * 1024, // 5 MB preload
-    //   ),
-    //   bufferingConfiguration: BetterPlayerBufferingConfiguration(
-    //       minBufferMs: 2000,
-    //       maxBufferMs: 10000,
-    //       bufferForPlaybackMs: 1000,
-    //       bufferForPlaybackAfterRebufferMs: 2000
-    //   ),
-    // );
-/*    _betterPlayerController = BetterPlayerController(
-        BetterPlayerConfiguration(
-            autoDispose: true,
-            autoPlay: true,
-            fullScreenByDefault: false,
-            controlsConfiguration: BetterPlayerControlsConfiguration(
-                enableFullscreen: false,
-                enableMute: false,
-                enablePlayPause: false,
-                progressBarPlayedColor: Colors.red,
-                progressBarBufferedColor: Colors.blue,
-                progressBarHandleColor: Colors.red,
-                enableSubtitles: false,
-                enableAudioTracks: false,
-                enablePlaybackSpeed: false,
-                enableQualities: false,
-                enableOverflowMenu: false
-            )
-        ),
-        betterPlayerDataSource: betterPlayerDataSource
-    );*/
+    BetterPlayerConfiguration betterPlayerConfiguration = BetterPlayerConfiguration(
+        aspectRatio: 16 / 9,
+        fit: BoxFit.contain,
+        autoPlay: false,
+        looping: true,
+        controlsConfiguration: BetterPlayerControlsConfiguration(
+          enableOverflowMenu: false,
+          enableFullscreen: false,
+          enableProgressBar: false,
+        )
+    );
+    betterPlayerDataSource = BetterPlayerDataSource(
+      BetterPlayerDataSourceType.network,
+      "https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4",
+      cacheConfiguration: BetterPlayerCacheConfiguration(
+        useCache: true,
+        maxCacheSize: 100 * 1024 * 1024, // 100 MB
+        maxCacheFileSize: 10 * 1024 * 1024, // 10 MB
+        preCacheSize: 5 * 1024 * 1024, // 5 MB preload
+      ),
+      bufferingConfiguration: BetterPlayerBufferingConfiguration(
+          minBufferMs: 2000,
+          maxBufferMs: 10000,
+          bufferForPlaybackMs: 1000,
+          bufferForPlaybackAfterRebufferMs: 2000
+      ),
+    );
+    betterPlayerController = BetterPlayerController(betterPlayerConfiguration);
+    betterPlayerController.setupDataSource(betterPlayerDataSource);
+
   }
+
   @override
   void dispose() {
-    // _betterPlayerController.dispose(forceDispose: true);
     sameFilmsController.dispose();
     super.dispose();
   }
@@ -153,7 +137,7 @@ class _DetailedMovieScreenTablet extends State<DetailedMovieScreenWeb> {
                     Expanded(
                       child: Text(
                           'Mô tả: $title',
-                          style: contentStyle.copyWith(fontSize: 14.sp, fontWeight: FontWeight.bold, overflow: TextOverflow.visible)
+                          style: contentStyle.copyWith(fontSize: 35, fontWeight: FontWeight.bold, overflow: TextOverflow.visible)
                       ),
                     ),
                     IconButton(
@@ -177,7 +161,7 @@ class _DetailedMovieScreenTablet extends State<DetailedMovieScreenWeb> {
           );
         },
       );
-    };
+    }
     void showActorBottomSheet(BuildContext context, String title, List<String> actors) {
       showModalBottomSheet(
         context: context,
@@ -201,7 +185,7 @@ class _DetailedMovieScreenTablet extends State<DetailedMovieScreenWeb> {
                     Expanded(
                       child: Text(
                         'Diễn viên: $title',
-                        style: contentStyle.copyWith(fontSize: 14.sp, fontWeight: FontWeight.bold, color: Colors.white),
+                        style: contentStyle.copyWith(fontSize: 35, fontWeight: FontWeight.bold, overflow: TextOverflow.visible),
                       ),
                     ),
                     IconButton(
@@ -273,11 +257,16 @@ class _DetailedMovieScreenTablet extends State<DetailedMovieScreenWeb> {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(child: CircularProgressIndicator());
             }
+            if (snapshot.hasError){
+              return Center(
+                child: Text("Lỗi khi mở phim", style: contentStyle),
+              );
+            }
             else{
               final film = snapshot.data![0];
               if (film == null){
                 return Center(
-                  child: Text("Lỗi khi mở phim", style: TextStyle(color: Colors.white, fontSize: 18.sp)),
+                  child: Text("Lỗi khi mở phim", style: contentStyle),
                 );
               }else{
                 final searchVM = Provider.of<SearchViewModel>(context, listen: false);
@@ -286,14 +275,13 @@ class _DetailedMovieScreenTablet extends State<DetailedMovieScreenWeb> {
               return Row(
                 children: [
                   Expanded(
-                    flex: 3,
+                    flex: 4,
                     child: CustomScrollView(
-                      controller: sameFilmsController,
                       slivers: [
                         SliverToBoxAdapter(
                           child: SizedBox(
-                            height: heightScreen*0.5,
-                            // child: BetterPlayer(controller: _betterPlayerController),
+                            height: heightScreen*0.4,
+                            child: BetterPlayer(controller: betterPlayerController),
                           ),
                         ),
                         SliverToBoxAdapter (
@@ -566,7 +554,14 @@ class _DetailedMovieScreenTablet extends State<DetailedMovieScreenWeb> {
                   Expanded(
                     flex: 2,
                     child: CustomScrollView(
+                      controller: sameFilmsController,
                       slivers: [
+                        SliverToBoxAdapter(
+                          child: Text(
+                              "Phim tương tự",
+                              style: contentStyle.copyWith(fontWeight: FontWeight.bold)
+                          ),
+                        ),
                         FutureBuilder(
                             future: fetchSameFilms,
                             builder: (context, snapshot){
@@ -585,7 +580,7 @@ class _DetailedMovieScreenTablet extends State<DetailedMovieScreenWeb> {
                                       final sameFilms = searchVM.films;
                                       if (sameFilms.isEmpty) {
                                         return SliverToBoxAdapter(
-                                          child: Center(child: Text("Bạn không có danh sách xem sau nào", style: contentStyle)),
+                                          child: Center(child: Text("Bạn không có danh sách phim tương tự nào!", style: contentStyle)),
                                         );
                                       }
                                       return SliverList.separated(
@@ -595,9 +590,9 @@ class _DetailedMovieScreenTablet extends State<DetailedMovieScreenWeb> {
                                           }
                                           final sameFilm = sameFilms[index];
                                           return FilmCardVertical(
-                                            fontSize: 25,
-                                            height: heightScreen*0.3,
-                                            width: widthScreen*0.15,
+                                            fontSize: 20,
+                                            height: heightScreen*0.25,
+                                            width: widthScreen*0.1,
                                             url: sameFilm.url,
                                             name: sameFilm.name,
                                             types: sameFilm.type.join(", "),
@@ -608,7 +603,7 @@ class _DetailedMovieScreenTablet extends State<DetailedMovieScreenWeb> {
                                             des: sameFilm.description
                                           );
                                         },
-                                        separatorBuilder: (BuildContext context, int index) => SizedBox(height: 10.h),
+                                        separatorBuilder: (BuildContext context, int index) => SizedBox(height: 5.h),
                                         itemCount:  sameFilms.length + (searchVM.isLoading ? 1 : 0),
                                       );
                                     }

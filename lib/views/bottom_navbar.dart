@@ -21,10 +21,7 @@ class BottomNavBar extends StatefulWidget {
 }
 
 class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMixin{
-  final style = TextStyle(
-    fontSize: 10.sp,
-    fontFamily: GoogleFonts.roboto().fontFamily
-  );
+
   late TabController tabController;
   @override
   void initState() {
@@ -50,6 +47,10 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
 
   @override
   Widget build(BuildContext context) {
+    final style = TextStyle(
+        fontFamily: GoogleFonts.roboto().fontFamily,
+        fontSize: 25
+    );
     return DefaultTabController(
       length: 3,
       child: Scaffold(

@@ -7,7 +7,7 @@ import '../views/sign_in/sign_in_mobile.dart';
 class EmailVerificationLinkViewModel extends ChangeNotifier{
   Timer? _timer;
   Timer? _countdown;
-  int _remainingTime = 5;
+  int _remainingTime = 30;
 
   bool _isEmailVerified = false;
   bool _isTimeUp = false;
@@ -40,7 +40,7 @@ class EmailVerificationLinkViewModel extends ChangeNotifier{
           _remainingTime--;
           notifyListeners();
         } else {
-          _isTimeUp = true; // Đánh dấu thời gian đã hết
+          _isTimeUp = true;
           _countdown?.cancel();
           print("Countdown finished!");
           notifyListeners();
@@ -48,7 +48,7 @@ class EmailVerificationLinkViewModel extends ChangeNotifier{
     });
   }
   void resetCountdown() {
-    _remainingTime = 5;
+    _remainingTime = 30;
     _isTimeUp = false;
     _timer?.cancel();
     startCountdown();

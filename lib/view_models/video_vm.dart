@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:better_player_enhanced/better_player.dart';
 import 'package:du_an_cntt/services/MyFilmWatchedService.dart';
 import 'package:firebase_auth/firebase_auth.dart';

@@ -1,5 +1,4 @@
 import 'package:better_player_enhanced/better_player.dart';
-import 'package:chewie/chewie.dart';
 import 'package:du_an_cntt/utils.dart';
 import 'package:du_an_cntt/view_models/search_vm.dart';
 import 'package:du_an_cntt/widgets/flim_card_vertical.dart';
@@ -13,9 +12,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:tap_debouncer/tap_debouncer.dart';
-import 'package:video_player/video_player.dart';
-import 'package:visibility_detector/visibility_detector.dart';
-
 import '../../helper/navigator.dart';
 import '../../view_models/film_detail_vm.dart';
 
@@ -48,8 +44,6 @@ class _DetailedMovieScreenMobileState extends State<DetailedMovieScreenMobile>  
       fontSize: 14.sp,
       color: Colors.white
   );
-
-
   void sameFilmsOnScroll() {
     final searchVM = Provider.of<SearchViewModel>(context, listen: false);
     if (sameFilmsController.position.pixels == sameFilmsController.position.maxScrollExtent && !searchVM.isLoading && searchVM.hasMore) {
@@ -57,7 +51,6 @@ class _DetailedMovieScreenMobileState extends State<DetailedMovieScreenMobile>  
       searchVM.searchMoreFilmsByMultiType();
     }
   }
-
   @override
   void initState() {
     super.initState();
@@ -159,7 +152,7 @@ class _DetailedMovieScreenMobileState extends State<DetailedMovieScreenMobile>  
           );
         },
       );
-    };
+    }
     void showActorBottomSheet(BuildContext context, String title, List<String> actors) {
       showModalBottomSheet(
         context: context,
@@ -250,6 +243,11 @@ class _DetailedMovieScreenMobileState extends State<DetailedMovieScreenMobile>  
           builder: (context, snapshot){
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(child: CircularProgressIndicator());
+            }
+            else if (snapshot.hasError){
+              return Center(
+                child: Text("Lỗi khi mở phim", style: TextStyle(color: Colors.white, fontSize: 18.sp)),
+              );
             }
             else{
               final film = snapshot.data![0];

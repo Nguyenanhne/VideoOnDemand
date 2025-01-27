@@ -32,71 +32,70 @@ class FilmCardVertical extends StatelessWidget {
     );
     return Card(
       color: Colors.black,
-      // margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-      child: InkWell(
-        onTap: ontap,
-        child: Column(
-          // crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                SizedBox(
-                  width: width,
-                  height: height,
-                  child: CachedNetworkImage(
-                    imageUrl: url,
-                    placeholder: (context, url) => Center(
-                      child: Container(
-                        color: Colors.grey[800],
-                      ),
+      child: SizedBox(
+        width: width,
+        height: height,
+        child: InkWell(
+          onTap: ontap,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              SizedBox(
+                width: width,
+                height: height,
+                child: CachedNetworkImage(
+                  imageUrl: url,
+                  placeholder: (context, url) => Center(
+                    child: Container(
+                      color: Colors.grey[800],
                     ),
-                    errorWidget: (context, url, error) => const Icon(
-                      Icons.error,
-                      color: Colors.red,
-                    ),
-                    fit: BoxFit.fill,
-                    width: double.infinity,
                   ),
+                  errorWidget: (context, url, error) => const Icon(
+                    Icons.error,
+                    color: Colors.red,
+                  ),
+                  fit: BoxFit.fill,
+                  width: double.infinity,
                 ),
-
-                Expanded(
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Text(
-                          name,
-                          style: style.copyWith(color: Colors.white, fontWeight: FontWeight.bold, fontSize: fontSize + 2),
-                        ),
-                        SizedBox(height: 5),
-                        Text(
-                          "$age +",
-                          style: style,
-                        ),
-                        SizedBox(height: 5),
-                        Text(
-                          types,
-                          style: style,
-                        ),
-                        SizedBox(height: 5),
-                        Text(
+              ),
+              Expanded(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text(
+                        name,
+                        style: style.copyWith(color: Colors.white, fontWeight: FontWeight.bold, fontSize: fontSize + 2),
+                      ),
+                      SizedBox(height: 5),
+                      Text(
+                        "$age +",
+                        style: style,
+                      ),
+                      SizedBox(height: 5),
+                      Text(
+                        types,
+                        style: style,
+                      ),
+                      SizedBox(height: 5),
+                      Expanded(
+                        child: Text(
                           des,
                           maxLines: 3,
                           style: style,
                           overflow: TextOverflow.ellipsis,
-                        )
-                      ],
-                    ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                // Trailing Icon
-              ],
-            ), // Description
-          ],
+              ),
+              // Trailing Icon
+            ],
+          ),
         ),
       ),
     );

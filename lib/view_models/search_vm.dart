@@ -61,7 +61,7 @@ class SearchViewModel extends ChangeNotifier {
 
   Future<void> getYears() async{
     int currentYear = DateTime.now().year;
-    _years = List<String>.generate(10, (index) => (currentYear - 9 + index).toString());
+    _years.addAll(List<String>.generate(10, (index) => (currentYear - 9 + index).toString()));
   }
 
   Future<void> searchFilmsByTypeAndYear({required type, required year}) async {
@@ -71,7 +71,12 @@ class SearchViewModel extends ChangeNotifier {
     notifyListeners();
     _films.clear();
     try {
-
+      if (year == "Năm"){
+        year = null;
+      }
+      if (type == "Thể loại"){
+        type = null;
+      }
       final result = await FilmService().searchByTypeAndYear(type: type, year: year, limit: 5, lastDocument: null);
 
       final List<FilmModel> films = result['films'] as List<FilmModel>;
@@ -98,9 +103,22 @@ class SearchViewModel extends ChangeNotifier {
     _errorMessage = null;
     notifyListeners();
     try {
+      final String? year, type;
+      if (_selectedYear == "Năm"){
+        year = null;
+      }else{
+        year = _selectedYear;
+      }
+      if (_selectedType == "Thể loại"){
+        type = null;
+      }
+      else{
+        type = _selectedType;
+      }
+
       final result = await FilmService().searchByTypeAndYear(
-        year: _selectedYear!,
-        type: _selectedType!,
+        year: year,
+        type: type,
         limit: limit,
         lastDocument: _lastDocument,
       );

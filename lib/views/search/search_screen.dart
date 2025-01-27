@@ -1,6 +1,7 @@
 import 'package:du_an_cntt/responsive.dart';
 import 'package:du_an_cntt/views/search/search_mobile.dart';
 import 'package:du_an_cntt/views/search/search_tablet.dart';
+import 'package:du_an_cntt/views/search/search_web.dart';
 import 'package:flutter/material.dart';
 
 class SearchScreen extends StatelessWidget {
@@ -8,6 +9,6 @@ class SearchScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ResponsiveLayout(mobileLayout: SearchScreenMobile(), tabletLayout: SearchScreenTablet(), webLayout: SearchScreenTablet());
+    return ResponsiveLayout(mobileLayout: SearchScreenMobile(), tabletLayout: SearchScreenTablet(), webLayout: SearchScreenWeb());
   }
 }

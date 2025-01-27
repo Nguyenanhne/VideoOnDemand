@@ -44,31 +44,6 @@ class _EmailVerificationLinkMobileState extends State<EmailVerificationLinkMobil
 
   }
 
-  // void startCountdown() {
-  //   _timer = Timer.periodic(Duration(seconds: 1), (timer) {
-  //     setState(() {
-  //       if (_remainingTime > 0) {
-  //         _remainingTime--;
-  //       } else {
-  //         _isTimeUp = true; // Đánh dấu thời gian đã hết
-  //         timer.cancel();
-  //         print("Countdown finished!");
-  //       }
-  //     });
-  //   });
-  // }
-  //
-  // // Hàm reset thời gian về 30 giây và bắt đầu lại countdown
-  // void resetCountdown() {
-  //   setState(() {
-  //     _remainingTime = 30;
-  //     _isTimeUp = false; // Đặt lại trạng thái khi reset
-  //   });
-  //   _timer?.cancel(); // Hủy Timer cũ nếu có
-  //   startCountdown(); // Bắt đầu lại countdown
-  // }
-
-
   @override
   void dispose() {
     _timer?.cancel();

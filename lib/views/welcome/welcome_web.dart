@@ -1,13 +1,13 @@
-import 'dart:ui'; // Để sử dụng BackdropFilter
+import 'dart:ui';
 import 'package:du_an_cntt/utils.dart';
 import 'package:du_an_cntt/view_models/home_vm.dart';
+import 'package:du_an_cntt/views/sign_in/sign_in_screen.dart';
+import 'package:du_an_cntt/views/sign_up/sign_up_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:line_awesome_flutter/line_awesome_flutter.dart';
-
 import '../../widgets/welcome/welcome_page.dart';
 import '../sign_in/sign_in_mobile.dart';
 import '../sign_up/sign_up_mobile.dart';
@@ -54,7 +54,7 @@ class _WelcomeScreenWeb extends State<WelComeScreenWeb> {
               ),
               InkWell(
                 onTap: (){
-                  homeVM.onTapNavigateToScreen(context, SignInScreenMobile());
+                  homeVM.onTapNavigateToScreen(context, SignInScreen());
                 },
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 10.w),
@@ -95,22 +95,22 @@ class _WelcomeScreenWeb extends State<WelComeScreenWeb> {
               PageView(
                 children: [
                   WelcomePage(
-                    backgroundImage: "assets/welcome_bg.jpg",
+                    backgroundImage: "assets/welcome_bg_landscape.png",
                     title: 'Chương trình truyền hình, phim không giới hạn và nhiều nội dung khác !',
                     subtitle: "Xem ở mọi nơi. Huỷ bất kỳ lúc nào",
                   ),
                   WelcomePage(
-                    backgroundImage: "assets/welcome_bg1.jpg",
+                    backgroundImage: "assets/welcome_bg1_landscape.png",
                     title: 'Ai cũng tìm được gói dịch vụ phù hợp !',
                     subtitle: "Gói dịch vụ có giá từ 200 \$",
                   ),
                   WelcomePage(
-                    backgroundImage: "assets/welcome_bg2.jpg",
+                    backgroundImage: "assets/welcome_bg2_landscape.png",
                     title: 'Huỷ trực tuyến bất kỳ lúc nào !',
                     subtitle: "Hãy tham gia hôm nay, còn chần chừ gì nữa",
                   ),
                   WelcomePage(
-                    backgroundImage: "assets/welcome_bg3.jpg",
+                    backgroundImage: "assets/welcome_bg3_landscape.png",
                     title: 'Xem ở mọi nơi !',
                     subtitle: "Phát trực tuyến trên điện thoại, máy tính, máy tính bảng và máy tính xách tay của bạn",
                   ),
@@ -142,13 +142,13 @@ class _WelcomeScreenWeb extends State<WelComeScreenWeb> {
                           elevation: 10
                       ),
                       onPressed: (){
-                        homeVM.onTapNavigateToScreen(context, SignUpScreenMobile());
+                        homeVM.onTapNavigateToScreen(context, SignUpScreen());
                       },
                       child: Text(
                         "Bắt đầu",
                         style: TextStyle(
                           color: Colors.white,
-                          fontSize: 13.sp,
+                          fontSize: 45,
                           fontFamily: GoogleFonts.roboto().fontFamily,
                           shadows: const [
                             Shadow(

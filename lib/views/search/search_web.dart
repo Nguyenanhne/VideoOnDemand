@@ -8,20 +8,28 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/film_model.dart';
-import '../../services/FilmService.dart';class SearchScreenTablet extends StatefulWidget {
-  const SearchScreenTablet({super.key});
+import '../../services/FilmService.dart';
+class SearchScreenWeb extends StatefulWidget {
+  const SearchScreenWeb({super.key});
 
   @override
-  State<SearchScreenTablet> createState() => _SearchScreenTabletState();
+  State<SearchScreenWeb> createState() => _SearchScreenWebState();
 }
 
-class _SearchScreenTabletState extends State<SearchScreenTablet> {
+class _SearchScreenWebState extends State<SearchScreenWeb> {
   final TypeService typeService = TypeService();
   late Future<void> fetchTypes;
   late Future<void> fetchYears;
 
   late ScrollController searchingFilmController;
 
+  final contentStyle = TextStyle(
+      fontFamily: GoogleFonts.roboto().fontFamily,
+      fontSize: 18,
+      color: Colors.white
+  );
+  final imageWidth = 150.0;
+  final imageHeight = 200.0;
   @override
   void initState() {
     final searchViewModel = Provider.of<SearchViewModel>(context, listen: false);
@@ -50,15 +58,22 @@ class _SearchScreenTabletState extends State<SearchScreenTablet> {
 
     final contentStyle = TextStyle(
         fontFamily: GoogleFonts.roboto().fontFamily,
-        fontSize: 12.sp,
+        fontSize: 20,
+        color: Colors.white
+    );
+
+    final titleStyle = TextStyle(
+        fontFamily: GoogleFonts.roboto().fontFamily,
+        fontSize: 25,
         color: Colors.white
     );
 
     final leadingTitle = TextStyle(
-      fontSize: 16.sp,
-      fontFamily: GoogleFonts.roboto().fontFamily,
-      color: Colors.white
+        fontSize: 35,
+        fontFamily: GoogleFonts.roboto().fontFamily,
+        color: Colors.white
     );
+
     void showTypeBottomSheet(BuildContext context){
       final searchViewModel = Provider.of<SearchViewModel>(context, listen: false);
       final types = searchViewModel.types;
@@ -194,7 +209,10 @@ class _SearchScreenTabletState extends State<SearchScreenTablet> {
       appBar: AppBar(
         titleSpacing: 10.w,
         backgroundColor: Colors.black,
-        title: Text("Tìm Kiếm", style: leadingTitle),
+        title: Text(
+          "Tìm Kiếm",
+          style: leadingTitle
+        ),
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(50.h),
           child: Padding(
@@ -206,8 +224,8 @@ class _SearchScreenTabletState extends State<SearchScreenTablet> {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(
-                      color: Colors.white,
-                      width: 1.w
+                        color: Colors.white,
+                        width: 1.w
                     ),
                   ),
                   child: GestureDetector(
@@ -266,7 +284,7 @@ class _SearchScreenTabletState extends State<SearchScreenTablet> {
           if (searchingViewModel.isSearching) {
             return const Center(child: CircularProgressIndicator());
           } else if (searchingViewModel.films.isEmpty) {
-            return Center(child: Text('Không tìm thấy phim', style: contentStyle,));
+            return Center(child: Text('Không tìm thấy phim', style: titleStyle));
           }
 
           final films = searchingViewModel.films;
@@ -280,20 +298,20 @@ class _SearchScreenTabletState extends State<SearchScreenTablet> {
                   child: Row(
                     children: [
                       Container(
-                        height: heightScreen * 0.25,
-                        width: widthScreen*0.3,
+                        height: heightScreen * 0.3,
+                        width: widthScreen*0.15,
                         color: Colors.grey[800],
                       ),
-                      Expanded(child: CircularProgressIndicator())
+                      Expanded(child: Center(child: CircularProgressIndicator()))
                     ],
                   ),
                 );
               }
               final film = films[index];
               return FilmCardVertical(
-                height: heightScreen * 0.25,
+                height: heightScreen * 0.3,
+                width: widthScreen*0.15,
                 fontSize: 25,
-                width: widthScreen*0.3,
                 url: film.url,
                 age: film.age,
                 types: film.type.join(", "),
@@ -319,13 +337,14 @@ class CustomSearchDelegate extends SearchDelegate {
   CustomSearchDelegate() : super(
     searchFieldLabel: 'Tìm kiếm',
     searchFieldStyle: TextStyle(
-      fontSize: 14.sp
+      fontSize: 35,
+      fontFamily: GoogleFonts.roboto().fontFamily
     ),
   );
 
   final contentStyle = TextStyle(
       fontFamily: GoogleFonts.roboto().fontFamily,
-      fontSize: 12.sp,
+      fontSize: 25,
       color: Colors.white
   );
 
@@ -358,7 +377,7 @@ class CustomSearchDelegate extends SearchDelegate {
   @override
   Widget buildSuggestions(BuildContext context) {
     if (query.isEmpty) {
-      return Center(child: Text('Vui lòng nhập tên', style: contentStyle,));
+      return Center(child: Text('Vui lòng nhập tên', style: contentStyle));
     }
     return FutureBuilder<List<FilmModel>>(
       future: filmService.searchFilmNamesByName(query),

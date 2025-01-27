@@ -31,7 +31,6 @@ class _MyNetflixScreenMobileState extends State<MyNetflixScreenMobile> {
     fontWeight: FontWeight.bold,
     color: Colors.white,
   );
-
   final menuItemStyle = TextStyle(
     fontSize: 16.sp,
     fontWeight: FontWeight.bold,
@@ -53,7 +52,6 @@ class _MyNetflixScreenMobileState extends State<MyNetflixScreenMobile> {
   void dispose() {
     super.dispose();
   }
-
   @override
   Widget build(BuildContext context) {
     final heightScreen = MediaQuery.of(context).size.height
@@ -200,9 +198,6 @@ class _MyNetflixScreenMobileState extends State<MyNetflixScreenMobile> {
         ),
         actions: [
           InkWell(
-              onTap: (){
-                showBottomSheet(context);
-              },
               child: const Icon(
                 Icons.search,
                 size: 30,
@@ -235,60 +230,6 @@ class _MyNetflixScreenMobileState extends State<MyNetflixScreenMobile> {
               ),
             ),
           ),
-          // FutureBuilder(
-          //     future: fetchMyList,
-          //     builder: (context, snapshot){
-          //       if (snapshot.connectionState == ConnectionState.waiting) {
-          //         return SliverToBoxAdapter(
-          //           child: Center(child: CircularProgressIndicator()),
-          //         );
-          //       } else if (snapshot.hasError) {
-          //         return SliverToBoxAdapter(
-          //           child: Center(child: Text('Error: ${snapshot.error}')),
-          //         );
-          //       }
-          //       else{
-          //         return  Consumer<MyListFilmViewModel>(
-          //           builder: (context, myListFilmsViewModel, child){
-          //             final movies = myListFilmsViewModel.films;
-          //             if (movies.isEmpty) {
-          //               return SliverToBoxAdapter(
-          //                 child: Center(child: Text("Bạn không có danh sách xem sau nào", style: contentStyle)),
-          //               );
-          //             }
-          //             return SliverToBoxAdapter(
-          //               child: SizedBox(
-          //                 height: heightScreen*0.23,
-          //                 child: ListView.separated(
-          //                   controller: myListFilmController,
-          //                   scrollDirection: Axis.horizontal,
-          //                   separatorBuilder: (context, index) => SizedBox(width: 10.w),
-          //                   itemCount: movies.length + (myListFilmsViewModel.isLoading ? 1 : 0),
-          //                   itemBuilder: (context, index) {
-          //                     if (index == movies.length) {
-          //                       return ClipRRect(
-          //                         borderRadius: BorderRadius.circular(5),
-          //                         child: Container(
-          //                           width: widthScreen*0.3,
-          //                           color: Colors.grey[800],
-          //                         ),
-          //                       );
-          //                     }
-          //                     final movie = movies[index];
-          //                     return FilmCard(
-          //                       movie: movie,
-          //                       onTap: () {
-          //                         myListFilmsViewModel.onTap(context, movie.id);
-          //                       },
-          //                     );
-          //                   },                  ),
-          //               ),
-          //             );
-          //           },
-          //         );
-          //       }
-          //     }
-          // ),
           FutureBuilder(
               future: fetchMyList,
               builder: (context, snapshot){
@@ -400,7 +341,8 @@ class _MyNetflixScreenMobileState extends State<MyNetflixScreenMobile> {
                                   filmWatchedViewModel.onTap(context, movie.id);
                                 },
                               );
-                            },                  ),
+                            },
+                          ),
                         ),
                       );
                     },

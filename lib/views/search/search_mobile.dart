@@ -259,18 +259,6 @@ class _SearchScreenMobileState extends State<SearchScreenMobile> {
           ),
         ],
       ),
-      // body: SizedBox(
-      //   width: double.infinity,
-      //   child: ListView.separated(
-      //     scrollDirection: Axis.vertical,
-      //     separatorBuilder: (context, index) => SizedBox(width: 10.w),
-      //     itemCount: 50,
-      //     itemBuilder: (context, index) {
-      //       return Text("Tên phim"
-      //       );
-      //     },
-      //   ),
-      // ),
       body: Consumer<SearchViewModel>(
         builder: (context, searchingViewModel, child) {
           if (searchingViewModel.isSearching) {

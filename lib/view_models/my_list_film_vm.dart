@@ -47,25 +47,8 @@ class MyListFilmViewModel extends ChangeNotifier{
     }
   }
 
-  // Future<void> fetchMyList() async {
-  //   try {
-  //     SharedPreferences prefs = await SharedPreferences.getInstance();
-  //     final userID = prefs.getString("userId").toString();
-  //
-  //     List<String> filmIDs = await _myListService.fetchMyListFilmIDs(userID);
-  //
-  //     _films = [];
-  //     for (var filmID in filmIDs) {
-  //       FilmModel? film = await _filmService.fetchFilmById(filmID);
-  //       if (film != null) {
-  //         films.add(film);
-  //       }
-  //     }
-  //   } catch (e) {
-  //     _errorMessage = 'Failed to fetch films: $e';
-  //   }
   // }
-  Future<void> fetchMyList({int limit = 5}) async {
+  Future<void> fetchMyList({int limit = 10}) async {
     _filmIDs = [];
     _films = [];
     _countFetch = 0;
@@ -109,7 +92,7 @@ class MyListFilmViewModel extends ChangeNotifier{
       notifyListeners();
 
       int startIndex = _countFetch;
-      int endIndex = startIndex + 5;
+      int endIndex = startIndex + 10;
 
       for (var i = startIndex; i < endIndex && i < _filmIDs.length; i++) {
         FilmModel? film = await _filmService.fetchFilmByID(_filmIDs[i]);

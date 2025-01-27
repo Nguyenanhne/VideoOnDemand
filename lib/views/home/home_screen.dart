@@ -9,6 +9,10 @@ class HomeScreen extends StatelessWidget {
   HomeScreen({super.key});
   @override
   Widget build(BuildContext context) {
-    return ResponsiveLayout(mobileLayout: HomeScreenMobile(), tabletLayout: HomeScreenTablet(), webLayout: HomeScreenWeb());
+    return ResponsiveLayout(
+        mobileLayout: HomeScreenMobile(),
+        tabletLayout: HomeScreenTablet(),
+        webLayout: HomeScreenWeb()
+    );
   }
 }
