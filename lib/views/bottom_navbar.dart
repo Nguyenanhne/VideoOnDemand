@@ -49,7 +49,7 @@ class _BottomNavBarState extends State<BottomNavBar> with TickerProviderStateMix
   Widget build(BuildContext context) {
     final style = TextStyle(
         fontFamily: GoogleFonts.roboto().fontFamily,
-        fontSize: 25
+        fontSize: 14
     );
     return DefaultTabController(
       length: 3,

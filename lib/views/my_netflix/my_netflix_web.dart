@@ -314,7 +314,7 @@ class _MyNetflixScreenWebState extends State<MyNetflixScreenWeb> {
                                 width: 0.15,
                                 movie: movie,
                                 onTap: () {
-                                  myListFilmsViewModel.onTap(context, movie.id);
+                                  myListFilmsViewModel.onTap(context, movie);
                                 },
                               );
                             },                  ),
@@ -378,7 +378,7 @@ class _MyNetflixScreenWebState extends State<MyNetflixScreenWeb> {
                                 width: 0.15,
                                 movie: movie,
                                 onTap: () {
-                                  filmWatchedViewModel.onTap(context, movie.id);
+                                  filmWatchedViewModel.onTap(context, movie);
                                 },
                               );
                             },

@@ -318,7 +318,7 @@ class _SearchScreenWebState extends State<SearchScreenWeb> {
                 name: film.name,
                 des: film.description,
                 ontap: (){
-                  searchingViewModel.onTap(context, films[index].id);
+                  searchingViewModel.onTap(context, films[index]);
                 },
               );
             },
@@ -397,7 +397,7 @@ class CustomSearchDelegate extends SearchDelegate {
             return ListTile(
               title: Text(films[index].name, style: contentStyle),
               onTap: () {
-                searchVM.onTap(context, films[index].id);
+                searchVM.onTap(context, films[index]);
                 // query = films[index].name;
                 // showResults(context);
               },

@@ -88,7 +88,7 @@ class _MainPosterState extends State<MainPoster> {
                               Expanded(
                                 child: TextButton.icon(
                                   onPressed: () {
-                                    viewModel.onTap(context, film.id);
+                                    viewModel.onTap(context, film);
                                   },
                                   icon: Icon(Icons.play_arrow, color: Colors.black, size: iconSize),
                                   label: Text(

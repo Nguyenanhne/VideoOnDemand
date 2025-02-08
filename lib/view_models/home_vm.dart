@@ -64,9 +64,10 @@ class HomeViewModel extends ChangeNotifier{
       MaterialPageRoute(builder: (context) => targetScreen),
     );
   }
-  void filmOnTap(BuildContext context, String filmID){
-    NavigatorHelper.navigateTo(context, DetailedFilmScreen(filmID: filmID));
+  void onTap(BuildContext context, FilmModel film){
+    NavigatorHelper.navigateTo(context, DetailedFilmScreen(film: film));
   }
+
 
   Future<void> getAllTypes() async {
     final buffer = await typeService.getAllTypes();

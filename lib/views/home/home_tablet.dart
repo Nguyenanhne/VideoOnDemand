@@ -14,7 +14,10 @@ import '../../view_models/main_poster_vm.dart';
 import '../../widgets/film_card.dart';
 
 class HomeScreenTablet extends StatefulWidget {
-  const HomeScreenTablet({super.key});
+  final Future<void> fetchShowing;
+  final Future<void> getAllTypes;
+  final Future<void> fetchMainPoster;
+  const HomeScreenTablet({super.key, required this.fetchShowing, required this.getAllTypes, required this.fetchMainPoster});
 
   @override
   State<HomeScreenTablet> createState() => _HomeScreenTabletState();
@@ -22,38 +25,38 @@ class HomeScreenTablet extends StatefulWidget {
 
 class _HomeScreenTabletState extends State<HomeScreenTablet> {
 
-  late Future<void> fetchShowing;
-  late Future<void> getAllTypes;
-  late Future<void> fetchFilmsByType;
-  late Future<void> fetchMainPoster;
-
-  @override
-  void initState() {
-    super.initState();
-
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
-
-    final showingFilmsViewModel = Provider.of<ShowingFilmsCardViewModel>(context, listen: false);
-
-    final mainPosterViewModel = Provider.of<MainPosterViewModel>(context, listen: false);
-
-    final homeViewModel = Provider.of<HomeViewModel>(context, listen: false);
-
-    fetchShowing = showingFilmsViewModel.fetchFilms();
-
-    fetchMainPoster = mainPosterViewModel.fetchRandomFilm();
-    getAllTypes = homeViewModel.getAllTypes();
-
-    getAllTypes.then((_){
-      fetchFilmsByType = homeViewModel.searchFilmsByAllTypes();
-    });
-
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
+  // late Future<void> fetchShowing;
+  // late Future<void> getAllTypes;
+  // late Future<void> fetchFilmsByType;
+  // late Future<void> fetchMainPoster;
+  //
+  // @override
+  // void initState() {
+  //   super.initState();
+  //
+  //   SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
+  //
+  //   final showingFilmsViewModel = Provider.of<ShowingFilmsCardViewModel>(context, listen: false);
+  //
+  //   final mainPosterViewModel = Provider.of<MainPosterViewModel>(context, listen: false);
+  //
+  //   final homeViewModel = Provider.of<HomeViewModel>(context, listen: false);
+  //
+  //   fetchShowing = showingFilmsViewModel.fetchFilms();
+  //
+  //   fetchMainPoster = mainPosterViewModel.fetchRandomFilm();
+  //   getAllTypes = homeViewModel.getAllTypes();
+  //
+  //   getAllTypes.then((_){
+  //     fetchFilmsByType = homeViewModel.searchFilmsByAllTypes();
+  //   });
+  //
+  // }
+  //
+  // @override
+  // void dispose() {
+  //   super.dispose();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -172,7 +175,7 @@ class _HomeScreenTabletState extends State<HomeScreenTablet> {
             },
           ),
           FutureBuilder(
-              future: fetchMainPoster,
+              future: widget.fetchMainPoster,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return SliverToBoxAdapter(child: Center(child: CircularProgressIndicator()));
@@ -187,7 +190,7 @@ class _HomeScreenTabletState extends State<HomeScreenTablet> {
               }
           ),
           FutureBuilder(
-              future: fetchShowing,
+              future: widget.fetchShowing,
               builder: (context, snapshot){
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return SliverToBoxAdapter(
@@ -257,7 +260,7 @@ class _HomeScreenTabletState extends State<HomeScreenTablet> {
                                     width: 0.3,
                                     movie: movie,
                                     onTap: () {
-                                      showingFilmViewModel.onTap(context, movie.id);
+                                      showingFilmViewModel.onTap(context, movie);
                                     },
                                   );
                                 },
@@ -272,7 +275,7 @@ class _HomeScreenTabletState extends State<HomeScreenTablet> {
               }
           ),
           FutureBuilder(
-            future: getAllTypes,
+            future: widget.getAllTypes,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return SliverToBoxAdapter(
@@ -327,7 +330,7 @@ class _HomeScreenTabletState extends State<HomeScreenTablet> {
                                         width: 0.3,
                                         movie: movie,
                                         onTap: () {
-                                          homeViewModel.filmOnTap(context, movie.id);
+                                          homeViewModel.onTap(context, movie);
                                         },
                                       );
                                     }

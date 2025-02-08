@@ -10,6 +10,8 @@ class SearchViewModel extends ChangeNotifier {
   final TypeService typeService = TypeService();
   final FilmService filmService = FilmService();
 
+  ScrollController sameFilmsController = ScrollController();
+
   List<FilmModel> _films = [];
 
   List<String> _types = ["Thể loại"];
@@ -50,8 +52,14 @@ class SearchViewModel extends ChangeNotifier {
 
   List<FilmModel> get films => _films;
 
-  void onTap(BuildContext context, String movieID){
-    NavigatorHelper.navigateTo(context, DetailedFilmScreen(filmID: movieID));
+  SearchViewModel() {
+    sameFilmsController.addListener(() {
+      sameFilmsOnScroll();
+    });
+  }
+
+  void onTap(BuildContext context, FilmModel film){
+    NavigatorHelper.navigateTo(context, DetailedFilmScreen(film: film));
   }
 
   Future<void> getAllTypes() async  {
@@ -149,7 +157,7 @@ class SearchViewModel extends ChangeNotifier {
     _isSearching = true;
     _films.clear();
     try {
-      final result = await FilmService().searchByMultipleTypes(types, limit: 5, lastDocument: null);
+      final result = await FilmService().searchByMultipleTypes(types, limit: 3, lastDocument: null);
 
       final List<FilmModel> films = result['films'] as List<FilmModel>;
 
@@ -159,12 +167,17 @@ class SearchViewModel extends ChangeNotifier {
 
       _lastDocument = lastDocument;
 
-      _hasMore = films.length == 5;
+      _hasMore = films.length == 3;
 
     } catch (e) {
       _errorMessage = 'Failed to search films: $e';
     }finally{
       _isSearching = false;
+    }
+  }
+  void sameFilmsOnScroll() {
+    if (sameFilmsController.position.pixels == sameFilmsController.position.maxScrollExtent && !isLoading && hasMore) {
+      searchMoreFilmsByMultiType();
     }
   }
 
@@ -205,5 +218,10 @@ class SearchViewModel extends ChangeNotifier {
     films.clear();
     _selectedType = null;
     _selectedYear = null;
+  }
+  @override
+  void dispose() {
+    sameFilmsController.dispose();
+    super.dispose();
   }
 }

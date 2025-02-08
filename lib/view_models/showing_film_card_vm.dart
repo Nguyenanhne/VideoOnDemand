@@ -27,8 +27,8 @@ class ShowingFilmsCardViewModel extends ChangeNotifier{
 
   List<FilmModel> get films => _films;
 
-  void onTap(BuildContext context, String filmID){
-    NavigatorHelper.navigateTo(context, DetailedFilmScreen(filmID: filmID));
+  void onTap(BuildContext context, FilmModel film){
+    NavigatorHelper.navigateTo(context, DetailedFilmScreen(film: film));
   }
 
   Future<String> getImageUrl(String id) async {
@@ -68,7 +68,6 @@ class ShowingFilmsCardViewModel extends ChangeNotifier{
   }
 
   Future<void> fetchFilms() async {
-    print("fetch film");
     _films = [];
     try {
       final result = await FilmService().fetchListFilm(limit: 5, lastDocument: null);
@@ -91,9 +90,7 @@ class ShowingFilmsCardViewModel extends ChangeNotifier{
   }
 
   void _onScroll() {
-    if (showingFilmsController.position.pixels == showingFilmsController.position.maxScrollExtent &&
-        !isLoading &&
-        hasMore) {
+    if (showingFilmsController.position.pixels == showingFilmsController.position.maxScrollExtent && !isLoading && hasMore) {
       fetchMoreFilms();
     }
   }

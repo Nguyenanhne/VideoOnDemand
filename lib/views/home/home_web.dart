@@ -15,17 +15,20 @@ import '../../view_models/search_vm.dart';
 import '../../view_models/showing_film_card_vm.dart';
 import '../../widgets/film_card.dart';
 class HomeScreenWeb extends StatefulWidget {
-  const HomeScreenWeb({super.key});
+  final Future<void> fetchShowing;
+  final Future<void> getAllTypes;
+  final Future<void> fetchMainPoster;
 
+  const HomeScreenWeb({super.key, required this.fetchShowing, required this.getAllTypes, required this.fetchMainPoster});
   @override
   State<HomeScreenWeb> createState() => _HomeScreenWebState();
 }
 
 class _HomeScreenWebState extends State<HomeScreenWeb> {
-  late Future<void> fetchShowing;
-  late Future<void> getAllTypes;
-  late Future<void> fetchFilmsByType;
-  late Future<void> fetchMainPoster;
+  // late Future<void> fetchShowing;
+  // late Future<void> getAllTypes;
+  // late Future<void> fetchFilmsByType;
+  // late Future<void> fetchMainPoster;
 
 
   final contentStyle = TextStyle(
@@ -40,32 +43,32 @@ class _HomeScreenWebState extends State<HomeScreenWeb> {
   );
 
   @override
-  void initState() {
-    super.initState();
-
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
-
-    final showingFilmsViewModel = Provider.of<ShowingFilmsCardViewModel>(context, listen: false);
-
-    final mainPosterViewModel = Provider.of<MainPosterViewModel>(context, listen: false);
-
-    final homeViewModel = Provider.of<HomeViewModel>(context, listen: false);
-
-    fetchShowing = showingFilmsViewModel.fetchFilms();
-
-    fetchMainPoster = mainPosterViewModel.fetchRandomFilm();
-    getAllTypes = homeViewModel.getAllTypes();
-
-    getAllTypes.then((_){
-      fetchFilmsByType = homeViewModel.searchFilmsByAllTypes();
-    });
-
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
+  // void initState() {
+  //   super.initState();
+  //
+  //   SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
+  //
+  //   final showingFilmsViewModel = Provider.of<ShowingFilmsCardViewModel>(context, listen: false);
+  //
+  //   final mainPosterViewModel = Provider.of<MainPosterViewModel>(context, listen: false);
+  //
+  //   final homeViewModel = Provider.of<HomeViewModel>(context, listen: false);
+  //
+  //   fetchShowing = showingFilmsViewModel.fetchFilms();
+  //
+  //   fetchMainPoster = mainPosterViewModel.fetchRandomFilm();
+  //   getAllTypes = homeViewModel.getAllTypes();
+  //
+  //   getAllTypes.then((_){
+  //     fetchFilmsByType = homeViewModel.searchFilmsByAllTypes();
+  //   });
+  //
+  // }
+  //
+  // @override
+  // void dispose() {
+  //   super.dispose();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -177,10 +180,22 @@ class _HomeScreenWebState extends State<HomeScreenWeb> {
         children: [
           Expanded(
             flex: 3,
-            child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 15.h),
-                child: MainPoster(fontSize: 20, iconSize: 50.0)
+            child: FutureBuilder(
+                future: widget.fetchMainPoster,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(child: CircularProgressIndicator());
+                  }
+                  return Container(
+                      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 15.h),
+                      child: MainPoster(fontSize: 20, iconSize: 50.0)
+                  );
+                }
             ),
+            // child: Container(
+            //     padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 15.h),
+            //     child: MainPoster(fontSize: 20, iconSize: 50.0)
+            // ),
           ),
           Expanded(
             flex: 4,
@@ -188,7 +203,7 @@ class _HomeScreenWebState extends State<HomeScreenWeb> {
               controller: homeViewModel.homeScrollController,
               slivers: [
                 FutureBuilder(
-                    future: fetchShowing,
+                    future: widget.fetchShowing,
                     builder: (context, snapshot){
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return SliverToBoxAdapter(
@@ -258,7 +273,7 @@ class _HomeScreenWebState extends State<HomeScreenWeb> {
                                           width: 0.15,
                                           movie: movie,
                                           onTap: () {
-                                            showingFilmViewModel.onTap(context, movie.id);
+                                            showingFilmViewModel.onTap(context, movie);
                                           },
                                         );
                                       },
@@ -273,7 +288,7 @@ class _HomeScreenWebState extends State<HomeScreenWeb> {
                     }
                 ),
                 FutureBuilder(
-                  future: getAllTypes,
+                  future: widget.getAllTypes,
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return SliverToBoxAdapter(
@@ -328,7 +343,7 @@ class _HomeScreenWebState extends State<HomeScreenWeb> {
                                               width: 0.15,
                                               movie: movie,
                                               onTap: () {
-                                                homeViewModel.filmOnTap(context, movie.id);
+                                                homeViewModel.onTap(context, movie);
                                               },
                                             );
                                           }

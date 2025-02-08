@@ -2,6 +2,7 @@ import 'package:better_player_enhanced/better_player.dart';
 import 'package:chewie/chewie.dart';
 import 'package:du_an_cntt/utils.dart';
 import 'package:du_an_cntt/view_models/home_vm.dart';
+import 'package:du_an_cntt/views/detailed%20film/detailed_film_screen.dart';
 import 'package:du_an_cntt/widgets/movie_detail/movie_detail_button.dart';
 import 'package:du_an_cntt/widgets/movie_detail/movie_item.dart';
 import 'package:flutter/cupertino.dart';
@@ -15,12 +16,15 @@ import 'package:provider/provider.dart';
 import 'package:tap_debouncer/tap_debouncer.dart';
 
 import '../../helper/navigator.dart';
+import '../../models/film_model.dart';
 import '../../view_models/film_detail_vm.dart';
 import '../../view_models/search_vm.dart';
 import '../../widgets/flim_card_vertical.dart';
 class DetailedMovieScreenWeb extends StatefulWidget {
-  final String filmID;
-  const DetailedMovieScreenWeb({super.key, required this.filmID});
+  final FilmModel film;
+  final Future<void> fetchSameFilms;
+  final Future<List<dynamic>> combinedFuture;
+  const DetailedMovieScreenWeb({super.key, required this.film, required this.fetchSameFilms, required this.combinedFuture});
 
   @override
   State<DetailedMovieScreenWeb> createState() => _DetailedMovieScreenTablet();
@@ -28,83 +32,16 @@ class DetailedMovieScreenWeb extends StatefulWidget {
 
 class _DetailedMovieScreenTablet extends State<DetailedMovieScreenWeb> {
   late String filmID;
-  late String filmUrlVideo;
-  late String userID;
-  int activeEpisode = 0;
-  List optionList = ["Các tập", "Trailer", "Nội dung tương tự"];
-
-  late Future filmDetailsFuture;
-  late Future<void> fetchSameFilms;
-  late Future isFilmInMyList;
-  late Future<List<dynamic>> combinedFuture;
-
-  late ScrollController sameFilmsController;
-  late BetterPlayerController betterPlayerController;
-  late BetterPlayerDataSource betterPlayerDataSource;
-
+  @override
+  void initState() {
+    filmID = widget.film.id;
+    super.initState();
+  }
   final contentStyle = TextStyle(
       fontFamily: GoogleFonts.roboto().fontFamily,
       fontSize: 25,
       color: Colors.white
   );
-
-
-  void sameFilmsOnScroll() {
-    final searchVM = Provider.of<SearchViewModel>(context, listen: false);
-    if (sameFilmsController.position.pixels == sameFilmsController.position.maxScrollExtent && !searchVM.isLoading && searchVM.hasMore) {
-      searchVM.searchMoreFilmsByMultiType();
-    }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    sameFilmsController = ScrollController()..addListener(sameFilmsOnScroll);
-    final filmVM = Provider.of<DetailedFilmViewModel>(context, listen: false);
-    filmID = widget.filmID;
-    filmUrlVideo = "https://filmfinder.shop/input_video.mp4";
-    combinedFuture = Future.wait([
-      filmVM.getFilmDetails(filmID),
-      filmVM.getAddToListStatus(filmID),
-      filmVM.getRating(filmID)
-    ]);
-    BetterPlayerConfiguration betterPlayerConfiguration = BetterPlayerConfiguration(
-        aspectRatio: 16 / 9,
-        fit: BoxFit.contain,
-        autoPlay: false,
-        looping: true,
-        controlsConfiguration: BetterPlayerControlsConfiguration(
-          enableOverflowMenu: false,
-          enableFullscreen: false,
-          enableProgressBar: false,
-        )
-    );
-    betterPlayerDataSource = BetterPlayerDataSource(
-      BetterPlayerDataSourceType.network,
-      "https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4",
-      cacheConfiguration: BetterPlayerCacheConfiguration(
-        useCache: true,
-        maxCacheSize: 100 * 1024 * 1024, // 100 MB
-        maxCacheFileSize: 10 * 1024 * 1024, // 10 MB
-        preCacheSize: 5 * 1024 * 1024, // 5 MB preload
-      ),
-      bufferingConfiguration: BetterPlayerBufferingConfiguration(
-          minBufferMs: 2000,
-          maxBufferMs: 10000,
-          bufferForPlaybackMs: 1000,
-          bufferForPlaybackAfterRebufferMs: 2000
-      ),
-    );
-    betterPlayerController = BetterPlayerController(betterPlayerConfiguration);
-    betterPlayerController.setupDataSource(betterPlayerDataSource);
-
-  }
-
-  @override
-  void dispose() {
-    sameFilmsController.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -218,8 +155,8 @@ class _DetailedMovieScreenTablet extends State<DetailedMovieScreenWeb> {
         },
       );
     }
-    final viewModel = Provider.of<DetailedFilmViewModel>(context, listen: false);
-
+    final detailedFilmVM = Provider.of<DetailedFilmViewModel>(context, listen: false);
+    final searchVM = Provider.of<SearchViewModel>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         titleSpacing: 0,
@@ -252,7 +189,7 @@ class _DetailedMovieScreenTablet extends State<DetailedMovieScreenWeb> {
         ],
       ),
       body: FutureBuilder<List<dynamic>>(
-          future: combinedFuture,
+          future: widget.combinedFuture,
           builder: (context, snapshot){
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(child: CircularProgressIndicator());
@@ -269,8 +206,6 @@ class _DetailedMovieScreenTablet extends State<DetailedMovieScreenWeb> {
                   child: Text("Lỗi khi mở phim", style: contentStyle),
                 );
               }else{
-                final searchVM = Provider.of<SearchViewModel>(context, listen: false);
-                fetchSameFilms = searchVM.searchFilmsByMultipleType(film.type);
               }
               return Row(
                 children: [
@@ -281,7 +216,6 @@ class _DetailedMovieScreenTablet extends State<DetailedMovieScreenWeb> {
                         SliverToBoxAdapter(
                           child: SizedBox(
                             height: heightScreen*0.4,
-                            child: BetterPlayer(controller: betterPlayerController),
                           ),
                         ),
                         SliverToBoxAdapter (
@@ -350,7 +284,7 @@ class _DetailedMovieScreenTablet extends State<DetailedMovieScreenWeb> {
                                       textColor: Colors.black,
                                       iconColor: Colors.black,
                                       onPressed: (){
-                                        viewModel.playVideoOntap(context, filmID);
+                                        detailedFilmVM.playVideoOntap(context, filmID);
                                       },
                                     ),
                                   ),
@@ -554,7 +488,7 @@ class _DetailedMovieScreenTablet extends State<DetailedMovieScreenWeb> {
                   Expanded(
                     flex: 2,
                     child: CustomScrollView(
-                      controller: sameFilmsController,
+                      controller: searchVM.sameFilmsController,
                       slivers: [
                         SliverToBoxAdapter(
                           child: Text(
@@ -563,7 +497,7 @@ class _DetailedMovieScreenTablet extends State<DetailedMovieScreenWeb> {
                           ),
                         ),
                         FutureBuilder(
-                            future: fetchSameFilms,
+                            future: widget.fetchSameFilms,
                             builder: (context, snapshot){
                               if (snapshot.connectionState == ConnectionState.waiting) {
                                 return SliverToBoxAdapter(
@@ -598,7 +532,7 @@ class _DetailedMovieScreenTablet extends State<DetailedMovieScreenWeb> {
                                             types: sameFilm.type.join(", "),
                                             age: sameFilm.age,
                                             ontap: (){
-                                              NavigatorHelper.replaceWith(context, DetailedMovieScreenWeb(filmID: sameFilm.id));
+                                              NavigatorHelper.replaceWith(context, DetailedFilmScreen(film: sameFilm));
                                             },
                                             des: sameFilm.description
                                           );

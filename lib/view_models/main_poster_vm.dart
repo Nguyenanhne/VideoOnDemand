@@ -16,9 +16,10 @@ class MainPosterViewModel extends ChangeNotifier {
   FilmModel? get film => _film;
   bool get hasInMyList => _hasInMyList;
 
-  void onTap(BuildContext context, String filmID){
-    NavigatorHelper.navigateTo(context, DetailedFilmScreen(filmID: filmID));
+  void onTap(BuildContext context, FilmModel film){
+    NavigatorHelper.navigateTo(context, DetailedFilmScreen(film: film));
   }
+
 
   Future<void> fetchRandomFilm() async {
     try {

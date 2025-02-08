@@ -39,7 +39,6 @@ class DetailedFilmViewModel extends ChangeNotifier {
     _activeEpisode = index;
     notifyListeners();
   }
-
   void playVideoOntap(BuildContext context, String filmID){
     NavigatorHelper.navigateTo(context, ResumeDialogPage(filmID:  filmID,));
 
@@ -128,6 +127,13 @@ class DetailedFilmViewModel extends ChangeNotifier {
     print('Film not found!');
     return null;
   }
+  // Future<FilmModel?> getFilmDetails(FilmModel film) async {
+  //   if (film != null) {
+  //     return film;
+  //   }
+  //   print('Film not found!');
+  //   return null;
+  // }
   Future<void> updateViewTotal(String filmID) async{
     await filmService.updateTotalView(filmID);
   }

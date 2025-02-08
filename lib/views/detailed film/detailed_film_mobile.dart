@@ -1,4 +1,5 @@
 import 'package:better_player_enhanced/better_player.dart';
+import 'package:du_an_cntt/models/film_model.dart';
 import 'package:du_an_cntt/utils.dart';
 import 'package:du_an_cntt/view_models/search_vm.dart';
 import 'package:du_an_cntt/widgets/flim_card_vertical.dart';
@@ -16,8 +17,10 @@ import '../../helper/navigator.dart';
 import '../../view_models/film_detail_vm.dart';
 
 class DetailedMovieScreenMobile extends StatefulWidget {
-  final String filmID;
-  DetailedMovieScreenMobile({super.key, required this.filmID});
+  final FilmModel film;
+  final Future<void> fetchSameFilms;
+  final Future<List<dynamic>> combinedFuture;
+  DetailedMovieScreenMobile({super.key, required this.film, required this.fetchSameFilms, required this.combinedFuture});
 
   @override
   State<DetailedMovieScreenMobile> createState() => _DetailedMovieScreenMobileState();
@@ -25,81 +28,14 @@ class DetailedMovieScreenMobile extends StatefulWidget {
 
 class _DetailedMovieScreenMobileState extends State<DetailedMovieScreenMobile>  with TickerProviderStateMixin {
   late String filmID;
-  late String filmUrlVideo;
-  late String userID;
-  int activeEpisode = 0;
-  List optionList = ["Các tập", "Trailer", "Nội dung tương tự"];
 
-  late Future filmDetailsFuture;
-  late Future<void> fetchSameFilms;
-  late Future isFilmInMyList;
-  late Future<List<dynamic>> combinedFuture;
-
-  late ScrollController sameFilmsController;
-  late BetterPlayerController betterPlayerController;
-  late BetterPlayerDataSource betterPlayerDataSource;
 
   final contentStyle = TextStyle(
       fontFamily: GoogleFonts.roboto().fontFamily,
       fontSize: 14.sp,
       color: Colors.white
   );
-  void sameFilmsOnScroll() {
-    final searchVM = Provider.of<SearchViewModel>(context, listen: false);
-    if (sameFilmsController.position.pixels == sameFilmsController.position.maxScrollExtent && !searchVM.isLoading && searchVM.hasMore) {
-      print("${searchVM.hasMore}");
-      searchVM.searchMoreFilmsByMultiType();
-    }
-  }
-  @override
-  void initState() {
-    super.initState();
-    sameFilmsController = ScrollController()..addListener(sameFilmsOnScroll);
-    final filmVM = Provider.of<DetailedFilmViewModel>(context, listen: false);
-    filmID = widget.filmID;
-    filmUrlVideo = "https://filmfinder.shop/input_video.mp4";
-    combinedFuture = Future.wait([
-      filmVM.getFilmDetails(filmID),
-      filmVM.getAddToListStatus(filmID),
-      filmVM.getRating(filmID)
-    ]);
-    BetterPlayerConfiguration betterPlayerConfiguration = BetterPlayerConfiguration(
-      aspectRatio: 16 / 9,
-      fit: BoxFit.contain,
-      autoPlay: false,
-      looping: true,
-      controlsConfiguration: BetterPlayerControlsConfiguration(
-        enableOverflowMenu: false,
-        enableFullscreen: false,
-        enableProgressBar: false
-      )
-    );
-    betterPlayerDataSource = BetterPlayerDataSource(
-      BetterPlayerDataSourceType.network,
-      "https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4",
-      cacheConfiguration: BetterPlayerCacheConfiguration(
-        useCache: true,
-        maxCacheSize: 100 * 1024 * 1024, // 100 MB
-        maxCacheFileSize: 10 * 1024 * 1024, // 10 MB
-        preCacheSize: 5 * 1024 * 1024, // 5 MB preload
-      ),
-      bufferingConfiguration: BetterPlayerBufferingConfiguration(
-          minBufferMs: 2000,
-          maxBufferMs: 10000,
-          bufferForPlaybackMs: 1000,
-          bufferForPlaybackAfterRebufferMs: 2000
-      ),
-    );
-    betterPlayerController = BetterPlayerController(betterPlayerConfiguration);
-    betterPlayerController.setupDataSource(betterPlayerDataSource);
 
-  }
-  @override
-  void dispose() {
-    sameFilmsController.dispose();
-    betterPlayerController.dispose(forceDispose: true);
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -205,7 +141,8 @@ class _DetailedMovieScreenMobileState extends State<DetailedMovieScreenMobile>  
         },
       );
     }
-    final viewModel = Provider.of<DetailedFilmViewModel>(context, listen: false);
+    final detailedFilmVM = Provider.of<DetailedFilmViewModel>(context, listen: false);
+    final searchVM = Provider.of<SearchViewModel>(context, listen: false);
 
     return Scaffold(
       appBar: AppBar(
@@ -239,7 +176,7 @@ class _DetailedMovieScreenMobileState extends State<DetailedMovieScreenMobile>  
         ],
       ),
       body: FutureBuilder<List<dynamic>>(
-        future: combinedFuture,
+        future: widget.combinedFuture,
           builder: (context, snapshot){
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(child: CircularProgressIndicator());
@@ -256,11 +193,9 @@ class _DetailedMovieScreenMobileState extends State<DetailedMovieScreenMobile>  
                   child: Text("Lỗi khi mở phim", style: TextStyle(color: Colors.white, fontSize: 18.sp)),
                 );
               }else{
-                final searchVM = Provider.of<SearchViewModel>(context, listen: false);
-                fetchSameFilms = searchVM.searchFilmsByMultipleType(film.type);
               }
               return CustomScrollView(
-                controller: sameFilmsController,
+                controller: searchVM.sameFilmsController,
                 slivers: [
                   SliverToBoxAdapter (
                     child: Padding(
@@ -271,7 +206,7 @@ class _DetailedMovieScreenMobileState extends State<DetailedMovieScreenMobile>  
                         children: [
                           SizedBox(
                             height: heightScreen*0.3,
-                            child: BetterPlayer(controller: betterPlayerController),
+                            // child: BetterPlayer(controller: betterPlayerController),
                           ),
                           Padding(
                             padding: EdgeInsets.symmetric(vertical: 10.h),
@@ -333,8 +268,8 @@ class _DetailedMovieScreenMobileState extends State<DetailedMovieScreenMobile>  
                                 iconColor: Colors.black,
                                 onPressed: () async {
                                   // betterPlayerController.pause();
-                                  await viewModel.updateViewTotal(filmID);
-                                  viewModel.playVideoOntap(context, filmID);
+                                  await detailedFilmVM.updateViewTotal(filmID);
+                                  detailedFilmVM.playVideoOntap(context, filmID);
                                 },
                               ),
                             ),
@@ -533,7 +468,7 @@ class _DetailedMovieScreenMobileState extends State<DetailedMovieScreenMobile>  
                     ),
                   ),
                   FutureBuilder(
-                      future: fetchSameFilms,
+                      future: widget.fetchSameFilms,
                       builder: (context, snapshot){
                         if (snapshot.connectionState == ConnectionState.waiting) {
                           return SliverToBoxAdapter(

@@ -57,7 +57,7 @@ class _VideoPlayerState extends State<VideoPlayer> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Color(colorAppbarIcon)),
           onPressed: () {
-            NavigatorHelper.replaceWith(context, DetailedFilmScreen(filmID: widget.filmID));
+            // NavigatorHelper.replaceWith(context, DetailedFilmScreen(film: widget.filmID));
           },
         ),
       ),

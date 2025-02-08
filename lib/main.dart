@@ -16,9 +16,8 @@ import 'package:du_an_cntt/view_models/video_vm.dart';
 import 'package:du_an_cntt/views/bottom_navbar.dart';
 import 'package:du_an_cntt/views/detailed%20film/detailed_film_screen.dart';
 import 'package:du_an_cntt/views/home/home_screen.dart';
-import 'package:du_an_cntt/views/my_netflix/my_netflix_screen.dart';
-import 'package:du_an_cntt/views/sign_in/sign_in_screen.dart';
-import 'package:du_an_cntt/views/welcome/welcome_screen.dart';
+import 'package:du_an_cntt/views/splash/splash_mobile.dart';
+import 'package:du_an_cntt/views/splash/splash_screen.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -35,15 +34,6 @@ void main() async {
   );
   await FirebaseAppCheck.instance.activate(
     androidProvider: AndroidProvider.debug,
-  );
-  SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
-  SystemChrome.setPreferredOrientations(
-    [
-      DeviceOrientation.landscapeLeft,
-      DeviceOrientation.landscapeRight,
-      DeviceOrientation.portraitDown,
-      DeviceOrientation.portraitUp
-    ]
   );
   runApp(
     MultiProvider(
@@ -92,6 +82,22 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return ScreenUtilInit(
       builder: (_,child){
+        // Lấy kích thước màn hình và kiểm tra chế độ
+        final size = MediaQuery.of(context).size;
+        final isTablet = size.shortestSide >= 600;
+
+        if (!isTablet) {
+          SystemChrome.setPreferredOrientations([
+            DeviceOrientation.portraitUp,
+          ]);
+        } else {
+          // Cho phép quay màn hình trên tablet
+          SystemChrome.setPreferredOrientations([
+            DeviceOrientation.portraitUp,
+            DeviceOrientation.landscapeLeft,
+            DeviceOrientation.landscapeRight,
+          ]);
+        }
         return MaterialApp(
           debugShowCheckedModeBanner: false,
           theme: ThemeData(
@@ -104,9 +110,10 @@ class _MyAppState extends State<MyApp> {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return Center(child: CircularProgressIndicator());
               } else if (snapshot.hasData && snapshot.data != null) {
-                return MyNetflixScreen();
-              } else {
                 return BottomNavBar();
+                // return DetailedFilmScreen(filmID: "10iPJ4Jh5omsZofD2kXW");
+              } else {
+                return SplashMobileScreen();
               }
             },
           ),
@@ -133,7 +140,7 @@ class _TestState extends State<Test> {
           height: 100,
         ),
         onTap: (){
-          NavigatorHelper.navigateTo(context, DetailedFilmScreen(filmID: "10iPJ4Jh5omsZofD2kXW"));
+          // NavigatorHelper.navigateTo(context, DetailedFilmScreen(filmID: "10iPJ4Jh5omsZofD2kXW"));
         },
       ),
     );

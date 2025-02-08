@@ -35,9 +35,10 @@ class MyListFilmViewModel extends ChangeNotifier{
 
   List<FilmModel> get films => _films;
 
-  void onTap(BuildContext context, String movieID){
-    NavigatorHelper.navigateTo(context, DetailedFilmScreen(filmID: movieID));
+  void onTap(BuildContext context, FilmModel film){
+    NavigatorHelper.navigateTo(context, DetailedFilmScreen(film: film));
   }
+
 
   void _onScroll() {
     if (myListScrollController.position.pixels == myListScrollController.position.maxScrollExtent &&
