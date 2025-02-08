@@ -7,6 +7,7 @@ import 'package:du_an_cntt/view_models/home_vm.dart';
 import 'package:du_an_cntt/view_models/main_poster_vm.dart';
 import 'package:du_an_cntt/view_models/my_list_film_vm.dart';
 import 'package:du_an_cntt/view_models/rating_vm.dart';
+import 'package:du_an_cntt/view_models/resume_vm.dart';
 import 'package:du_an_cntt/view_models/search_vm.dart';
 import 'package:du_an_cntt/view_models/showing_film_card_vm.dart';
 import 'package:du_an_cntt/view_models/my_netflix_vm.dart';
@@ -50,7 +51,8 @@ void main() async {
         ChangeNotifierProvider(create: (_) => SearchViewModel()),
         ChangeNotifierProvider(create: (_) => RatingViewModel()),
         ChangeNotifierProvider(create: (_) => MainPosterViewModel()),
-        ChangeNotifierProvider(create: (_) => FilmWatchedCardViewModel())
+        ChangeNotifierProvider(create: (_) => FilmWatchedCardViewModel()),
+        ChangeNotifierProvider(create: (_) => ResumeViewModel())
       ],
       builder: (context, child){
         return MyApp();
@@ -83,21 +85,19 @@ class _MyAppState extends State<MyApp> {
     return ScreenUtilInit(
       builder: (_,child){
         // Lấy kích thước màn hình và kiểm tra chế độ
-        final size = MediaQuery.of(context).size;
-        final isTablet = size.shortestSide >= 600;
-
-        if (!isTablet) {
-          SystemChrome.setPreferredOrientations([
-            DeviceOrientation.portraitUp,
-          ]);
-        } else {
-          // Cho phép quay màn hình trên tablet
-          SystemChrome.setPreferredOrientations([
-            DeviceOrientation.portraitUp,
-            DeviceOrientation.landscapeLeft,
-            DeviceOrientation.landscapeRight,
-          ]);
-        }
+        // final size = MediaQuery.of(context).size;
+        // final isTablet = size.shortestSide >= 600;
+        // if (!isTablet) {
+        //   SystemChrome.setPreferredOrientations([
+        //     DeviceOrientation.portraitUp,
+        //   ]);
+        // } else {
+        //   SystemChrome.setPreferredOrientations([
+        //     DeviceOrientation.portraitUp,
+        //     DeviceOrientation.landscapeLeft,
+        //     DeviceOrientation.landscapeRight,
+        //   ]);
+        // }
         return MaterialApp(
           debugShowCheckedModeBanner: false,
           theme: ThemeData(

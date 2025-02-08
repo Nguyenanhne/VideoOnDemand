@@ -11,8 +11,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:provider/provider.dart';
-
-import '../../services/FilmService.dart';
 import '../../view_models/showing_film_card_vm.dart';
 import '../../widgets/film_card.dart';
 

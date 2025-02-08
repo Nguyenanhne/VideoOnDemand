@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class MyFilmWatchedService{
@@ -39,7 +40,13 @@ class MyFilmWatchedService{
       print("Failed to save position: $e");
     }
   }
-  Future<List<String>> getListFilmIDbyUserID(String userID) async {
+  Future<List<String>> getListFilmIDbyUserID() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if(user == null){
+      return [];
+    }
+    final userID = user.uid;
+
     try {
       final querySnapshot = await firestore
           .collection('My Film Watched')
@@ -62,4 +69,33 @@ class MyFilmWatchedService{
       return [];
     }
   }
+  Future<int> getPositionByFilmID(String filmID) async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if(user == null){
+      return 0;
+    }
+    final userID = user.uid;
+    try {
+      final querySnapshot = await firestore
+          .collection('My Film Watched')
+          .where('userID', isEqualTo: userID)
+          .get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        final docData = querySnapshot.docs.first.data();
+
+        final Map<String, dynamic> videoPosition =
+            docData['videoPosition'] as Map<String, dynamic>? ?? {};
+
+        return videoPosition[filmID] ?? 0;
+      } else {
+        print("No records found for user $userID");
+        return 0;
+      }
+    } catch (e) {
+      print("Error fetching position for user $userID, film $filmID: $e");
+      return 0;
+    }
+  }
+
 }

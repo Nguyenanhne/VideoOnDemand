@@ -1,6 +1,7 @@
 import 'dart:developer';
-
-import 'package:du_an_cntt/services/UserService.dart';
+import 'package:http/http.dart' as http;
+import 'package:du_an_cntt/services/user_service.dart';
+import 'package:du_an_cntt/utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -43,7 +44,6 @@ class Auth {
 
 
   Future<String?> sendEmailVerificationLink() async{
-
     try {
       // Gửi email xác thực
       await firebaseAuth.currentUser?.sendEmailVerification();
@@ -52,6 +52,7 @@ class Auth {
       // Xử lý lỗi nếu có
       print("Lỗi khi gửi email xác thực: $e");
     }
+    return null;
   }
 
   Future<bool> isEmailVerified() async{
@@ -65,15 +66,13 @@ class Auth {
     try {
       final cred = await firebaseAuth.signInWithEmailAndPassword(
           email: email, password: password);
-
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.setString('userId', cred.user!.uid);
-
       return cred.user;
     } on FirebaseAuthException catch (e) {
       log("Tên đăng nhập hoặc mật khẩu không hợp lệ");
     }
+    return null;
   }
+
   Future<void> signOut()async {
     try{
       await FirebaseAuth.instance.signOut();
@@ -92,6 +91,7 @@ class Auth {
       print(e);
     }
   }
+
   Future<void> sendPasswordResetEmail(String email) async{
     try{
       await firebaseAuth.sendPasswordResetEmail(email: email);
@@ -101,6 +101,7 @@ class Auth {
       print(e);
     }
   }
+
   Future<String> getUserID() async {
     try {
       User? user = firebaseAuth.currentUser;
@@ -112,6 +113,41 @@ class Auth {
     } catch (e) {
       print("Error fetching user ID: $e");
       rethrow;
+    }
+  }
+
+  Future<bool> sendTokenToServer() async {
+    try {
+      // Lấy Firebase ID Token
+      User? user = FirebaseAuth.instance.currentUser;
+      String? idToken = await user?.getIdToken();
+      print(idToken);
+      if (idToken == null) {
+        print("Không có token để gửi");
+        return false;
+      }
+
+      // URL của API server (thay bằng URL của bạn)
+      String url = urlVerifyToken;
+
+      // Gửi yêu cầu HTTP POST với token trong header Authorization
+      final response = await http.post(
+        Uri.parse(url),
+        headers: {
+          'Authorization': 'Bearer $idToken',
+        },
+      );
+      // Kiểm tra kết quả từ server
+      if (response.statusCode == 200) {
+        print('Token hợp lệ. Dữ liệu đã được gửi thành công!');
+        return true;
+      } else {
+        print('Lỗi: ${response.statusCode}');
+        return false;
+      }
+    } catch (e) {
+      print('Có lỗi xảy ra: $e');
+      return false;
     }
   }
 }

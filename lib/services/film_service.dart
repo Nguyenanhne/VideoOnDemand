@@ -1,7 +1,9 @@
+import "dart:convert";
 import "dart:math";
-
+import "package:du_an_cntt/utils.dart";
+import 'package:http/http.dart' as http;
 import "package:cloud_firestore/cloud_firestore.dart";
-import "package:du_an_cntt/services/RatingService.dart";
+import "package:du_an_cntt/services/rating_service.dart";
 import "package:firebase_storage/firebase_storage.dart";
 import "../models/film_model.dart";
 
@@ -243,4 +245,39 @@ class FilmService{
       return null;
     }
   }
+  Future<String?> getVideoUrl(String filmID) async {
+    final url = Uri.parse(getVideoURLToken);
+    try {
+      final response = await http.post(
+        url,
+        headers: { "film-id": filmID },
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        return data["videoUrl"];
+      }
+    } catch (e) {
+      print("Error fetching video URL: $e");
+    }
+    return null;
+  }
+  Future<String?> getTrailerUrl(String filmID) async {
+    final url = Uri.parse(getTrailerURLToken);
+    try {
+      final response = await http.post(
+        url,
+        headers: { "film-id": filmID },
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        return data["trailerUrl"];
+      }
+    } catch (e) {
+      print("Error fetching trailer URL: $e");
+    }
+    return null;
+  }
+
 }

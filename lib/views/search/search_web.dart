@@ -1,4 +1,3 @@
-import 'package:du_an_cntt/services/TypeService.dart';
 import 'package:du_an_cntt/utils.dart';
 import 'package:du_an_cntt/view_models/search_vm.dart';
 import 'package:du_an_cntt/widgets/flim_card_vertical.dart';
@@ -8,7 +7,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/film_model.dart';
-import '../../services/FilmService.dart';
+import '../../services/film_service.dart';
+import '../../services/type_service.dart';
 class SearchScreenWeb extends StatefulWidget {
   const SearchScreenWeb({super.key});
 

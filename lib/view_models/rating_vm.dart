@@ -1,8 +1,8 @@
 import 'package:du_an_cntt/models/film_model.dart';
-import 'package:du_an_cntt/services/FilmService.dart';
 import 'package:flutter/foundation.dart';
 
-import '../services/RatingService.dart';
+import '../services/film_service.dart';
+import '../services/rating_service.dart';
 
 class RatingViewModel extends ChangeNotifier {
   final RatingService ratingService = RatingService();

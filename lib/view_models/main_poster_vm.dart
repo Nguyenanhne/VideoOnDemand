@@ -2,9 +2,9 @@ import 'package:du_an_cntt/models/film_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../helper/navigator.dart';
-import '../services/FilmService.dart';
-import '../services/MyListService.dart';
+import '../services/film_service.dart';
 import '../services/firebase_authentication.dart';
+import '../services/my_list_service.dart';
 import '../views/detailed film/detailed_film_screen.dart';
 
 class MainPosterViewModel extends ChangeNotifier {

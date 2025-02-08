@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:du_an_cntt/helper/navigator.dart';
-import 'package:du_an_cntt/services/FilmService.dart';
 import 'package:du_an_cntt/views/detailed%20film/detailed_film_screen.dart';
 import 'package:flutter/cupertino.dart';
 import '../models/film_model.dart';
+import '../services/film_service.dart';
 
 class ShowingFilmsCardViewModel extends ChangeNotifier{
 

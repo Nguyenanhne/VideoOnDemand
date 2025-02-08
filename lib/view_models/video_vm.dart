@@ -1,8 +1,9 @@
 import 'dart:async';
 import 'package:better_player_enhanced/better_player.dart';
-import 'package:du_an_cntt/services/MyFilmWatchedService.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+
+import '../services/my_film_watched_service.dart';
 
 class VideoViewModel with ChangeNotifier {
   final MyFilmWatchedService _service = MyFilmWatchedService();
@@ -12,13 +13,14 @@ class VideoViewModel with ChangeNotifier {
 
   BetterPlayerController get betterPlayerController => _betterPlayerController;
 
-  void initializeVideoPlayer({required String filmID, required String videoUrl}) {
+  void initializeVideoPlayer({required String filmID, required String videoUrl, required int position}) {
     BetterPlayerConfiguration betterPlayerConfiguration = BetterPlayerConfiguration(
       aspectRatio: 16 / 9,
       fit: BoxFit.contain,
       autoPlay: true,
       looping: true,
       fullScreenByDefault: true,
+      startAt: Duration(seconds: position)
     );
 
     _betterPlayerDataSource = BetterPlayerDataSource(
@@ -67,6 +69,21 @@ class VideoViewModel with ChangeNotifier {
   @override
   void dispose(){
     _betterPlayerController.dispose(forceDispose: true);
+    // final size = MediaQuery.of(context).size;
+    // final isTablet = size.shortestSide >= 600;
+    //
+    // if (!isTablet) {
+    //   SystemChrome.setPreferredOrientations([
+    //     DeviceOrientation.portraitUp,
+    //   ]);
+    // } else {
+    //   // Cho phép quay màn hình trên tablet
+    //   SystemChrome.setPreferredOrientations([
+    //     DeviceOrientation.portraitUp,
+    //     DeviceOrientation.landscapeLeft,
+    //     DeviceOrientation.landscapeRight,
+    //   ]);
+    // }
     super.dispose();
   }
 

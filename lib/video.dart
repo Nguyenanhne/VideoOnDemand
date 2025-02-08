@@ -9,7 +9,8 @@ import 'package:better_player_enhanced/better_player.dart';
 
 class VideoPlayer extends StatefulWidget {
   final String filmID;
-  VideoPlayer({super.key, required this.filmID});
+  final int position;
+  VideoPlayer({super.key, required this.filmID, required this.position});
 
   @override
   State<VideoPlayer> createState() => _VideoPlayerState();
@@ -43,9 +44,14 @@ class _VideoPlayerState extends State<VideoPlayer> {
     //   ),
     // );
     // betterPlayerController = BetterPlayerController(betterPlayerConfiguration);
-    // betterPlayerController.setupDataSource(betterPlayerDataSource);
+    // betterPlayerController.setupDataSource(betterPlayerDataSource);\
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+    ]);
     final videoViewModel = Provider.of<VideoViewModel>(context, listen: false);
-    videoViewModel.initializeVideoPlayer(filmID: widget.filmID, videoUrl: "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8");
+    videoViewModel.initializeVideoPlayer(filmID: widget.filmID, videoUrl: "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8", position: widget.position);
     super.initState();
   }
 
@@ -57,7 +63,7 @@ class _VideoPlayerState extends State<VideoPlayer> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Color(colorAppbarIcon)),
           onPressed: () {
-            // NavigatorHelper.replaceWith(context, DetailedFilmScreen(film: widget.filmID));
+            Navigator.pop(context);
           },
         ),
       ),

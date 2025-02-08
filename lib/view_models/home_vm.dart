@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 
 import '../helper/navigator.dart';
 import '../models/film_model.dart';
-import '../services/FilmService.dart';
-import '../services/TypeService.dart';
+import '../services/film_service.dart';
+import '../services/type_service.dart';
 import '../views/detailed film/detailed_film_screen.dart';
 
 class HomeViewModel extends ChangeNotifier{

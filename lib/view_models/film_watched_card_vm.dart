@@ -1,11 +1,11 @@
-import 'package:du_an_cntt/services/FilmService.dart';
-import 'package:du_an_cntt/services/MyFilmWatchedService.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 
 import '../helper/navigator.dart';
 import '../models/film_model.dart';
+import '../services/film_service.dart';
+import '../services/my_film_watched_service.dart';
 import '../views/detailed film/detailed_film_screen.dart';
 
 class FilmWatchedCardViewModel extends ChangeNotifier{
@@ -53,15 +53,15 @@ class FilmWatchedCardViewModel extends ChangeNotifier{
     try {
       _isLoading = true;
 
-      User? user = FirebaseAuth.instance.currentUser;
-      if (user == null) {
-        print('User is not logged in');
-        _isLoading = false;
-        return;
-      }
-      String userID = user.uid;
+      // User? user = FirebaseAuth.instance.currentUser;
+      // if (user == null) {
+      //   print('User is not logged in');
+      //   _isLoading = false;
+      //   return;
+      // }
+      // String userID = user.uid;
       if (_filmIDs.isEmpty) {
-        _filmIDs = await _myFilmWatchedService.getListFilmIDbyUserID("userID");
+        _filmIDs = await _myFilmWatchedService.getListFilmIDbyUserID();
         print(_filmIDs.length);
       }
 

@@ -28,15 +28,17 @@ class DetailedMovieScreenMobile extends StatefulWidget {
 
 class _DetailedMovieScreenMobileState extends State<DetailedMovieScreenMobile>  with TickerProviderStateMixin {
   late String filmID;
-
-
   final contentStyle = TextStyle(
       fontFamily: GoogleFonts.roboto().fontFamily,
       fontSize: 14.sp,
       color: Colors.white
   );
-
-
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    filmID = widget.film.id;
+  }
   @override
   Widget build(BuildContext context) {
     final heightScreen = MediaQuery.of(context).size.height
@@ -206,7 +208,11 @@ class _DetailedMovieScreenMobileState extends State<DetailedMovieScreenMobile>  
                         children: [
                           SizedBox(
                             height: heightScreen*0.3,
-                            // child: BetterPlayer(controller: betterPlayerController),
+                            child: (detailedFilmVM.verifyToken)
+                              ? (detailedFilmVM.trailerURL != null)
+                                ? BetterPlayer(controller: detailedFilmVM.betterPlayerController!)
+                                : Center(child: Text("Lỗi phim!", style: contentStyle))
+                              : Center(child: Text("Lỗi xác thực!", style: contentStyle))
                           ),
                           Padding(
                             padding: EdgeInsets.symmetric(vertical: 10.h),
@@ -269,7 +275,7 @@ class _DetailedMovieScreenMobileState extends State<DetailedMovieScreenMobile>  
                                 onPressed: () async {
                                   // betterPlayerController.pause();
                                   await detailedFilmVM.updateViewTotal(filmID);
-                                  detailedFilmVM.playVideoOntap(context, filmID);
+                                  detailedFilmVM.playVideoOnTap(context, filmID);
                                 },
                               ),
                             ),
@@ -439,7 +445,7 @@ class _DetailedMovieScreenMobileState extends State<DetailedMovieScreenMobile>  
                                       ),
                                       InkWell(
                                         onTap: (){
-                                          viewModel.ratingOntap(context, filmID);
+                                          viewModel.ratingOnTap(context, filmID);
                                         },
                                         child: Column(
                                           children: [

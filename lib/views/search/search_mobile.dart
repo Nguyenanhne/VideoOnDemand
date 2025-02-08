@@ -1,4 +1,3 @@
-import 'package:du_an_cntt/services/TypeService.dart';
 import 'package:du_an_cntt/view_models/search_vm.dart';
 import 'package:du_an_cntt/widgets/flim_card_vertical.dart';
 import 'package:flutter/material.dart';
@@ -7,21 +6,22 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/film_model.dart';
-import '../../services/FilmService.dart';
+import '../../services/film_service.dart';
 import '../../widgets/movie_detail/movie_item.dart';
 class SearchScreenMobile extends StatefulWidget {
-  const SearchScreenMobile({super.key});
+  final Future<void> fetchTypes;
+  final Future<void> fetchYears;
+  const SearchScreenMobile({super.key, required this.fetchTypes, required this.fetchYears});
 
   @override
   State<SearchScreenMobile> createState() => _SearchScreenMobileState();
 }
 
 class _SearchScreenMobileState extends State<SearchScreenMobile> {
-  final TypeService typeService = TypeService();
-  late Future<void> fetchTypes;
-  late Future<void> fetchYears;
+  // late Future<void> fetchTypes;
+  // late Future<void> fetchYears;
 
-  late ScrollController searchingFilmController;
+  // late ScrollController searchingFilmController;
 
   final contentStyle = TextStyle(
       fontFamily: GoogleFonts.roboto().fontFamily,
@@ -32,20 +32,20 @@ class _SearchScreenMobileState extends State<SearchScreenMobile> {
   final imageHeight = 200.0;
   @override
   void initState() {
-    final searchViewModel = Provider.of<SearchViewModel>(context, listen: false);
-    searchViewModel.reset();
-    fetchTypes = searchViewModel.getAllTypes();
-    fetchYears = searchViewModel.getYears();
-    searchingFilmController = ScrollController()..addListener(searchingFilmsOnScroll);
+    // final searchViewModel = Provider.of<SearchViewModel>(context, listen: false);
+    // searchViewModel.reset();
+    // fetchTypes = searchViewModel.getAllTypes();
+    // fetchYears = searchViewModel.getYears();
+    // searchingFilmController = ScrollController()..addListener(searchingFilmsOnScroll);
     super.initState();
   }
 
-  void searchingFilmsOnScroll() {
-    final searchViewModel = Provider.of<SearchViewModel>(context, listen: false);
-    if (searchingFilmController.position.pixels == searchingFilmController.position.maxScrollExtent && !searchViewModel.isLoading && searchViewModel.hasMore) {
-      searchViewModel.searchMoreFilmsByTypeAndYear();
-    }
-  }
+  // void searchingFilmsOnScroll() {
+  //   final searchViewModel = Provider.of<SearchViewModel>(context, listen: false);
+  //   if (searchingFilmController.position.pixels == searchingFilmController.position.maxScrollExtent && !searchViewModel.isLoading && searchViewModel.hasMore) {
+  //     searchViewModel.searchMoreFilmsByTypeAndYear();
+  //   }
+  // }
   @override
   Widget build(BuildContext context) {
     final heightBottomSheet = MediaQuery.of(context).size.height - AppBar().preferredSize.height;
@@ -268,7 +268,7 @@ class _SearchScreenMobileState extends State<SearchScreenMobile> {
           }
           final films = searchingViewModel.films;
           return ListView.builder(
-            controller: searchingFilmController,
+            controller: searchingViewModel.searchingFilmController,
             itemCount: films.length + (searchingViewModel.isLoading ? 1 : 0),
             itemBuilder: (context, index) {
               if (index == films.length) {

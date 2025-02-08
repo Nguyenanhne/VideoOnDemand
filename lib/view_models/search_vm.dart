@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import '../../models/film_model.dart';
-import '../../services/FilmService.dart';
 import '../helper/navigator.dart';
-import '../services/TypeService.dart';
+import '../services/film_service.dart';
+import '../services/type_service.dart';
 import '../views/detailed film/detailed_film_screen.dart';
 
 class SearchViewModel extends ChangeNotifier {
@@ -11,6 +11,7 @@ class SearchViewModel extends ChangeNotifier {
   final FilmService filmService = FilmService();
 
   ScrollController sameFilmsController = ScrollController();
+  ScrollController searchingFilmController = ScrollController();
 
   List<FilmModel> _films = [];
 
@@ -55,6 +56,9 @@ class SearchViewModel extends ChangeNotifier {
   SearchViewModel() {
     sameFilmsController.addListener(() {
       sameFilmsOnScroll();
+    });
+    searchingFilmController.addListener((){
+      searchingFilmsOnScroll();
     });
   }
 
@@ -175,12 +179,17 @@ class SearchViewModel extends ChangeNotifier {
       _isSearching = false;
     }
   }
+
   void sameFilmsOnScroll() {
     if (sameFilmsController.position.pixels == sameFilmsController.position.maxScrollExtent && !isLoading && hasMore) {
       searchMoreFilmsByMultiType();
     }
   }
-
+  void searchingFilmsOnScroll() {
+    if (searchingFilmController.position.pixels == searchingFilmController.position.maxScrollExtent && !isLoading && hasMore) {
+      searchMoreFilmsByTypeAndYear();
+    }
+  }
   Future<void> searchMoreFilmsByMultiType( {int limit = 5}) async {
     if (_isLoading || !_hasMore) return;
     _isLoading = true;
@@ -215,12 +224,15 @@ class SearchViewModel extends ChangeNotifier {
   }
 
   Future<void> reset() async{
+    _types = ["Thể loại"];
+    _years = ["Năm"];
     films.clear();
     _selectedType = null;
     _selectedYear = null;
   }
   @override
   void dispose() {
+    searchingFilmController.dispose();
     sameFilmsController.dispose();
     super.dispose();
   }

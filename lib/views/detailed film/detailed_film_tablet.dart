@@ -279,7 +279,7 @@ class _DetailedMovieScreenTablet extends State<DetailedMovieScreenTablet> {
                               textColor: Colors.black,
                               iconColor: Colors.black,
                               onPressed: (){
-                                detailedFilmVM.playVideoOntap(context, filmID);
+                                detailedFilmVM.playVideoOnTap(context, filmID);
                               },
                             ),
                           ),
@@ -448,7 +448,7 @@ class _DetailedMovieScreenTablet extends State<DetailedMovieScreenTablet> {
                                   ),
                                   InkWell(
                                     onTap: (){
-                                      viewModel.ratingOntap(context, filmID);
+                                      viewModel.ratingOnTap(context, filmID);
                                     },
                                     child: Column(
                                       children: [

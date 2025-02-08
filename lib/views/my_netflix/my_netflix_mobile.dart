@@ -1,4 +1,3 @@
-import 'package:du_an_cntt/services/MyListService.dart';
 import 'package:du_an_cntt/view_models/my_netflix_vm.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

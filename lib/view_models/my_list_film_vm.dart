@@ -1,12 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:du_an_cntt/services/MyListService.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../helper/navigator.dart';
 import '../models/film_model.dart';
-import '../services/FilmService.dart';
+import '../services/film_service.dart';
+import '../services/my_list_service.dart';
 import '../views/detailed film/detailed_film_screen.dart';
 
 class MyListFilmViewModel extends ChangeNotifier{
