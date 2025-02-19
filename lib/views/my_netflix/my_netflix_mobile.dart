@@ -8,12 +8,14 @@ import 'package:provider/provider.dart';
 import 'package:tap_debouncer/tap_debouncer.dart';
 
 import '../../services/firebase_authentication.dart';
-import '../../utils.dart';
+import '../../utils/utils.dart';
 import '../../view_models/film_watched_card_vm.dart';
 import '../../view_models/my_list_film_vm.dart';
 import '../../widgets/film_card.dart';
 class MyNetflixScreenMobile extends StatefulWidget {
-  const MyNetflixScreenMobile({super.key});
+  final Future<void> fetchMyList;
+  final Future<void> fetchFilmWatched;
+  const MyNetflixScreenMobile({super.key, required this.fetchMyList, required this.fetchFilmWatched});
 
   @override
   State<MyNetflixScreenMobile> createState() => _MyNetflixScreenMobileState();
@@ -35,22 +37,6 @@ class _MyNetflixScreenMobileState extends State<MyNetflixScreenMobile> {
     fontWeight: FontWeight.bold,
     color: Colors.white,
   );
-  late Future<void> fetchMyList;
-  late Future<void> fetchFilmWatched;
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    final myListFilmsViewModel = Provider.of<MyListFilmViewModel>(context, listen: false);
-    final myFilmWatched = Provider.of<FilmWatchedCardViewModel>(context, listen: false);
-
-    fetchMyList = myListFilmsViewModel.fetchMyList();
-    fetchFilmWatched = myFilmWatched.fetchMyListFilmWatched();
-  }
-  @override
-  void dispose() {
-    super.dispose();
-  }
   @override
   Widget build(BuildContext context) {
     final heightScreen = MediaQuery.of(context).size.height
@@ -80,24 +66,6 @@ class _MyNetflixScreenMobileState extends State<MyNetflixScreenMobile> {
             ),
             child: ListView(
               children: [
-                InkWell(
-                  onTap: (){},
-                  child: ListTile(
-                    leading: Icon(
-                      LineAwesomeIcons.edit_solid,
-                      size: 30,
-                      color: Colors.white,
-                    ),
-                    title: Text(
-                      "Quản lý hồ sơ",
-                      style: contentStyle.copyWith(
-                        color: Colors.white,
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.bold
-                      ),
-                    ),
-                  ),
-                ),
                 ListTile(
                   leading: Icon(
                     Icons.settings,
@@ -148,9 +116,29 @@ class _MyNetflixScreenMobileState extends State<MyNetflixScreenMobile> {
                     ),
                   ),
                 ),
+                InkWell(
+                  onTap: (){
+                    viewModel.changePWOnTap(context);
+                  },
+                  child: ListTile(
+                    leading: Icon(
+                      LineAwesomeIcons.edit_solid,
+                      size: 30,
+                      color: Colors.white,
+                    ),
+                    title: Text(
+                      "Đổi mật khẩu",
+                      style: contentStyle.copyWith(
+                          color: Colors.white,
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.bold
+                      ),
+                    ),
+                  ),
+                ),
                 TapDebouncer(
                   onTap: () async {
-                    viewModel.ontapBackToLoginScreen(context);
+                    viewModel.onTapBackToLoginScreen(context);
                     await firebaseAuth.signOut();
                   }, // your tap handler moved here
                   builder: (BuildContext context, TapDebouncerFunc? onTap) {
@@ -183,14 +171,8 @@ class _MyNetflixScreenMobileState extends State<MyNetflixScreenMobile> {
 
     return Scaffold(
       appBar: AppBar(
-        titleSpacing: 0,
+        titleSpacing: 10.w,
         backgroundColor: Colors.black,
-        leading: InkWell(
-          child: Icon(
-            Icons.arrow_back,
-            color: Color(colorAppbarIcon),
-          ),
-        ),
         title: Text(
           "Netflix của tôi",
           style: contentStyle.copyWith(color: Colors.white, fontSize: 18.sp, fontWeight: FontWeight.bold),
@@ -230,7 +212,7 @@ class _MyNetflixScreenMobileState extends State<MyNetflixScreenMobile> {
             ),
           ),
           FutureBuilder(
-              future: fetchMyList,
+              future: widget.fetchMyList,
               builder: (context, snapshot){
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return SliverToBoxAdapter(
@@ -294,7 +276,7 @@ class _MyNetflixScreenMobileState extends State<MyNetflixScreenMobile> {
             ),
           ),
           FutureBuilder(
-              future: fetchFilmWatched,
+              future: widget.fetchFilmWatched,
               builder: (context, snapshot){
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return SliverToBoxAdapter(

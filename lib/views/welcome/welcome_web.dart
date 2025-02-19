@@ -1,5 +1,5 @@
 import 'dart:ui';
-import 'package:du_an_cntt/utils.dart';
+import 'package:du_an_cntt/utils/utils.dart';
 import 'package:du_an_cntt/view_models/home_vm.dart';
 import 'package:du_an_cntt/views/sign_in/sign_in_screen.dart';
 import 'package:du_an_cntt/views/sign_up/sign_up_screen.dart';

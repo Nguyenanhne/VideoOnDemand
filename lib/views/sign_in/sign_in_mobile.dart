@@ -1,12 +1,15 @@
 import 'package:du_an_cntt/helper/navigator.dart';
-import 'package:du_an_cntt/utils.dart';
+import 'package:du_an_cntt/utils/utils.dart';
 import 'package:du_an_cntt/view_models/sign_in_vm.dart';
 import 'package:du_an_cntt/views/email_verification_link/email_verification_link_mobile.dart';
 import 'package:du_an_cntt/views/forgot_password/forgot_password_mobile.dart';
+import 'package:du_an_cntt/views/forgot_password/forgot_password_screen.dart';
 import 'package:du_an_cntt/views/sign_up/sign_up_mobile.dart';
+import 'package:du_an_cntt/views/sign_up/sign_up_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -25,18 +28,9 @@ class SignInScreenMobile extends StatefulWidget {
 }
 
 class _SignInScreenMobileState extends State<SignInScreenMobile> {
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-
-  @override
-  void dispose() {
-    emailController.dispose();
-    passwordController.dispose();
-    super.dispose();
-  }
   @override
   Widget build(BuildContext context) {
-    final viewModel = Provider.of<SignInViewModel>(context);
+    final viewModel = Provider.of<SignInViewModel>(context, listen: false);
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -53,7 +47,7 @@ class _SignInScreenMobileState extends State<SignInScreenMobile> {
           leading: IconButton(
             icon: Icon(Icons.arrow_back, color: Color(colorAppbarIcon)),
             onPressed: () {
-              NavigatorHelper.goBack(context);
+              SystemNavigator.pop();
             },
           ),
         ),
@@ -67,7 +61,7 @@ class _SignInScreenMobileState extends State<SignInScreenMobile> {
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
                     child: TextFormField(
-                      controller: emailController,
+                      controller: viewModel.emailController,
                       style: TextStyle(
                           fontSize: 14.sp,
                           color: Colors.grey[400],
@@ -88,7 +82,7 @@ class _SignInScreenMobileState extends State<SignInScreenMobile> {
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 20.w),
                     child: TextFormField(
-                      controller: passwordController,
+                      controller: viewModel.passwordController,
                       obscureText: true,
                       style: TextStyle(
                           fontSize: 14.sp,
@@ -109,55 +103,56 @@ class _SignInScreenMobileState extends State<SignInScreenMobile> {
                   ),
                   TapDebouncer(
                     onTap: () async {
-                      // Hiển thị dialog chờ xử lý
-                      showDialog(
-                        context: context,
-                        barrierDismissible: false,
-                        builder: (context) {
-                          return Center(child: CircularProgressIndicator());
-                        },
-                      );
-
-                      // Gọi hàm đăng nhập
-                      User? user = await viewModel.Login(
-                        context: context,
-                        email: emailController.text.trim(),
-                        password: passwordController.text.trim(),
-                      );
-
-                      // Đóng dialog chờ
-                      Navigator.pop(context);
-
-                      // Tạm dừng ngắn để cải thiện trải nghiệm người dùng
-                      await Future.delayed(Duration(milliseconds: 500));
-
-                      if (user != null) {
-                        // Hiển thị thông báo thành công
-                        QuickAlert.show(
-                          context: context,
-                          type: QuickAlertType.success,
-                          text: "Đăng nhập thành công",
-                          title: "THÀNH CÔNG",
-                          onConfirmBtnTap: () async {
-                            if (await Auth().isEmailVerified()) {
-                              await NavigatorHelper.navigateAndRemoveUntil(context, BottomNavBar());
-                            } else {
-                              await NavigatorHelper.navigateAndRemoveUntil(context, EmailVerificationLink());
-                            }
-                          },
-                        );
-                      } else {
-                        // Hiển thị thông báo thất bại
-                        QuickAlert.show(
-                          context: context,
-                          type: QuickAlertType.error,
-                          text: "Tên đăng nhập hoặc mật khẩu không hợp lệ",
-                          title: "THẤT BẠI",
-                          onConfirmBtnTap: () {
-                            NavigatorHelper.goBack(context);
-                          },
-                        );
-                      }
+                      viewModel.signInOnTap(context);
+                      // // Hiển thị dialog chờ xử lý
+                      // showDialog(
+                      //   context: context,
+                      //   barrierDismissible: false,
+                      //   builder: (context) {
+                      //     return Center(child: CircularProgressIndicator());
+                      //   },
+                      // );
+                      //
+                      // // Gọi hàm đăng nhập
+                      // User? user = await viewModel.Login(
+                      //   context: context,
+                      //   email: viewModel.emailController.text.trim(),
+                      //   password: viewModel.passwordController.text.trim(),
+                      // );
+                      //
+                      // // Đóng dialog chờ
+                      // Navigator.pop(context);
+                      //
+                      // // Tạm dừng ngắn để cải thiện trải nghiệm người dùng
+                      // await Future.delayed(Duration(milliseconds: 500));
+                      //
+                      // if (user != null) {
+                      //   // Hiển thị thông báo thành công
+                      //   QuickAlert.show(
+                      //     context: context,
+                      //     type: QuickAlertType.success,
+                      //     text: "Đăng nhập thành công",
+                      //     title: "THÀNH CÔNG",
+                      //     onConfirmBtnTap: () async {
+                      //       if (await Auth().isEmailVerified()) {
+                      //         await NavigatorHelper.navigateAndRemoveUntil(context, BottomNavBar());
+                      //       } else {
+                      //         await NavigatorHelper.navigateAndRemoveUntil(context, EmailVerificationLink());
+                      //       }
+                      //     },
+                      //   );
+                      // } else {
+                      //   // Hiển thị thông báo thất bại
+                      //   QuickAlert.show(
+                      //     context: context,
+                      //     type: QuickAlertType.error,
+                      //     text: "Tên đăng nhập hoặc mật khẩu không hợp lệ",
+                      //     title: "THẤT BẠI",
+                      //     onConfirmBtnTap: () {
+                      //       NavigatorHelper.goBack(context);
+                      //     },
+                      //   );
+                      // }
                     },
                     builder: (BuildContext context, Future<void> Function()? onTap) {
                       return Container(
@@ -236,7 +231,7 @@ class _SignInScreenMobileState extends State<SignInScreenMobile> {
                     padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
                     child: GestureDetector(
                       onTap: (){
-                        NavigatorHelper.navigateTo(context, ForgotPasswordMobile());
+                        NavigatorHelper.navigateTo(context, ForgotPasswordScreen());
                       },
                       child: Text(
                         "Bạn quên mật khẩu?",
@@ -252,7 +247,7 @@ class _SignInScreenMobileState extends State<SignInScreenMobile> {
                     padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
                     child: GestureDetector(
                       onTap: (){
-                        NavigatorHelper.navigateTo(context, SignUpScreenMobile());
+                        NavigatorHelper.navigateTo(context, SignUpScreen());
                       },
                       child: Text(
                         "Bạn mới sử dụng Netflix. Đăng ký ngay!",

@@ -111,10 +111,10 @@ class _EmailVerificationLinkScreenTablet extends State<EmailVerificationLinkScre
                 child: Text(
                   "VUI LÒNG XÁC THỰC EMAIL",
                   style: TextStyle(
-                      fontFamily: GoogleFonts.roboto().fontFamily,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18.sp,
-                      color: Colors.white
+                    fontFamily: GoogleFonts.roboto().fontFamily,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18.sp,
+                    color: Colors.white
                   ),
                 ),
               ),
@@ -152,7 +152,7 @@ class _EmailVerificationLinkScreenTablet extends State<EmailVerificationLinkScre
               ),
               GestureDetector(
                 onTap: () async {
-                  viewModel.ontapBackToLoginScreen(context);
+                  viewModel.onTapBackToLoginScreen(context);
                   await firebaseAuth.signOut();
                 },
                 child: Row(
@@ -162,12 +162,12 @@ class _EmailVerificationLinkScreenTablet extends State<EmailVerificationLinkScre
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 10.w),
                       child: Text(
-                          "Quay lại trang đăng nhập",
-                          style: TextStyle(
-                              color: Colors.blueAccent,
-                              fontFamily: GoogleFonts.roboto().fontFamily,
-                              fontSize: 16.sp
-                          )
+                        "Quay lại trang đăng nhập",
+                        style: TextStyle(
+                            color: Colors.blueAccent,
+                            fontFamily: GoogleFonts.roboto().fontFamily,
+                            fontSize: 16.sp
+                        )
                       ),
                     )
                   ],

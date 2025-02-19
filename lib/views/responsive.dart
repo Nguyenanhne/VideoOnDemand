@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class ResponsiveLayout extends StatelessWidget {
   final Widget mobileLayout;
@@ -20,9 +21,11 @@ class ResponsiveLayout extends StatelessWidget {
           // Mobile layout
           return mobileLayout;
         } else if (constraints.maxWidth < 1100) {
+          SystemChrome.setPreferredOrientations([]);
           // Tablet layout
           return tabletLayout;
         } else {
+          SystemChrome.setPreferredOrientations([]);
           // Web layout
           return webLayout;
         }

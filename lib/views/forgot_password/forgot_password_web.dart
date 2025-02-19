@@ -3,9 +3,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:quickalert/quickalert.dart';
 import '../../services/firebase_authentication.dart';
-import '../../utils.dart';
+import '../../utils/utils.dart';
+import '../../view_models/forgot_password_vm.dart';
 import '../sign_in/sign_in_screen.dart';
 
 class ForgotPasswordWeb extends StatefulWidget {
@@ -16,37 +18,28 @@ class ForgotPasswordWeb extends StatefulWidget {
 }
 
 class _ForgotPasswordWebState extends State<ForgotPasswordWeb> {
-  final TextEditingController emailController = TextEditingController();
-  final firebaseAuth = Auth();
-  final formKey = GlobalKey<FormState>();
-
-  var contenPadding = 20.0;
-
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    emailController.dispose();
-    super.dispose();
-  }
+  final contentPadding = 20.0;
   @override
   Widget build(BuildContext context) {
-    var contentStyle = TextStyle(
+    final contentStyle = TextStyle(
         fontSize: 35,
         color: Colors.grey[400],
         fontFamily: GoogleFonts.roboto().fontFamily
     );
-    var titleStyle = TextStyle(
+    final titleStyle = TextStyle(
         fontSize: 50,
         color: Colors.white,
         fontFamily: GoogleFonts.roboto().fontFamily,
         fontWeight: FontWeight.bold
     );
-    var labelStyle = TextStyle(
+    final labelStyle = TextStyle(
         fontSize: 30,
         color: Colors.white,
         fontWeight: FontWeight.bold,
         fontFamily: GoogleFonts.roboto().fontFamily
     );
+    final viewmodel = Provider.of<ForgotPasswordViewModel>(context, listen: false);
+
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -71,7 +64,7 @@ class _ForgotPasswordWebState extends State<ForgotPasswordWeb> {
             SliverFillRemaining(
               hasScrollBody: false,
               child: Form(
-                key: formKey,
+                key: viewmodel.formKey,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
@@ -98,7 +91,7 @@ class _ForgotPasswordWebState extends State<ForgotPasswordWeb> {
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
                       child: TextFormField(
-                        controller: emailController,
+                        controller: viewmodel.emailController,
                         style: contentStyle,
                         keyboardType: TextInputType.emailAddress,
                         validator: (value) {
@@ -119,7 +112,7 @@ class _ForgotPasswordWebState extends State<ForgotPasswordWeb> {
                               borderRadius: BorderRadius.circular(5),
                             ),
                             floatingLabelBehavior: FloatingLabelBehavior.auto,
-                            contentPadding: EdgeInsets.all(contenPadding)
+                            contentPadding: EdgeInsets.all(contentPadding)
                         ),
                       ),
                     ),
@@ -128,7 +121,7 @@ class _ForgotPasswordWebState extends State<ForgotPasswordWeb> {
                       padding: EdgeInsets.symmetric(horizontal: 20.w),
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          padding: EdgeInsets.all(contenPadding),
+                          padding: EdgeInsets.all(contentPadding),
                           elevation: 10,
                           backgroundColor: Colors.red,
                           shape: RoundedRectangleBorder(
@@ -140,18 +133,19 @@ class _ForgotPasswordWebState extends State<ForgotPasswordWeb> {
                           ),
                         ),
                         onPressed: () async{
-                          if (formKey.currentState!.validate()){
-                            await firebaseAuth.sendPasswordResetEmail(emailController.text.trim());
-                            QuickAlert.show(
-                                context: context,
-                                type: QuickAlertType.success,
-                                title: "THÀNH CÔNG",
-                                text: "Vui lòng kiểm tra email",
-                                onConfirmBtnTap: (){
-                                  NavigatorHelper.navigateAndRemoveUntil(context, SignInScreen());
-                                }
-                            );
-                          }
+                          viewmodel.onTap(context);
+                          // if (formKey.currentState!.validate()){
+                          //   await firebaseAuth.sendPasswordResetEmail(emailController.text.trim());
+                          //   QuickAlert.show(
+                          //       context: context,
+                          //       type: QuickAlertType.success,
+                          //       title: "THÀNH CÔNG",
+                          //       text: "Vui lòng kiểm tra email",
+                          //       onConfirmBtnTap: (){
+                          //         NavigatorHelper.navigateAndRemoveUntil(context, SignInScreen());
+                          //       }
+                          //   );
+                          // }
                         },
                         child: Text(
                           "Khôi phục mật khẩu",

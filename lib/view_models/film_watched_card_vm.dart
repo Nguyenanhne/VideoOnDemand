@@ -9,8 +9,8 @@ import '../services/my_film_watched_service.dart';
 import '../views/detailed film/detailed_film_screen.dart';
 
 class FilmWatchedCardViewModel extends ChangeNotifier{
-  MyFilmWatchedService _myFilmWatchedService =  MyFilmWatchedService();
-  FilmService _filmService = FilmService();
+  final MyFilmWatchedService _myFilmWatchedService =  MyFilmWatchedService();
+  final FilmService _filmService = FilmService();
 
   ScrollController filmWatchedScrollController = ScrollController();
 
@@ -46,7 +46,7 @@ class FilmWatchedCardViewModel extends ChangeNotifier{
       fetchMoreFilmWatched();
     }
   }
-  Future<void> fetchMyListFilmWatched({int limit = 5}) async {
+  Future<void> fetchMyListFilmWatched({int limit = 10}) async {
     _filmIDs = [];
     _films = [];
     _countFetch = 0;
@@ -61,7 +61,7 @@ class FilmWatchedCardViewModel extends ChangeNotifier{
       // }
       // String userID = user.uid;
       if (_filmIDs.isEmpty) {
-        _filmIDs = await _myFilmWatchedService.getListFilmIDbyUserID();
+        _filmIDs = await _myFilmWatchedService.fetchListFilmIDbyUserID();
         print(_filmIDs.length);
       }
 
@@ -89,7 +89,7 @@ class FilmWatchedCardViewModel extends ChangeNotifier{
       notifyListeners();
 
       int startIndex = _countFetch;
-      int endIndex = startIndex + 5;
+      int endIndex = startIndex + 10;
 
       for (var i = startIndex; i < endIndex && i < _filmIDs.length; i++) {
         FilmModel? film = await _filmService.fetchFilmByID(_filmIDs[i]);

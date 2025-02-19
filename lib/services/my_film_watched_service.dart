@@ -40,7 +40,7 @@ class MyFilmWatchedService{
       print("Failed to save position: $e");
     }
   }
-  Future<List<String>> getListFilmIDbyUserID() async {
+  Future<List<String>> fetchListFilmIDbyUserID() async {
     User? user = FirebaseAuth.instance.currentUser;
     if(user == null){
       return [];

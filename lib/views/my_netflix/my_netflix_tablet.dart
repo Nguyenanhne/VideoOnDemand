@@ -8,36 +8,20 @@ import 'package:provider/provider.dart';
 import 'package:tap_debouncer/tap_debouncer.dart';
 
 import '../../services/firebase_authentication.dart';
-import '../../utils.dart';
+import '../../utils/utils.dart';
 import '../../view_models/film_watched_card_vm.dart';
 import '../../view_models/my_list_film_vm.dart';
 import '../../widgets/film_card.dart';
 
 class MyNetflixScreenTablet extends StatefulWidget {
-  const MyNetflixScreenTablet({super.key});
-
+  final Future<void> fetchMyList;
+  final Future<void> fetchFilmWatched;
+  const MyNetflixScreenTablet({super.key, required this.fetchMyList, required this.fetchFilmWatched});
   @override
   State<MyNetflixScreenTablet> createState() => _MyNetflixScreenTabletState();
 }
 
 class _MyNetflixScreenTabletState extends State<MyNetflixScreenTablet> {
-
-  late Future<void> fetchMyList;
-  late Future<void> fetchFilmWatched;
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    final myListFilmsViewModel = Provider.of<MyListFilmViewModel>(context, listen: false);
-    final myFilmWatched = Provider.of<FilmWatchedCardViewModel>(context, listen: false);
-
-    fetchMyList = myListFilmsViewModel.fetchMyList();
-    fetchFilmWatched = myFilmWatched.fetchMyListFilmWatched();
-  }
-  @override
-  void dispose() {
-    super.dispose();
-  }
   @override
   Widget build(BuildContext context) {
     final heightScreen = MediaQuery.of(context).size.height
@@ -69,7 +53,7 @@ class _MyNetflixScreenTabletState extends State<MyNetflixScreenTablet> {
 
     final viewModel = Provider.of<MyNetflixViewModel>(context);
 
-    final heightBottomSheet = (MediaQuery.of(context).size.height - AppBar().preferredSize.height)/2.5;
+    final heightBottomSheet = (MediaQuery.of(context).size.height - AppBar().preferredSize.height)/2;
 
     void showBottomSheet(BuildContext context) {
       showModalBottomSheet(
@@ -154,9 +138,29 @@ class _MyNetflixScreenTabletState extends State<MyNetflixScreenTablet> {
                     ),
                   ),
                 ),
+                InkWell(
+                  onTap: (){
+                    viewModel.changePWOnTap(context);
+                  },
+                  child: ListTile(
+                    leading: Icon(
+                      LineAwesomeIcons.edit_solid,
+                      size: iconTabletSize,
+                      color: Colors.white,
+                    ),
+                    title: Text(
+                      "Đổi mật khẩu",
+                      style: contentStyle.copyWith(
+                          color: Colors.white,
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.bold
+                      ),
+                    ),
+                  ),
+                ),
                 TapDebouncer(
                   onTap: () async {
-                    viewModel.ontapBackToLoginScreen(context);
+                    viewModel.onTapBackToLoginScreen(context);
                     await firebaseAuth.signOut();
                   }, // your tap handler moved here
                   builder: (BuildContext context, TapDebouncerFunc? onTap) {
@@ -190,13 +194,6 @@ class _MyNetflixScreenTabletState extends State<MyNetflixScreenTablet> {
       appBar: AppBar(
         titleSpacing: 10.w,
         backgroundColor: Colors.black,
-        leading: InkWell(
-          child: Icon(
-            Icons.arrow_back,
-            color: Color(colorAppbarIcon),
-            size: iconTabletSize,
-          ),
-        ),
         title: Text(
           "Netflix của tôi",
           style: leadingTitle,
@@ -290,7 +287,7 @@ class _MyNetflixScreenTabletState extends State<MyNetflixScreenTablet> {
           //     }
           // ),
           FutureBuilder(
-              future: fetchMyList,
+              future: widget.fetchMyList,
               builder: (context, snapshot){
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return SliverToBoxAdapter(
@@ -354,7 +351,7 @@ class _MyNetflixScreenTabletState extends State<MyNetflixScreenTablet> {
             ),
           ),
           FutureBuilder(
-              future: fetchFilmWatched,
+              future: widget.fetchFilmWatched,
               builder: (context, snapshot){
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return SliverToBoxAdapter(

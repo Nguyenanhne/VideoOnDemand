@@ -1,5 +1,5 @@
 import 'package:better_player_enhanced/better_player.dart';
-import 'package:du_an_cntt/utils.dart';
+import 'package:du_an_cntt/utils/utils.dart';
 import 'package:du_an_cntt/views/detailed%20film/detailed_film_screen.dart';
 import 'package:du_an_cntt/widgets/movie_detail/movie_detail_button.dart';
 import 'package:flutter/cupertino.dart';
@@ -20,8 +20,9 @@ class DetailedMovieScreenTablet extends StatefulWidget {
   final FilmModel film;
   final Future<void> fetchSameFilms;
   final Future<List<dynamic>> combinedFuture;
+  final Future<void> getTrailerURL;
 
-  const DetailedMovieScreenTablet({super.key, required this.film, required this.fetchSameFilms, required this.combinedFuture});
+  const DetailedMovieScreenTablet({super.key, required this.film, required this.fetchSameFilms, required this.combinedFuture, required this.getTrailerURL});
 
   @override
   State<DetailedMovieScreenTablet> createState() => _DetailedMovieScreenTablet();
@@ -31,8 +32,8 @@ class _DetailedMovieScreenTablet extends State<DetailedMovieScreenTablet> {
   late String filmID;
   @override
   void initState() {
-    filmID = widget.film.id;
     super.initState();
+    filmID = widget.film.id;
   }
   @override
   Widget build(BuildContext context) {
@@ -216,9 +217,28 @@ class _DetailedMovieScreenTablet extends State<DetailedMovieScreenTablet> {
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        SizedBox(
-                          height: heightScreen*0.4,
-                          // child: BetterPlayer(controller: betterPlayerController),
+                        FutureBuilder(
+                          future: widget.getTrailerURL,
+                          builder: (context, snapshot) {
+                            if(snapshot.connectionState == ConnectionState.waiting){
+                              return SizedBox(
+                                height: heightScreen * 0.3,
+                                child: Center(child: CircularProgressIndicator()),
+                              );
+                            }
+                            return Consumer<DetailedFilmViewModel>(
+                              builder: (context, detailedFilmVM, child) {
+                                return SizedBox(
+                                  height: heightScreen*0.4,
+                                    child: (detailedFilmVM.verifyToken)
+                                      ? (detailedFilmVM.trailerURL != null)
+                                      ? BetterPlayer(controller: detailedFilmVM.betterPlayerController!)
+                                      : Center(child: Text("Lỗi phim!", style: contentStyle))
+                                      : Center(child: Text("Lỗi xác thực!", style: contentStyle))
+                                );
+                              }
+                            );
+                          }
                         ),
                         Padding(
                           padding: EdgeInsets.symmetric(vertical: 10.h),
@@ -520,6 +540,7 @@ class _DetailedMovieScreenTablet extends State<DetailedMovieScreenTablet> {
                                     name: sameFilm.name,
                                     types: sameFilm.type.join(", "),
                                     age: sameFilm.age,
+                                    maxline: 5,
                                     ontap: (){
                                       NavigatorHelper.replaceWith(context, DetailedFilmScreen(film: sameFilm));
                                     },

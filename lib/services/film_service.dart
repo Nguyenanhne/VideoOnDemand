@@ -1,6 +1,6 @@
 import "dart:convert";
 import "dart:math";
-import "package:du_an_cntt/utils.dart";
+import "package:du_an_cntt/utils/utils.dart";
 import 'package:http/http.dart' as http;
 import "package:cloud_firestore/cloud_firestore.dart";
 import "package:du_an_cntt/services/rating_service.dart";
@@ -15,7 +15,6 @@ class FilmService{
 
   Future<FilmModel?> fetchFilmByID(String id) async {
     try {
-      // Lấy tài liệu từ Firestore
       final doc = await firestore.collection('Film').doc(id).get();
       if (doc.exists && doc.data() != null) {
         final film = FilmModel.fromMap(doc.data()! as Map<String, dynamic>, doc.id);
@@ -121,12 +120,11 @@ class FilmService{
       List<FilmModel> films = snapshot.docs.map((doc) {
         return FilmModel.fromMap(doc.data() as Map<String, dynamic>, doc.id);
       }).toList();
-      print(films.length);
+
       for (var film in films) {
         final imageUrl = await getImageUrl(film.id);
         film.setUrl(imageUrl);
       }
-
       return {
         'films': films,
         'lastDocument': snapshot.docs.isNotEmpty ? snapshot.docs.last : null,
@@ -137,7 +135,6 @@ class FilmService{
       throw Exception('Failed to searching films: $e');
     }
   }
-
 
   Future<List<FilmModel>> searchFilmNamesByName(String nameQuery) async {
     try {
@@ -245,8 +242,10 @@ class FilmService{
       return null;
     }
   }
+
   Future<String?> getVideoUrl(String filmID) async {
-    final url = Uri.parse(getVideoURLToken);
+    print("filmID: $filmID");
+    final url = Uri.parse(getVideoURLToken1);
     try {
       final response = await http.post(
         url,
@@ -262,8 +261,11 @@ class FilmService{
     }
     return null;
   }
+
   Future<String?> getTrailerUrl(String filmID) async {
-    final url = Uri.parse(getTrailerURLToken);
+    print("Tiến hành lấy trailer url");
+    print("filmID: $filmID");
+    final url = Uri.parse(getTrailerURLToken1);
     try {
       final response = await http.post(
         url,

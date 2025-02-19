@@ -1,4 +1,4 @@
-import 'package:du_an_cntt/utils.dart';
+import 'package:du_an_cntt/utils/utils.dart';
 import 'package:du_an_cntt/view_models/search_vm.dart';
 import 'package:du_an_cntt/widgets/flim_card_vertical.dart';
 import 'package:flutter/material.dart';
@@ -10,42 +10,15 @@ import '../../models/film_model.dart';
 import '../../services/film_service.dart';
 import '../../services/type_service.dart';
 class SearchScreenWeb extends StatefulWidget {
-  const SearchScreenWeb({super.key});
+  final Future<void> fetchTypes;
+  final Future<void> fetchYears;
+  const SearchScreenWeb({super.key, required this.fetchTypes, required this.fetchYears});
 
   @override
   State<SearchScreenWeb> createState() => _SearchScreenWebState();
 }
 
 class _SearchScreenWebState extends State<SearchScreenWeb> {
-  final TypeService typeService = TypeService();
-  late Future<void> fetchTypes;
-  late Future<void> fetchYears;
-
-  late ScrollController searchingFilmController;
-
-  final contentStyle = TextStyle(
-      fontFamily: GoogleFonts.roboto().fontFamily,
-      fontSize: 18,
-      color: Colors.white
-  );
-  final imageWidth = 150.0;
-  final imageHeight = 200.0;
-  @override
-  void initState() {
-    final searchViewModel = Provider.of<SearchViewModel>(context, listen: false);
-    searchViewModel.reset();
-    fetchTypes = searchViewModel.getAllTypes();
-    fetchYears = searchViewModel.getYears();
-    searchingFilmController = ScrollController()..addListener(searchingFilmsOnScroll);
-    super.initState();
-  }
-
-  void searchingFilmsOnScroll() {
-    final searchViewModel = Provider.of<SearchViewModel>(context, listen: false);
-    if (searchingFilmController.position.pixels == searchingFilmController.position.maxScrollExtent && !searchViewModel.isLoading && searchViewModel.hasMore) {
-      searchViewModel.searchMoreFilmsByTypeAndYear();
-    }
-  }
   @override
   Widget build(BuildContext context) {
     final heightBottomSheet = MediaQuery.of(context).size.height - AppBar().preferredSize.height;
@@ -68,8 +41,14 @@ class _SearchScreenWebState extends State<SearchScreenWeb> {
         color: Colors.white
     );
 
+    final bottomStyle = TextStyle(
+        fontFamily: GoogleFonts.roboto().fontFamily,
+        fontSize: 16,
+        color: Colors.white
+    );
+
     final leadingTitle = TextStyle(
-        fontSize: 35,
+        fontSize: 30,
         fontFamily: GoogleFonts.roboto().fontFamily,
         color: Colors.white
     );
@@ -236,7 +215,7 @@ class _SearchScreenWebState extends State<SearchScreenWeb> {
                       builder: (context, searchViewModel, child) {
                         return Text(
                           searchViewModel.selectedType ?? "Thể loại",
-                          style: contentStyle,
+                          style: bottomStyle,
                         );
                       },
                     ),
@@ -260,7 +239,7 @@ class _SearchScreenWebState extends State<SearchScreenWeb> {
                       builder: (context, searchViewModel, child) {
                         return Text(
                           searchViewModel.selectedYear ?? "Năm",
-                          style: contentStyle,
+                          style: bottomStyle,
                         );
                       },
                     ),
@@ -289,7 +268,7 @@ class _SearchScreenWebState extends State<SearchScreenWeb> {
 
           final films = searchingViewModel.films;
           return ListView.builder(
-            controller: searchingFilmController,
+            controller: searchingViewModel.searchingFilmController,
             itemCount: films.length + (searchingViewModel.isLoading ? 1 : 0),
             itemBuilder: (context, index) {
               if (index == films.length) {
@@ -298,8 +277,8 @@ class _SearchScreenWebState extends State<SearchScreenWeb> {
                   child: Row(
                     children: [
                       Container(
-                        height: heightScreen * 0.3,
-                        width: widthScreen*0.15,
+                        height: heightScreen * 0.25,
+                        width: widthScreen*0.13,
                         color: Colors.grey[800],
                       ),
                       Expanded(child: Center(child: CircularProgressIndicator()))
@@ -309,14 +288,15 @@ class _SearchScreenWebState extends State<SearchScreenWeb> {
               }
               final film = films[index];
               return FilmCardVertical(
-                height: heightScreen * 0.3,
-                width: widthScreen*0.15,
-                fontSize: 25,
+                height: heightScreen * 0.25,
+                width: widthScreen*0.13,
+                fontSize: 20,
                 url: film.url,
                 age: film.age,
                 types: film.type.join(", "),
                 name: film.name,
                 des: film.description,
+                maxline: 3,
                 ontap: (){
                   searchingViewModel.onTap(context, films[index]);
                 },
@@ -337,14 +317,14 @@ class CustomSearchDelegate extends SearchDelegate {
   CustomSearchDelegate() : super(
     searchFieldLabel: 'Tìm kiếm',
     searchFieldStyle: TextStyle(
-      fontSize: 35,
+      fontSize: 30,
       fontFamily: GoogleFonts.roboto().fontFamily
     ),
   );
 
   final contentStyle = TextStyle(
       fontFamily: GoogleFonts.roboto().fontFamily,
-      fontSize: 25,
+      fontSize: 20,
       color: Colors.white
   );
 

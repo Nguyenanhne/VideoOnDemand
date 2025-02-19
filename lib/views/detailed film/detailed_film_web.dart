@@ -1,10 +1,8 @@
 import 'package:better_player_enhanced/better_player.dart';
 import 'package:chewie/chewie.dart';
-import 'package:du_an_cntt/utils.dart';
-import 'package:du_an_cntt/view_models/home_vm.dart';
+import 'package:du_an_cntt/utils/utils.dart';
 import 'package:du_an_cntt/views/detailed%20film/detailed_film_screen.dart';
 import 'package:du_an_cntt/widgets/movie_detail/movie_detail_button.dart';
-import 'package:du_an_cntt/widgets/movie_detail/movie_item.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -24,7 +22,8 @@ class DetailedMovieScreenWeb extends StatefulWidget {
   final FilmModel film;
   final Future<void> fetchSameFilms;
   final Future<List<dynamic>> combinedFuture;
-  const DetailedMovieScreenWeb({super.key, required this.film, required this.fetchSameFilms, required this.combinedFuture});
+  final Future<void> getTrailerURL;
+  const DetailedMovieScreenWeb({super.key, required this.film, required this.fetchSameFilms, required this.combinedFuture, required this.getTrailerURL});
 
   @override
   State<DetailedMovieScreenWeb> createState() => _DetailedMovieScreenTablet();
@@ -37,11 +36,7 @@ class _DetailedMovieScreenTablet extends State<DetailedMovieScreenWeb> {
     filmID = widget.film.id;
     super.initState();
   }
-  final contentStyle = TextStyle(
-      fontFamily: GoogleFonts.roboto().fontFamily,
-      fontSize: 25,
-      color: Colors.white
-  );
+
 
   @override
   Widget build(BuildContext context) {
@@ -50,6 +45,13 @@ class _DetailedMovieScreenTablet extends State<DetailedMovieScreenWeb> {
         - MediaQuery.of(context).padding.top;
     final heightBottomSheet = MediaQuery.of(context).size.height - AppBar().preferredSize.height;
     final widthScreen = MediaQuery.of(context).size.width;
+
+    final contentStyle = TextStyle(
+        fontFamily: GoogleFonts.roboto().fontFamily,
+        fontSize: 20,
+        color: Colors.white
+    );
+    final iconSize = 30.0;
 
     void showDesBottomSheet(BuildContext context, String title, String des) {
       showModalBottomSheet(
@@ -167,26 +169,6 @@ class _DetailedMovieScreenTablet extends State<DetailedMovieScreenWeb> {
             NavigatorHelper.goBack(context);
           },
         ),
-        actions: [
-          InkWell(
-              onTap: (){},
-              child: const Icon(
-                LineAwesomeIcons.download_solid,
-                size: iconTabletSize,
-                color: Colors.white,
-              )
-          ),
-          SizedBox(width: 15.w),
-          InkWell(
-              onTap: (){},
-              child: const Icon(
-                Icons.search,
-                size: iconTabletSize,
-                color: Colors.white,
-              )
-          ),
-          SizedBox(width: 20.w)
-        ],
       ),
       body: FutureBuilder<List<dynamic>>(
           future: widget.combinedFuture,
@@ -214,8 +196,28 @@ class _DetailedMovieScreenTablet extends State<DetailedMovieScreenWeb> {
                     child: CustomScrollView(
                       slivers: [
                         SliverToBoxAdapter(
-                          child: SizedBox(
-                            height: heightScreen*0.4,
+                          child: FutureBuilder(
+                              future: widget.getTrailerURL,
+                              builder: (context, snapshot) {
+                                if(snapshot.connectionState == ConnectionState.waiting){
+                                  return SizedBox(
+                                    height: heightScreen * 0.4,
+                                    child: Center(child: CircularProgressIndicator()),
+                                  );
+                                }
+                                return Consumer<DetailedFilmViewModel>(
+                                  builder: (context, detailedFilmVM, child) {
+                                    return SizedBox(
+                                    height: heightScreen*0.5,
+                                      child: (detailedFilmVM.verifyToken)
+                                        ? (detailedFilmVM.trailerURL != null)
+                                        ? BetterPlayer(controller: detailedFilmVM.betterPlayerController!)
+                                        : Center(child: Text("Lỗi phim!", style: contentStyle))
+                                        : Center(child: Text("Lỗi xác thực!", style: contentStyle))
+                                    );
+                                  }
+                                );
+                            }
                           ),
                         ),
                         SliverToBoxAdapter (
@@ -229,7 +231,7 @@ class _DetailedMovieScreenTablet extends State<DetailedMovieScreenWeb> {
                                   padding: EdgeInsets.symmetric(vertical: 10.h),
                                   child: Text(
                                       film!.name,
-                                      style: contentStyle.copyWith(fontSize: 40, fontWeight: FontWeight.bold)
+                                      style: contentStyle.copyWith(fontSize: 30, fontWeight: FontWeight.bold)
                                   ),
                                 ),
                                 Row(
@@ -261,8 +263,8 @@ class _DetailedMovieScreenTablet extends State<DetailedMovieScreenWeb> {
                                 ListTile(
                                   leading: Image(
                                     image: AssetImage("assets/top10.png"),
-                                    width: 20.w,
-                                    height: 20.w,
+                                    width: 10.w,
+                                    height: 10.w,
                                     fit: BoxFit.fitWidth,
                                   ),
                                   title: Text(
@@ -277,7 +279,7 @@ class _DetailedMovieScreenTablet extends State<DetailedMovieScreenWeb> {
                                     width: double.maxFinite,
                                     height: 40.h,
                                     child: DetailedMovieButton(
-                                      textSize: 25,
+                                      textSize: 20,
                                       bgColor: Colors.white,
                                       icon: Icons.play_arrow,
                                       text: 'Phát',
@@ -293,15 +295,13 @@ class _DetailedMovieScreenTablet extends State<DetailedMovieScreenWeb> {
                                   width: double.maxFinite,
                                   height: 40.h,
                                   child: DetailedMovieButton(
-                                    textSize: 25,
+                                    textSize: 20,
                                     bgColor: Colors.grey[900],
                                     icon: LineAwesomeIcons.download_solid,
                                     text: 'Tải xuống',
                                     textColor: Colors.white,
                                     iconColor: Colors.white,
-                                    onPressed: () {
-
-                                    },
+                                    onPressed: () {},
                                   ),
                                 ),
                                 Padding(
@@ -389,7 +389,7 @@ class _DetailedMovieScreenTablet extends State<DetailedMovieScreenWeb> {
                                                   children: [
                                                     Icon(
                                                       viewModel.hasInMyList ? Icons.check : Icons.add,
-                                                      size: 40,
+                                                      size: iconSize,
                                                       color: Colors.white.withOpacity(0.9),
                                                     ),
                                                     SizedBox(
@@ -413,7 +413,7 @@ class _DetailedMovieScreenTablet extends State<DetailedMovieScreenWeb> {
                                                   children: [
                                                     Icon(
                                                       viewModel.hasLiked ? Icons.thumb_up : Icons.thumb_up_off_alt,
-                                                      size: 40,
+                                                      size: iconSize,
                                                       color: Colors.white.withOpacity(0.9),
                                                     ),
                                                     SizedBox(
@@ -437,7 +437,7 @@ class _DetailedMovieScreenTablet extends State<DetailedMovieScreenWeb> {
                                                   children: [
                                                     Icon(
                                                       viewModel.hasDisliked ? Icons.thumb_down : Icons.thumb_down_off_alt,
-                                                      size: 40,
+                                                      size: iconSize,
                                                       color: Colors.white.withOpacity(0.9),
                                                     ),
                                                     SizedBox(
@@ -460,7 +460,7 @@ class _DetailedMovieScreenTablet extends State<DetailedMovieScreenWeb> {
                                               children: [
                                                 Icon(
                                                   Icons.reviews,
-                                                  size: 40,
+                                                  size: iconSize,
                                                   color: Colors.white.withOpacity(0.9),
                                                 ),
                                                 SizedBox(
@@ -486,7 +486,7 @@ class _DetailedMovieScreenTablet extends State<DetailedMovieScreenWeb> {
                     ),
                   ),
                   Expanded(
-                    flex: 2,
+                    flex: 3,
                     child: CustomScrollView(
                       controller: searchVM.sameFilmsController,
                       slivers: [
@@ -524,13 +524,14 @@ class _DetailedMovieScreenTablet extends State<DetailedMovieScreenWeb> {
                                           }
                                           final sameFilm = sameFilms[index];
                                           return FilmCardVertical(
-                                            fontSize: 20,
-                                            height: heightScreen*0.25,
-                                            width: widthScreen*0.1,
+                                            fontSize: 18,
+                                            height: heightScreen*0.3,
+                                            width: widthScreen*0.12,
                                             url: sameFilm.url,
                                             name: sameFilm.name,
                                             types: sameFilm.type.join(", "),
                                             age: sameFilm.age,
+                                            maxline: 3,
                                             ontap: (){
                                               NavigatorHelper.replaceWith(context, DetailedFilmScreen(film: sameFilm));
                                             },

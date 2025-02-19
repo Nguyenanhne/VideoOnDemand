@@ -1,9 +1,10 @@
-import 'package:du_an_cntt/responsive.dart';
+import 'package:du_an_cntt/views/responsive.dart';
 import 'package:du_an_cntt/view_models/resume_vm.dart';
 import 'package:du_an_cntt/views/resume/resume_mobile.dart';
 import 'package:du_an_cntt/views/resume/resume_tablet.dart';
 import 'package:du_an_cntt/views/resume/resume_web.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 
@@ -16,17 +17,19 @@ class MyResumeScreen extends StatefulWidget {
 }
 
 class _MyResumeScreenState extends State<MyResumeScreen> {
-  late Future<void> getLastVideoPositon;
+  late Future<void> getLastVideoPosition;
   @override
   void initState() {
     super.initState();
     final resumeVM = Provider.of<ResumeViewModel>(context, listen: false);
-    getLastVideoPositon = resumeVM.getVideoPosition(widget.filmID);
+    getLastVideoPosition = resumeVM.getVideoPosition(widget.filmID);
   }
   @override
   Widget build(BuildContext context) {
     return ResponsiveLayout(
-        mobileLayout: MyResumeScreenMobile(getLastVideoPositon: getLastVideoPositon, filmID: widget.filmID),
-        tabletLayout: MyResumeScreenTablet(), webLayout: MyResumeScreenWeb());
+      mobileLayout: MyResumeScreenMobile(getLastVideoPosition: getLastVideoPosition, filmID: widget.filmID),
+      tabletLayout: MyResumeScreenTablet(getLastVideoPosition: getLastVideoPosition, filmID: widget.filmID),
+      webLayout: MyResumeScreenWeb(getLastVideoPosition: getLastVideoPosition, filmID: widget.filmID)
+    );
   }
 }

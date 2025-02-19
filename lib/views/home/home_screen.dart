@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
-import '../../responsive.dart';
+import '../responsive.dart';
 import '../../view_models/home_vm.dart';
 import '../../view_models/main_poster_vm.dart';
 import '../../view_models/showing_film_card_vm.dart';

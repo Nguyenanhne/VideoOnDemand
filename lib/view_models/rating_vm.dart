@@ -16,21 +16,21 @@ class RatingViewModel extends ChangeNotifier {
   int get totalDislikes => _totalDislikes;
   int get viewTotal => _viewTotal;
 
-  Future<void> fetchTotalLikesByFilmID(String filmID) async {
+  Future<void> fetchTotalLikes(String filmID) async {
     try {
       _totalLikes = await ratingService.getTotalLikesByFilmID(filmID);
     } catch (e) {
       print("Error fetching total likes: $e");
     }
   }
-  Future<void> fetchTotalDislikesByFilmID(String filmID) async {
+  Future<void> fetchTotalDislikes(String filmID) async {
     try {
       _totalDislikes = await ratingService.getTotalDisLikesByFilmID(filmID);
     } catch (e) {
       print("Error fetching total dislikes: $e");
     }
   }
-  Future<void> fetchTotalViewByFilmID(String filmID) async{
+  Future<void> fetchTotalView(String filmID) async{
     try {
       final film = await filmService.fetchFilmByID(filmID);
       if (film != null) {

@@ -49,15 +49,21 @@ class DetailedFilmViewModel extends ChangeNotifier {
   bool get hasDisliked => _hasDisliked;
 
   BetterPlayerController? get betterPlayerController => _betterPlayerController;
-
+  @override
+  void dispose() {
+    _betterPlayerController?.dispose();
+    super.dispose();
+  }
   void setActiveEpisode(int index) {
     _activeEpisode = index;
     notifyListeners();
   }
+
   void playVideoOnTap(BuildContext context, String filmID){
     NavigatorHelper.navigateTo(context, MyResumeScreen(filmID:  filmID));
 
   }
+
   void ratingOnTap(BuildContext context, String filmID ){
     NavigatorHelper.navigateTo(context, CommentScreen(filmID: filmID));
   }
@@ -84,6 +90,7 @@ class DetailedFilmViewModel extends ChangeNotifier {
     _hasInMyList = await MyListService().isFilmInMyList(userID, filmID);
     // notifyListeners();
   }
+
   Future<void> getRating(String filmID) async {
     final userID = await Auth().getUserID();
     try {
@@ -119,6 +126,7 @@ class DetailedFilmViewModel extends ChangeNotifier {
       notifyListeners();
     }
   }
+
   Future<void> toggleDislike(String filmID) async {
 
     final userID = await Auth().getUserID();
@@ -141,30 +149,23 @@ class DetailedFilmViewModel extends ChangeNotifier {
     print('Film not found!');
     return null;
   }
-  // Future<FilmModel?> getFilmDetails(FilmModel film) async {
-  //   if (film != null) {
-  //     return film;
-  //   }
-  //   print('Film not found!');
-  //   return null;
-  // }
+
   Future<void> updateViewTotal(String filmID) async{
     await filmService.updateTotalView(filmID);
   }
+
   Future<String?> getTrailerURL(filmID) async {
     _verifyToken = await auth.sendTokenToServer();
     if(_verifyToken){
       return await filmService.getTrailerUrl(filmID);
-      // return "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8";
-      // return "https://doublea.eb069a237612be28cd34fc0b88c2e420.r2.cloudflarestorage.com/10iPJ4Jh5omsZofD2kXW.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=1ee77a04cbb1339bc7c62655936fba89%2F20250208%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250208T065609Z&X-Amz-Expires=300&X-Amz-Signature=9641282efc077918d54cca59d556d238822ba37f434e0f1a3b60654357207583&X-Amz-SignedHeaders=host";
     }
     _verifyToken = false;
     return null;
   }
 
-  void initializeVideoPlayer({required String filmID}) async{
+  Future<void> initializeVideoPlayer({required String filmID}) async{
     _trailerURL = await getTrailerURL(filmID);
-    print("trailer url $_trailerURL");
+    print("trailer: $_trailerURL");
     if (_trailerURL == null){
       return;
     }
@@ -174,18 +175,19 @@ class DetailedFilmViewModel extends ChangeNotifier {
         autoPlay: true,
         looping: true,
         fullScreenByDefault: false,
+        autoDispose: false,
         controlsConfiguration: BetterPlayerControlsConfiguration(
-            showControls: false,
-            enableProgressBar: false,
-            enableFullscreen: false,
-            enableOverflowMenu: false
+          showControls: false,
+          enableProgressBar: false,
+          enableFullscreen: false,
+          enableOverflowMenu: false
         )
     );
     _betterPlayerDataSource = BetterPlayerDataSource(
       BetterPlayerDataSourceType.network,
       _trailerURL!,
       cacheConfiguration: BetterPlayerCacheConfiguration(
-        useCache: true,
+        useCache: false,
         maxCacheSize: 100 * 1024 * 1024, // 100 MB
         maxCacheFileSize: 10 * 1024 * 1024, // 10 MB
         preCacheSize: 5 * 1024 * 1024, // 5 MB preload

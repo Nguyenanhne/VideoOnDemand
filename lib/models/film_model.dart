@@ -85,23 +85,6 @@ class FilmModel {
     required this.year,
     required this.viewTotal
   });
-
-  // Convert FilmModel to Map
-  Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'actors': actors.join(", "),
-      'age': age,
-      'description': description,
-      'director': director,
-      'name': name,
-      'note': note,
-      'year': year,
-      'viewTotal': viewTotal,
-      'type': type
-    };
-  }
-
   // Create FilmModel from Map
   factory FilmModel.fromMap(Map<String, dynamic> map, String id) {
     return FilmModel(

@@ -1,4 +1,4 @@
-import 'package:du_an_cntt/utils.dart';
+import 'package:du_an_cntt/utils/utils.dart';
 import 'package:du_an_cntt/view_models/showing_film_card_vm.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

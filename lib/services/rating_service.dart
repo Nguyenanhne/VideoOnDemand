@@ -63,7 +63,6 @@ class RatingService {
       rethrow;
     }
   }
-
   Future<int> getTotalLikesByFilmID(String filmID) async {
     QuerySnapshot snapshot = await firestore.collection('Rating')
         .where('filmID', isEqualTo: filmID)
@@ -72,7 +71,6 @@ class RatingService {
 
     return snapshot.docs.length;
   }
-
   Future<int> getTotalDisLikesByFilmID(String filmID) async {
     QuerySnapshot snapshot = await firestore.collection('Rating')
         .where('filmID', isEqualTo: filmID)

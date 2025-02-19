@@ -1,4 +1,4 @@
-import 'package:du_an_cntt/responsive.dart';
+import 'package:du_an_cntt/views/responsive.dart';
 import 'package:du_an_cntt/views/search/search_mobile.dart';
 import 'package:du_an_cntt/views/search/search_tablet.dart';
 import 'package:du_an_cntt/views/search/search_web.dart';
@@ -32,8 +32,8 @@ class _SearchScreenState extends State<SearchScreen> {
   Widget build(BuildContext context) {
     return ResponsiveLayout(
       mobileLayout: SearchScreenMobile(fetchTypes: fetchTypes, fetchYears: fetchYears),
-      tabletLayout: SearchScreenTablet(),
-      webLayout: SearchScreenWeb()
+      tabletLayout: SearchScreenTablet(fetchTypes: fetchTypes, fetchYears: fetchYears),
+      webLayout: SearchScreenWeb(fetchTypes: fetchTypes, fetchYears: fetchYears)
     );
   }
 }

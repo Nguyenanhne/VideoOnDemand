@@ -1,4 +1,4 @@
-import 'package:du_an_cntt/responsive.dart';
+import 'package:du_an_cntt/views/responsive.dart';
 import 'package:du_an_cntt/views/welcome/welcome_mobile.dart';
 import 'package:du_an_cntt/views/welcome/welcome_tablet.dart';
 import 'package:du_an_cntt/views/welcome/welcome_web.dart';

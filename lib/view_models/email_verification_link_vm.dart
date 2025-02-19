@@ -1,3 +1,4 @@
+import 'package:du_an_cntt/views/sign_in/sign_in_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
@@ -20,8 +21,8 @@ class EmailVerificationLinkViewModel extends ChangeNotifier{
 
   final user = FirebaseAuth.instance.currentUser;
 
-  Future<void> ontapBackToLoginScreen(BuildContext context) async {
-    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => SignInScreenMobile()), (route) => false);
+  Future<void> onTapBackToLoginScreen(BuildContext context) async {
+    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => SignInScreen()), (route) => false);
   }
   void startEmailVerificationTimer(BuildContext context, VoidCallback onVerified) {
     _timer = Timer.periodic(Duration(seconds: 3), (timer) async {
@@ -59,4 +60,5 @@ class EmailVerificationLinkViewModel extends ChangeNotifier{
     countdown?.cancel();
     timer?.cancel();
   }
+
 }

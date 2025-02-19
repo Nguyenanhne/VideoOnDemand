@@ -3,9 +3,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:quickalert/quickalert.dart';
 import '../../services/firebase_authentication.dart';
-import '../../utils.dart';
+import '../../utils/utils.dart';
+import '../../view_models/forgot_password_vm.dart';
 import '../sign_in/sign_in_screen.dart';
 
 class ForgotPasswordTablet extends StatefulWidget {
@@ -16,25 +18,20 @@ class ForgotPasswordTablet extends StatefulWidget {
 }
 
 class _ForgotPasswordTabletState extends State<ForgotPasswordTablet> {
-  final TextEditingController emailController = TextEditingController();
-  final firebaseAuth = Auth();
-  final formKey = GlobalKey<FormState>();
+  // final TextEditingController emailController = TextEditingController();
+  // final firebaseAuth = Auth();
+  // final formKey = GlobalKey<FormState>();
 
   var contentStyle = TextStyle(
       fontSize: 16.sp,
       color: Colors.grey[400],
       fontFamily: GoogleFonts.roboto().fontFamily
   );
-  var contenPadding = 30.0;
+  final contentPadding = 30.0;
 
   @override
-  void dispose() {
-    // TODO: implement dispose
-    emailController.dispose();
-    super.dispose();
-  }
-  @override
   Widget build(BuildContext context) {
+    final viewmodel = Provider.of<ForgotPasswordViewModel>(context, listen: false);
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -60,7 +57,7 @@ class _ForgotPasswordTabletState extends State<ForgotPasswordTablet> {
             SliverFillRemaining(
               hasScrollBody: false,
               child: Form(
-                key: formKey,
+                key: viewmodel.formKey,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -96,7 +93,7 @@ class _ForgotPasswordTabletState extends State<ForgotPasswordTablet> {
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
                       child: TextFormField(
-                        controller: emailController,
+                        controller: viewmodel.emailController,
                         style: contentStyle,
                         keyboardType: TextInputType.emailAddress,
                         validator: (value) {
@@ -120,7 +117,7 @@ class _ForgotPasswordTabletState extends State<ForgotPasswordTablet> {
                             borderRadius: BorderRadius.circular(5),
                           ),
                           floatingLabelBehavior: FloatingLabelBehavior.auto,
-                          contentPadding: EdgeInsets.all(contenPadding)
+                          contentPadding: EdgeInsets.all(contentPadding)
                         ),
                       ),
                     ),
@@ -141,18 +138,19 @@ class _ForgotPasswordTabletState extends State<ForgotPasswordTablet> {
                           ),
                         ),
                         onPressed: () async{
-                          if (formKey.currentState!.validate()){
-                            await firebaseAuth.sendPasswordResetEmail(emailController.text.trim());
-                            QuickAlert.show(
-                                context: context,
-                                type: QuickAlertType.success,
-                                title: "THÀNH CÔNG",
-                                text: "Vui lòng kiểm tra email",
-                                onConfirmBtnTap: (){
-                                  NavigatorHelper.navigateAndRemoveUntil(context, SignInScreen());
-                                }
-                            );
-                          }
+                          viewmodel.onTap(context);
+                          // if (formKey.currentState!.validate()){
+                          //   await firebaseAuth.sendPasswordResetEmail(emailController.text.trim());
+                          //   QuickAlert.show(
+                          //       context: context,
+                          //       type: QuickAlertType.success,
+                          //       title: "THÀNH CÔNG",
+                          //       text: "Vui lòng kiểm tra email",
+                          //       onConfirmBtnTap: (){
+                          //         NavigatorHelper.navigateAndRemoveUntil(context, SignInScreen());
+                          //       }
+                          //   );
+                          // }
                         },
                         child: Text(
                           "Khôi phục mật khẩu",

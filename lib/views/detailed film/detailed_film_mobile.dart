@@ -1,6 +1,6 @@
 import 'package:better_player_enhanced/better_player.dart';
 import 'package:du_an_cntt/models/film_model.dart';
-import 'package:du_an_cntt/utils.dart';
+import 'package:du_an_cntt/utils/utils.dart';
 import 'package:du_an_cntt/view_models/search_vm.dart';
 import 'package:du_an_cntt/widgets/flim_card_vertical.dart';
 import 'package:du_an_cntt/widgets/movie_detail/movie_detail_button.dart';
@@ -20,7 +20,8 @@ class DetailedMovieScreenMobile extends StatefulWidget {
   final FilmModel film;
   final Future<void> fetchSameFilms;
   final Future<List<dynamic>> combinedFuture;
-  DetailedMovieScreenMobile({super.key, required this.film, required this.fetchSameFilms, required this.combinedFuture});
+  final Future<void> getTrailerURL;
+  DetailedMovieScreenMobile({super.key, required this.film, required this.fetchSameFilms, required this.combinedFuture, required this.getTrailerURL});
 
   @override
   State<DetailedMovieScreenMobile> createState() => _DetailedMovieScreenMobileState();
@@ -35,7 +36,7 @@ class _DetailedMovieScreenMobileState extends State<DetailedMovieScreenMobile>  
   );
   @override
   void initState() {
-    // TODO: implement initState
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
     super.initState();
     filmID = widget.film.id;
   }
@@ -46,7 +47,6 @@ class _DetailedMovieScreenMobileState extends State<DetailedMovieScreenMobile>  
         - MediaQuery.of(context).padding.top;
     final heightBottomSheet = MediaQuery.of(context).size.height - AppBar().preferredSize.height;
     final widthScreen = MediaQuery.of(context).size.width;
-
     void showDesBottomSheet(BuildContext context, String title, String des) {
       showModalBottomSheet(
         context: context,
@@ -145,7 +145,6 @@ class _DetailedMovieScreenMobileState extends State<DetailedMovieScreenMobile>  
     }
     final detailedFilmVM = Provider.of<DetailedFilmViewModel>(context, listen: false);
     final searchVM = Provider.of<SearchViewModel>(context, listen: false);
-
     return Scaffold(
       appBar: AppBar(
         titleSpacing: 0,
@@ -206,13 +205,24 @@ class _DetailedMovieScreenMobileState extends State<DetailedMovieScreenMobile>  
                         mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          SizedBox(
-                            height: heightScreen*0.3,
-                            child: (detailedFilmVM.verifyToken)
-                              ? (detailedFilmVM.trailerURL != null)
-                                ? BetterPlayer(controller: detailedFilmVM.betterPlayerController!)
-                                : Center(child: Text("Lỗi phim!", style: contentStyle))
-                              : Center(child: Text("Lỗi xác thực!", style: contentStyle))
+                          FutureBuilder(
+                            future: widget.getTrailerURL,
+                            builder: (context, snapshot) {
+                              if(snapshot.connectionState == ConnectionState.waiting){
+                                return SizedBox(
+                                  height: heightScreen * 0.3,
+                                  child: Center(child: CircularProgressIndicator()),
+                                );
+                              }
+                              return SizedBox(
+                                height: heightScreen*0.3,
+                                child: (detailedFilmVM.verifyToken)
+                                  ? (detailedFilmVM.trailerURL != null)
+                                    ? BetterPlayer(controller: detailedFilmVM.betterPlayerController!)
+                                    : Center(child: Text("Lỗi phim!", style: contentStyle))
+                                  : Center(child: Text("Lỗi xác thực!", style: contentStyle))
+                              );
+                            }
                           ),
                           Padding(
                             padding: EdgeInsets.symmetric(vertical: 10.h),
@@ -508,8 +518,11 @@ class _DetailedMovieScreenMobileState extends State<DetailedMovieScreenMobile>  
                                     name: sameFilm.name,
                                     types: sameFilm.type.join(", "),
                                     age: sameFilm.age,
-                                    ontap: (){},
-                                    des: sameFilm.description
+                                    ontap: (){
+                                      searchVM.sameFilmOnTap(context, sameFilm);
+                                    },
+                                    des: sameFilm.description,
+                                    maxline: 5,
                                   );
                                 },
                                 separatorBuilder: (BuildContext context, int index) => SizedBox(height: 10.h),
@@ -520,54 +533,6 @@ class _DetailedMovieScreenMobileState extends State<DetailedMovieScreenMobile>  
                         }
                       }
                   ),
-                  // SliverToBoxAdapter(
-                  //   child: Padding(
-                  //     padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
-                  //     child: SizedBox(
-                  //       height: 50.h,
-                  //       child: Consumer<DetailedFilmViewModel>(
-                  //         builder: (context, viewModel, child) {
-                  //           return ListView.builder(
-                  //             scrollDirection: Axis.horizontal,
-                  //             itemCount: optionList.length,
-                  //             itemBuilder: (BuildContext context, int index) {
-                  //               final isActive = viewModel.activeEpisode == index;
-                  //               return InkWell(
-                  //                 onTap: () {
-                  //                   viewModel.setActiveEpisode(index);
-                  //                 },
-                  //                 child: Container(
-                  //                   padding: EdgeInsets.symmetric(horizontal: 20.w),
-                  //                   decoration: BoxDecoration(
-                  //                     border: Border(
-                  //                       top: BorderSide(
-                  //                         width: 4.h,
-                  //                         color: isActive
-                  //                             ? Colors.red.withOpacity(0.8)
-                  //                             : Colors.transparent,
-                  //                       ),
-                  //                     ),
-                  //                   ),
-                  //                   child: Center(
-                  //                     child: Text(
-                  //                       optionList[index],
-                  //                       style: TextStyle(
-                  //                         fontSize: 15.sp,
-                  //                         color: isActive
-                  //                             ? Colors.white.withOpacity(0.9)
-                  //                             : Colors.white.withOpacity(0.5),
-                  //                       ),
-                  //                     ),
-                  //                   ),
-                  //                 ),
-                  //               );
-                  //             },
-                  //           );
-                  //         },
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ),
                 ],
               );
             }

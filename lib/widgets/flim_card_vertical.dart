@@ -15,7 +15,8 @@ class FilmCardVertical extends StatelessWidget {
   final String des;
   final VoidCallback ontap;
   final double fontSize;
-  FilmCardVertical({super.key, required this.url, required this.name, required this.types, required this.age, required this.ontap, required this.des, required this.width, required this.height, required this.fontSize});
+  final int maxline;
+  FilmCardVertical({super.key, required this.url, required this.name, required this.types, required this.age, required this.ontap, required this.des, required this.width, required this.height, required this.fontSize, required this.maxline});
 
   @override
   Widget build(BuildContext context) {
@@ -84,8 +85,9 @@ class FilmCardVertical extends StatelessWidget {
                       Expanded(
                         child: Text(
                           des,
-                          maxLines: 3,
+                          maxLines: maxline,
                           style: style,
+                          textAlign: TextAlign.justify,
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),

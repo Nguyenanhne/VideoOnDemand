@@ -13,15 +13,6 @@ class RatingModel {
     required this.rating,
   });
 
-  factory RatingModel.fromMap(String id, Map<String, dynamic> data) {
-    return RatingModel(
-      id: id,
-      filmID: data['filmID'] ?? '',
-      userID: data['userID'] ?? '',
-      rating: data['rating'] as bool,
-    );
-  }
-
   Map<String, dynamic> toMap() {
     return {
       'filmID': filmID,

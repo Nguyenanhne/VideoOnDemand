@@ -65,6 +65,9 @@ class SearchViewModel extends ChangeNotifier {
   void onTap(BuildContext context, FilmModel film){
     NavigatorHelper.navigateTo(context, DetailedFilmScreen(film: film));
   }
+  void sameFilmOnTap(BuildContext context, FilmModel film){
+    NavigatorHelper.replaceWith(context, DetailedFilmScreen(film: film));
+  }
 
   Future<void> getAllTypes() async  {
     final buffer =  await typeService.getAllTypes();

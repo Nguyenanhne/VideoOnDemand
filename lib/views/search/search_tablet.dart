@@ -1,4 +1,4 @@
-import 'package:du_an_cntt/utils.dart';
+import 'package:du_an_cntt/utils/utils.dart';
 import 'package:du_an_cntt/view_models/search_vm.dart';
 import 'package:du_an_cntt/widgets/flim_card_vertical.dart';
 import 'package:flutter/material.dart';
@@ -8,36 +8,39 @@ import 'package:provider/provider.dart';
 
 import '../../models/film_model.dart';
 import '../../services/film_service.dart';
-import '../../services/type_service.dart';class SearchScreenTablet extends StatefulWidget {
-  const SearchScreenTablet({super.key});
+import '../../services/type_service.dart';
+class SearchScreenTablet extends StatefulWidget {
+  final Future<void> fetchTypes;
+  final Future<void> fetchYears;
+  const SearchScreenTablet({super.key, required this.fetchTypes, required this.fetchYears});
 
   @override
   State<SearchScreenTablet> createState() => _SearchScreenTabletState();
 }
 
 class _SearchScreenTabletState extends State<SearchScreenTablet> {
-  final TypeService typeService = TypeService();
-  late Future<void> fetchTypes;
-  late Future<void> fetchYears;
+  // final TypeService typeService = TypeService();
+  // late Future<void> fetchTypes;
+  // late Future<void> fetchYears;
+  //
+  // late ScrollController searchingFilmController;
 
-  late ScrollController searchingFilmController;
+  // @override
+  // void initState() {
+  //   final searchViewModel = Provider.of<SearchViewModel>(context, listen: false);
+  //   searchViewModel.reset();
+  //   fetchTypes = searchViewModel.getAllTypes();
+  //   fetchYears = searchViewModel.getYears();
+  //   searchingFilmController = ScrollController()..addListener(searchingFilmsOnScroll);
+  //   super.initState();
+  // }
 
-  @override
-  void initState() {
-    final searchViewModel = Provider.of<SearchViewModel>(context, listen: false);
-    searchViewModel.reset();
-    fetchTypes = searchViewModel.getAllTypes();
-    fetchYears = searchViewModel.getYears();
-    searchingFilmController = ScrollController()..addListener(searchingFilmsOnScroll);
-    super.initState();
-  }
-
-  void searchingFilmsOnScroll() {
-    final searchViewModel = Provider.of<SearchViewModel>(context, listen: false);
-    if (searchingFilmController.position.pixels == searchingFilmController.position.maxScrollExtent && !searchViewModel.isLoading && searchViewModel.hasMore) {
-      searchViewModel.searchMoreFilmsByTypeAndYear();
-    }
-  }
+  // void searchingFilmsOnScroll() {
+  //   final searchViewModel = Provider.of<SearchViewModel>(context, listen: false);
+  //   if (searchingFilmController.position.pixels == searchingFilmController.position.maxScrollExtent && !searchViewModel.isLoading && searchViewModel.hasMore) {
+  //     searchViewModel.searchMoreFilmsByTypeAndYear();
+  //   }
+  // }
   @override
   Widget build(BuildContext context) {
     final heightBottomSheet = MediaQuery.of(context).size.height - AppBar().preferredSize.height;
@@ -271,7 +274,7 @@ class _SearchScreenTabletState extends State<SearchScreenTablet> {
 
           final films = searchingViewModel.films;
           return ListView.builder(
-            controller: searchingFilmController,
+            controller: searchingViewModel.searchingFilmController,
             itemCount: films.length + (searchingViewModel.isLoading ? 1 : 0),
             itemBuilder: (context, index) {
               if (index == films.length) {
@@ -298,6 +301,7 @@ class _SearchScreenTabletState extends State<SearchScreenTablet> {
                 age: film.age,
                 types: film.type.join(", "),
                 name: film.name,
+                maxline: 5,
                 des: film.description,
                 ontap: (){
                   searchingViewModel.onTap(context, films[index]);

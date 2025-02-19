@@ -1,11 +1,14 @@
 import 'package:du_an_cntt/helper/navigator.dart';
+import 'package:du_an_cntt/view_models/forgot_password_vm.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:quickalert/quickalert.dart';
 import '../../services/firebase_authentication.dart';
-import '../../utils.dart';
+import '../../utils/utils.dart';
 import '../sign_in/sign_in_screen.dart';
 
 class ForgotPasswordMobile extends StatefulWidget {
@@ -16,18 +19,14 @@ class ForgotPasswordMobile extends StatefulWidget {
 }
 
 class _ForgotPasswordMobileState extends State<ForgotPasswordMobile> {
-  final TextEditingController emailController = TextEditingController();
-  final firebaseAuth = Auth();
-  final formKey = GlobalKey<FormState>();
-
   @override
-  void dispose() {
-    // TODO: implement dispose
-    emailController.dispose();
-    super.dispose();
+  void initState() {
+    super.initState();
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   }
   @override
   Widget build(BuildContext context) {
+    final viewmodel = Provider.of<ForgotPasswordViewModel>(context, listen: false);
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -53,7 +52,7 @@ class _ForgotPasswordMobileState extends State<ForgotPasswordMobile> {
             SliverFillRemaining(
               hasScrollBody: false,
               child: Form(
-                key: formKey,
+                key: viewmodel.formKey,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -89,7 +88,7 @@ class _ForgotPasswordMobileState extends State<ForgotPasswordMobile> {
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
                       child: TextFormField(
-                        controller: emailController,
+                        controller: viewmodel.emailController,
                         style: TextStyle(
                             fontSize: 14.sp,
                             color: Colors.grey[400],
@@ -137,18 +136,19 @@ class _ForgotPasswordMobileState extends State<ForgotPasswordMobile> {
                             ),
                         ),
                         onPressed: () async{
-                          if (formKey.currentState!.validate()){
-                            await firebaseAuth.sendPasswordResetEmail(emailController.text.trim());
-                            QuickAlert.show(
-                              context: context,
-                              type: QuickAlertType.success,
-                              title: "THÀNH CÔNG",
-                              text: "Vui lòng kiểm tra email",
-                              onConfirmBtnTap: (){
-                                NavigatorHelper.navigateAndRemoveUntil(context, SignInScreen());
-                              }
-                            );
-                          }
+                          viewmodel.onTap(context);
+                          // if (formKey.currentState!.validate()){
+                          //   await firebaseAuth.sendPasswordResetEmail(emailController.text.trim());
+                          //   QuickAlert.show(
+                          //     context: context,
+                          //     type: QuickAlertType.success,
+                          //     title: "THÀNH CÔNG",
+                          //     text: "Vui lòng kiểm tra email",
+                          //     onConfirmBtnTap: (){
+                          //       NavigatorHelper.navigateAndRemoveUntil(context, SignInScreen());
+                          //     }
+                          //   );
+                          // }
                         },
                         child: Text(
                           "Khôi phục mật khẩu",

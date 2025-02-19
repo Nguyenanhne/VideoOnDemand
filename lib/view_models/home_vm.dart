@@ -117,15 +117,6 @@ class HomeViewModel extends ChangeNotifier{
           } else {
             _hasMore[type] = false;
           }
-          // scrollControllers[type] = ScrollController()
-          //   ..addListener(() {
-          //     if (scrollControllers[type]!.offset >=
-          //         scrollControllers[type]!.position.maxScrollExtent &&
-          //         !_isMoreLoading[type]! &&
-          //         _hasMore[type] == true) {
-          //       searchMoreFilmsByType(type);
-          //     }
-          //   });
           _isLoading[type] = false;
           notifyListeners();
         } catch (e) {

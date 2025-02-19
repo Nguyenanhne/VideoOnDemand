@@ -1,5 +1,5 @@
 import 'package:du_an_cntt/helper/navigator.dart';
-import 'package:du_an_cntt/utils.dart';
+import 'package:du_an_cntt/utils/utils.dart';
 import 'package:du_an_cntt/view_models/sign_in_vm.dart';
 import 'package:du_an_cntt/views/forgot_password/forgot_password_mobile.dart';
 import 'package:du_an_cntt/views/forgot_password/forgot_password_screen.dart';
@@ -8,6 +8,7 @@ import 'package:du_an_cntt/views/sign_up/sign_up_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -26,29 +27,29 @@ class SignInScreenWeb extends StatefulWidget {
 }
 
 class _SignInScreenWebState extends State<SignInScreenWeb> {
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-  final SignInViewModel signInViewModel = SignInViewModel();
+  // final TextEditingController emailController = TextEditingController();
+  // final TextEditingController passwordController = TextEditingController();
+  // final SignInViewModel signInViewModel = SignInViewModel();
 
 
-  var contentPadding = 20.0;
-  var horizontalPadding = 40.w;
-  @override
-  void dispose() {
-    emailController.dispose();
-    passwordController.dispose();
-    super.dispose();
-  }
+  final contentPadding = 20.0;
+  final horizontalPadding = 40.w;
+  // @override
+  // void dispose() {
+  //   emailController.dispose();
+  //   passwordController.dispose();
+  //   super.dispose();
+  // }
   @override
   Widget build(BuildContext context) {
-    final viewModel = Provider.of<SignInViewModel>(context);
+    final viewModel = Provider.of<SignInViewModel>(context, listen: false);
 
-    var labelStyle = TextStyle(
+    final labelStyle = TextStyle(
         fontSize: 30,
         color: Colors.grey[400],
         fontFamily: GoogleFonts.roboto().fontFamily
     );
-    var contentStyle = TextStyle(
+    final contentStyle = TextStyle(
         fontSize: 20,
         color: Colors.grey[400],
         fontFamily: GoogleFonts.roboto().fontFamily
@@ -68,7 +69,7 @@ class _SignInScreenWebState extends State<SignInScreenWeb> {
             leading: IconButton(
               icon: Icon(Icons.arrow_back, color: Color(colorAppbarIcon),size: iconTabletSize),
               onPressed: () {
-                NavigatorHelper.goBack(context);
+                SystemNavigator.pop();
               },
             ),
           ),
@@ -82,7 +83,7 @@ class _SignInScreenWebState extends State<SignInScreenWeb> {
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: horizontalPadding, vertical: 20.h),
                       child: TextFormField(
-                        controller: emailController,
+                        controller: viewModel.emailController,
                         style: contentStyle,
                         decoration: InputDecoration(
                           fillColor: Colors.grey[800],
@@ -100,7 +101,7 @@ class _SignInScreenWebState extends State<SignInScreenWeb> {
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
                       child: TextFormField(
-                        controller: passwordController,
+                        controller: viewModel.passwordController,
                         obscureText: true,
                         style: contentStyle,
                         decoration: InputDecoration(
@@ -118,55 +119,56 @@ class _SignInScreenWebState extends State<SignInScreenWeb> {
                     ),
                     TapDebouncer(
                       onTap: () async {
-                        // Hiển thị dialog chờ xử lý
-                        showDialog(
-                          context: context,
-                          barrierDismissible: false,
-                          builder: (context) {
-                            return Center(child: CircularProgressIndicator());
-                          },
-                        );
-
-                        // Gọi hàm đăng nhập
-                        User? user = await viewModel.Login(
-                          context: context,
-                          email: emailController.text.trim(),
-                          password: passwordController.text.trim(),
-                        );
-
-                        // Đóng dialog chờ
-                        Navigator.pop(context);
-
-                        // Tạm dừng ngắn để cải thiện trải nghiệm người dùng
-                        await Future.delayed(Duration(milliseconds: 500));
-
-                        if (user != null) {
-                          // Hiển thị thông báo thành công
-                          QuickAlert.show(
-                            context: context,
-                            type: QuickAlertType.success,
-                            text: "Đăng nhập thành công",
-                            title: "THÀNH CÔNG",
-                            onConfirmBtnTap: () async {
-                              if (await Auth().isEmailVerified()) {
-                                await NavigatorHelper.navigateAndRemoveUntil(context, BottomNavBar());
-                              } else {
-                                await NavigatorHelper.navigateAndRemoveUntil(context, EmailVerificationLink());
-                              }
-                            },
-                          );
-                        } else {
-                          // Hiển thị thông báo thất bại
-                          QuickAlert.show(
-                            context: context,
-                            type: QuickAlertType.error,
-                            text: "Tên đăng nhập hoặc mật khẩu không hợp lệ",
-                            title: "THẤT BẠI",
-                            onConfirmBtnTap: () {
-                              NavigatorHelper.goBack(context);
-                            },
-                          );
-                        }
+                        viewModel.signInOnTap(context);
+                        // // Hiển thị dialog chờ xử lý
+                        // showDialog(
+                        //   context: context,
+                        //   barrierDismissible: false,
+                        //   builder: (context) {
+                        //     return Center(child: CircularProgressIndicator());
+                        //   },
+                        // );
+                        //
+                        // // Gọi hàm đăng nhập
+                        // User? user = await viewModel.Login(
+                        //   context: context,
+                        //   email: viewModel.emailController.text.trim(),
+                        //   password: viewModel.passwordController.text.trim(),
+                        // );
+                        //
+                        // // Đóng dialog chờ
+                        // Navigator.pop(context);
+                        //
+                        // // Tạm dừng ngắn để cải thiện trải nghiệm người dùng
+                        // await Future.delayed(Duration(milliseconds: 500));
+                        //
+                        // if (user != null) {
+                        //   // Hiển thị thông báo thành công
+                        //   QuickAlert.show(
+                        //     context: context,
+                        //     type: QuickAlertType.success,
+                        //     text: "Đăng nhập thành công",
+                        //     title: "THÀNH CÔNG",
+                        //     onConfirmBtnTap: () async {
+                        //       if (await Auth().isEmailVerified()) {
+                        //         await NavigatorHelper.navigateAndRemoveUntil(context, BottomNavBar());
+                        //       } else {
+                        //         await NavigatorHelper.navigateAndRemoveUntil(context, EmailVerificationLink());
+                        //       }
+                        //     },
+                        //   );
+                        // } else {
+                        //   // Hiển thị thông báo thất bại
+                        //   QuickAlert.show(
+                        //     context: context,
+                        //     type: QuickAlertType.error,
+                        //     text: "Tên đăng nhập hoặc mật khẩu không hợp lệ",
+                        //     title: "THẤT BẠI",
+                        //     onConfirmBtnTap: () {
+                        //       NavigatorHelper.goBack(context);
+                        //     },
+                        //   );
+                        // }
                       },
                       builder: (BuildContext context, Future<void> Function()? onTap) {
                         return Container(

@@ -15,4 +15,19 @@ class UserService{
       return null;
     }
   }
+  Future<String?> getEmailByUID(String uid) async {
+    try {
+      DocumentSnapshot userDoc = await firestore.collection("User").doc(uid).get();
+
+      if (userDoc.exists) {
+        return userDoc["email"] as String?;
+      } else {
+        print("Không tìm thấy người dùng với UID: $uid");
+        return null;
+      }
+    } catch (e) {
+      print("Lỗi khi lấy email: $e");
+      return null;
+    }
+  }
 }

@@ -6,7 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 
 import '../../helper/navigator.dart';
-import '../../utils.dart';
+import '../../utils/utils.dart';
 class MyAccountScreenMobile extends StatefulWidget {
   const MyAccountScreenMobile({super.key});
 
@@ -39,13 +39,16 @@ class _MyAccountScreenMobileState extends State<MyAccountScreenMobile> {
                 ),
               ),
             ),
-            const Positioned(
+            Positioned(
               left: 0,
               top: 0,
               bottom: 0,
               child: Padding(
                 padding: EdgeInsets.only(left: 16),
                 child: InkWell(
+                  onTap: (){
+                    NavigatorHelper.goBack(context);
+                  },
                   child: Icon(
                     Icons.arrow_back,
                     color: Color(colorAppbarIcon),

@@ -25,11 +25,6 @@ class HomeScreenMobile extends StatefulWidget {
 }
 
 class _HomeScreenMobileState extends State<HomeScreenMobile> {
-  // late Future<void> fetchShowing;
-  // late Future<void> getAllTypes;
-  // late Future<void> fetchFilmsByType;
-  // late Future<void> fetchMainPoster;
-
   final contentStyle = TextStyle(
       fontFamily: GoogleFonts.roboto().fontFamily,
       fontSize: 14.sp,
@@ -40,35 +35,11 @@ class _HomeScreenMobileState extends State<HomeScreenMobile> {
     fontWeight: FontWeight.bold,
     color: Colors.white,
   );
-
   @override
-  // void initState() {
-  //   super.initState();
-  //
-  //   SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
-  //
-  //   final showingFilmsViewModel = Provider.of<ShowingFilmsCardViewModel>(context, listen: false);
-  //
-  //   final mainPosterViewModel = Provider.of<MainPosterViewModel>(context, listen: false);
-  //
-  //   final homeViewModel = Provider.of<HomeViewModel>(context, listen: false);
-  //
-  //   fetchShowing = showingFilmsViewModel.fetchFilms();
-  //
-  //   fetchMainPoster = mainPosterViewModel.fetchRandomFilm();
-  //   getAllTypes = homeViewModel.getAllTypes();
-  //
-  //   getAllTypes.then((_){
-  //     fetchFilmsByType = homeViewModel.searchFilmsByAllTypes();
-  //   });
-  //
-  // }
-
-  @override
-  void dispose() {
-    super.dispose();
+  void initState() {
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+    super.initState();
   }
-
   @override
   Widget build(BuildContext context) {
     final heightScreen = MediaQuery.of(context).size.height
@@ -78,7 +49,6 @@ class _HomeScreenMobileState extends State<HomeScreenMobile> {
     final widthScreen = MediaQuery.of(context).size.width;
 
     final homeViewModel = Provider.of<HomeViewModel>(context, listen: false);
-
     return Scaffold(
       extendBodyBehindAppBar: true,
       body: CustomScrollView(
@@ -176,116 +146,127 @@ class _HomeScreenMobileState extends State<HomeScreenMobile> {
               );
             },
           ),
-          FutureBuilder(
-            future: widget.fetchMainPoster,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return SliverToBoxAdapter(child: Center(child: CircularProgressIndicator()));
-              }
-              return SliverToBoxAdapter(
-                child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 15.h),
-                    height: heightScreen*0.7,
-                    child: MainPoster(fontSize: 16, iconSize: 30)
-                ),
-              );
-            }
+          SliverToBoxAdapter(
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 15.h),
+              height: heightScreen * 0.7,
+              child: FutureBuilder(
+                future: widget.fetchMainPoster,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return Center(child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: CircularProgressIndicator(),
+                    ));
+                  }
+                  return MainPoster(fontSize: 16, iconSize: 30);
+                },
+              ),
+            ),
           ),
-          FutureBuilder(
-            future: widget.fetchShowing,
-            builder: (context, snapshot){
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return SliverToBoxAdapter(
-                  child: Center(child: CircularProgressIndicator()),
-                );
-              } else if (snapshot.hasError) {
-                return SliverToBoxAdapter(
-                  child: Center(child: Text('Error: ${snapshot.error}', style: contentStyle)),
-                );
-              }
-              else{
-                return  Consumer<ShowingFilmsCardViewModel>(
-                  builder: (context, showingFilmViewModel, child){
-                    final movies = showingFilmViewModel.films;
-                    if (movies.isEmpty) {
-                      return SliverToBoxAdapter(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 10.w),
-                              child: Text(
-                                "Phim đang chiếu",
-                                style: titleStyle,
-                              ),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 10.w),
-                              child: Text('Hiện tại không có phim nào đang chiếu',
-                                style: contentStyle,
-                              ),
-                            ),
-                          ],
-                        ),
-                      );
+          // FutureBuilder(
+          //   future: widget.fetchMainPoster,
+          //   builder: (context, snapshot) {
+          //     if (snapshot.connectionState == ConnectionState.waiting) {
+          //       return SliverToBoxAdapter(child: Center(child: CircularProgressIndicator()));
+          //     }
+          //     return SliverToBoxAdapter(
+          //       child: Container(
+          //           padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 15.h),
+          //           height: heightScreen*0.7,
+          //           child: MainPoster(fontSize: 16, iconSize: 30)
+          //       ),
+          //     );
+          //   }
+          // ),
+          SliverToBoxAdapter(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 10.w),
+                  child: Text(
+                    "Phim đang chiếu",
+                    style: titleStyle,
+                  ),
+                ),
+                FutureBuilder(
+                  future: widget.fetchShowing,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: CircularProgressIndicator(),
+                      ));
                     }
-                    return SliverToBoxAdapter(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 10.w),
-                            child: Text(
-                              "Phim đang chiếu",
-                              style: titleStyle,
-                            ),
-                          ),
-                          SizedBox(
-                            height: heightScreen*0.23,
-                            child: ListView.separated(
-                              controller: showingFilmViewModel.showingFilmsController,
-                              scrollDirection: Axis.horizontal,
-                              separatorBuilder: (context, index) => SizedBox(width: 10.w),
-                              itemCount: movies.length + (showingFilmViewModel.isLoading ? 1 : 0),
-                              itemBuilder: (context, index) {
-                                if (index == movies.length) {
-                                  return ClipRRect(
-                                    borderRadius: BorderRadius.circular(5),
-                                    child: Container(
-                                      width: widthScreen*0.3,
-                                      color: Colors.grey[800],
-                                    ),
-                                  );
-                                }
-                                final movie = movies[index];
-                                return FilmCard(
-                                  width: 0.3,
-                                  movie: movie,
-                                  onTap: () {
-                                    showingFilmViewModel.onTap(context, movie);
-                                  },
+                    if (snapshot.hasError){
+                      return Center(child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text("Error", style: contentStyle),
+                      ));
+                    }
+                    return SizedBox(
+                      height: heightScreen*0.23,
+                      child: Consumer<ShowingFilmsCardViewModel>(
+                        builder: (context, showingFilmViewModel, child) {
+                          final movies = showingFilmViewModel.films;
+                          if (movies.isEmpty){
+                            return Center(
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 10.w),
+                                  child: Text('Hiện tại không có phim nào đang chiếu', style: contentStyle,),
+                                )
+                            );
+                          }
+                          return ListView.separated(
+                            controller: showingFilmViewModel.showingFilmsController,
+                            scrollDirection: Axis.horizontal,
+                            separatorBuilder: (context, index) => SizedBox(width: 10.w),
+                            itemCount: movies.length + (showingFilmViewModel.isLoading ? 1 : 0),
+                            itemBuilder: (context, index) {
+                              if (index == movies.length) {
+                                return ClipRRect(
+                                  borderRadius: BorderRadius.circular(5),
+                                  child: Container(
+                                    width: widthScreen*0.3,
+                                    color: Colors.grey[800],
+                                  ),
                                 );
-                              },
-                            ),
-                          ),
-                        ],
+                              }
+                              final movie = movies[index];
+                              return FilmCard(
+                                width: 0.3,
+                                movie: movie,
+                                onTap: () {
+                                  showingFilmViewModel.onTap(context, movie);
+                                },
+                              );
+                            },
+                          );
+                        }
                       ),
                     );
-                  },
-                );
-              }
-            }
+                  }
+                )
+              ],
+            ),
           ),
           FutureBuilder(
             future: widget.getAllTypes,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return SliverToBoxAdapter(
-                  child: Center(child: CircularProgressIndicator()),
+                  child: Center(child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: CircularProgressIndicator(),
+                  )),
                 );
               } else if (snapshot.hasError) {
                 return SliverToBoxAdapter(
-                  child: Center(child: Text('Error: ${snapshot.error}', style: contentStyle)),
+                  child: Center(child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text('Error: ${snapshot.error}', style: contentStyle),
+                  )),
                 );
               }
               return Consumer<HomeViewModel>(
@@ -310,38 +291,38 @@ class _HomeScreenMobileState extends State<HomeScreenMobile> {
                               ),
                             ),
                             homeViewModel.isLoading[typeName] == true
-                              ? Center(child: CircularProgressIndicator())
+                                ? Center(child: CircularProgressIndicator())
                                 : (homeViewModel.filmsTypes[typeName]?.isEmpty ?? true)
                                 ? Padding(padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 10.w), child: Text("Hiện tại không có phim ${typeName} nào được chiếu!", style: contentStyle))
                                 : SizedBox(
-                              height: heightScreen * 0.23,
-                              child: ListView.separated(
-                                controller: homeViewModel.scrollControllers[typeName],
-                                scrollDirection: Axis.horizontal,
-                                separatorBuilder: (context, index) => SizedBox(width: 10),
-                                itemCount: (homeViewModel.filmsTypes[typeName]?.length ?? 0) +
-                                    ((homeViewModel.isMoreLoading[typeName] ?? false) ? 1 : 0),
-                                itemBuilder: (context, index) {
-                                  if (index == homeViewModel.filmsTypes[typeName]!.length) {
-                                    return ClipRRect(
-                                      borderRadius: BorderRadius.circular(5),
-                                      child: Container(
-                                        width: widthScreen * 0.3,
-                                        color: Colors.grey[800],
-                                      ),
-                                    );
-                                  }else{
-                                    final movie = homeViewModel.filmsTypes[typeName]![index];
-                                    return FilmCard(
-                                      width: 0.3,
-                                      movie: movie,
-                                      onTap: () {
-                                        homeViewModel.onTap(context, movie);
-                                      },
-                                    );
-                                  }
-                                },
-                              )
+                                height: heightScreen * 0.23,
+                                child: ListView.separated(
+                                  controller: homeViewModel.scrollControllers[typeName],
+                                  scrollDirection: Axis.horizontal,
+                                  separatorBuilder: (context, index) => SizedBox(width: 10),
+                                  itemCount: (homeViewModel.filmsTypes[typeName]?.length ?? 0) +
+                                      ((homeViewModel.isMoreLoading[typeName] ?? false) ? 1 : 0),
+                                  itemBuilder: (context, index) {
+                                    if (index == homeViewModel.filmsTypes[typeName]!.length) {
+                                      return ClipRRect(
+                                        borderRadius: BorderRadius.circular(5),
+                                        child: Container(
+                                          width: widthScreen * 0.3,
+                                          color: Colors.grey[800],
+                                        ),
+                                      );
+                                    }else{
+                                      final movie = homeViewModel.filmsTypes[typeName]![index];
+                                      return FilmCard(
+                                        width: 0.3,
+                                        movie: movie,
+                                        onTap: () {
+                                          homeViewModel.onTap(context, movie);
+                                        },
+                                      );
+                                    }
+                                  },
+                                )
                             ),
                           ],
                         );
@@ -352,6 +333,91 @@ class _HomeScreenMobileState extends State<HomeScreenMobile> {
               );
             },
           )
+          // FutureBuilder(
+          //   future: widget.fetchShowing,
+          //   builder: (context, snapshot){
+          //     if (snapshot.connectionState == ConnectionState.waiting) {
+          //       return SliverToBoxAdapter(
+          //         child: Center(child: CircularProgressIndicator()),
+          //       );
+          //     } else if (snapshot.hasError) {
+          //       return SliverToBoxAdapter(
+          //         child: Center(child: Text('Error: ${snapshot.error}', style: contentStyle)),
+          //       );
+          //     }
+          //     else{
+          //       return  Consumer<ShowingFilmsCardViewModel>(
+          //         builder: (context, showingFilmViewModel, child){
+          //           final movies = showingFilmViewModel.films;
+          //           if (movies.isEmpty) {
+          //             return SliverToBoxAdapter(
+          //               child: Column(
+          //                 crossAxisAlignment: CrossAxisAlignment.start,
+          //                 children: [
+          //                   Padding(
+          //                     padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 10.w),
+          //                     child: Text(
+          //                       "Phim đang chiếu",
+          //                       style: titleStyle,
+          //                     ),
+          //                   ),
+          //                   Padding(
+          //                     padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 10.w),
+          //                     child: Text('Hiện tại không có phim nào đang chiếu',
+          //                       style: contentStyle,
+          //                     ),
+          //                   ),
+          //                 ],
+          //               ),
+          //             );
+          //           }
+          //           return SliverToBoxAdapter(
+          //             child: Column(
+          //               crossAxisAlignment: CrossAxisAlignment.start,
+          //               children: [
+          //                 Padding(
+          //                   padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 10.w),
+          //                   child: Text(
+          //                     "Phim đang chiếu",
+          //                     style: titleStyle,
+          //                   ),
+          //                 ),
+          //                 SizedBox(
+          //                   height: heightScreen*0.23,
+          //                   child: ListView.separated(
+          //                     controller: showingFilmViewModel.showingFilmsController,
+          //                     scrollDirection: Axis.horizontal,
+          //                     separatorBuilder: (context, index) => SizedBox(width: 10.w),
+          //                     itemCount: movies.length + (showingFilmViewModel.isLoading ? 1 : 0),
+          //                     itemBuilder: (context, index) {
+          //                       if (index == movies.length) {
+          //                         return ClipRRect(
+          //                           borderRadius: BorderRadius.circular(5),
+          //                           child: Container(
+          //                             width: widthScreen*0.3,
+          //                             color: Colors.grey[800],
+          //                           ),
+          //                         );
+          //                       }
+          //                       final movie = movies[index];
+          //                       return FilmCard(
+          //                         width: 0.3,
+          //                         movie: movie,
+          //                         onTap: () {
+          //                           showingFilmViewModel.onTap(context, movie);
+          //                         },
+          //                       );
+          //                     },
+          //                   ),
+          //                 ),
+          //               ],
+          //             ),
+          //           );
+          //         },
+          //       );
+          //     }
+          //   }
+          // ),
         ],
       ),
     );

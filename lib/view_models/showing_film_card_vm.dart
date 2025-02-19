@@ -85,7 +85,7 @@ class ShowingFilmsCardViewModel extends ChangeNotifier{
       showingFilmsController = ScrollController()..addListener(_onScroll);
 
     } catch (e) {
-      _errorMessage = 'Failed to load movies: $e';
+      print ('Failed to load movies: $e');
     }
   }
 

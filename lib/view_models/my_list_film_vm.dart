@@ -10,8 +10,8 @@ import '../services/my_list_service.dart';
 import '../views/detailed film/detailed_film_screen.dart';
 
 class MyListFilmViewModel extends ChangeNotifier{
-  MyListService _myListService = MyListService();
-  FilmService _filmService = FilmService();
+  final MyListService _myListService = MyListService();
+  final FilmService _filmService = FilmService();
 
   ScrollController myListScrollController = ScrollController();
 

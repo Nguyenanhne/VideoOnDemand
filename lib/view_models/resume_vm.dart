@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../services/my_film_watched_service.dart';
 
 class ResumeViewModel extends ChangeNotifier{
-  MyFilmWatchedService _myFilmWatchedService =  MyFilmWatchedService();
+  final MyFilmWatchedService _myFilmWatchedService =  MyFilmWatchedService();
 
   int _position = 0;
   int get position => _position;

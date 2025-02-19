@@ -1,5 +1,6 @@
+import 'package:du_an_cntt/views/email_verification_link/email_verification_link_web.dart';
 import 'package:flutter/material.dart';
-import '../../responsive.dart';
+import '../responsive.dart';
 import 'email_verification_link_mobile.dart';
 import 'email_verification_link_tablet.dart';
 
@@ -10,7 +11,7 @@ class EmailVerificationLink extends StatelessWidget {
     return ResponsiveLayout(
       mobileLayout: EmailVerificationLinkMobile(),
       tabletLayout: EmailVerificationLinkScreenTablet(),
-      webLayout: EmailVerificationLinkScreenTablet()
+      webLayout: EmailVerificationLinkScreenWeb()
     );
   }
 }

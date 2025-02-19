@@ -1,7 +1,7 @@
 import 'dart:developer';
 import 'package:http/http.dart' as http;
 import 'package:du_an_cntt/services/user_service.dart';
-import 'package:du_an_cntt/utils.dart';
+import 'package:du_an_cntt/utils/utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -121,14 +121,15 @@ class Auth {
       // Lấy Firebase ID Token
       User? user = FirebaseAuth.instance.currentUser;
       String? idToken = await user?.getIdToken();
-      print(idToken);
+      print("Tiến hành xác thực");
+      print("ID Token : $idToken");
       if (idToken == null) {
         print("Không có token để gửi");
         return false;
       }
 
       // URL của API server (thay bằng URL của bạn)
-      String url = urlVerifyToken;
+      String url = urlVerifyToken1;
 
       // Gửi yêu cầu HTTP POST với token trong header Authorization
       final response = await http.post(

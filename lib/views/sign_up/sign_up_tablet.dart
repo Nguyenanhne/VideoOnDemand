@@ -1,4 +1,5 @@
 import 'package:du_an_cntt/helper/navigator.dart';
+import 'package:du_an_cntt/view_models/sign_in_vm.dart';
 import 'package:du_an_cntt/view_models/signup_vm.dart';
 import 'package:du_an_cntt/views/email_verification_link/email_verification_link_mobile.dart';
 import 'package:flutter/cupertino.dart';
@@ -19,10 +20,10 @@ class SignUpScreenTablet extends StatefulWidget {
 }
 
 class _SignUpScreenTablet extends State<SignUpScreenTablet> {
-  final formKey = GlobalKey<FormState>();
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-  final TextEditingController usenameController = TextEditingController();
+  // final formKey = GlobalKey<FormState>();
+  // final TextEditingController emailController = TextEditingController();
+  // final TextEditingController passwordController = TextEditingController();
+  // final TextEditingController usenameController = TextEditingController();
 
   final Auth firebaseAuth = Auth();
   var errorStyle = TextStyle(
@@ -37,17 +38,10 @@ class _SignUpScreenTablet extends State<SignUpScreenTablet> {
       fontFamily: GoogleFonts.roboto().fontFamily
   );
 
-  var contenPadding = 30.0;
+  final contentPadding = 30.0;
 
-  var labelStyle = TextStyle(color: Colors.black, fontFamily: GoogleFonts.roboto().fontFamily, fontSize: 16.sp);
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    emailController.dispose();
-    passwordController.dispose();
-    usenameController.dispose();
-    super.dispose();
-  }
+  final labelStyle = TextStyle(color: Colors.black, fontFamily: GoogleFonts.roboto().fontFamily, fontSize: 16.sp);
+
   @override
   Widget build(BuildContext context) {
     final viewModel = Provider.of<SignUpViewModel>(context);
@@ -74,7 +68,7 @@ class _SignUpScreenTablet extends State<SignUpScreenTablet> {
             SliverFillRemaining(
               hasScrollBody: true,
               child: Form(
-                key: formKey,
+                key: viewModel.formKey,
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -108,7 +102,7 @@ class _SignUpScreenTablet extends State<SignUpScreenTablet> {
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
                         child: TextFormField(
-                          controller: emailController,
+                          controller: viewModel.emailController,
                           style: contentStyle,
                           keyboardType: TextInputType.emailAddress,
                           validator: (value) {
@@ -129,14 +123,14 @@ class _SignUpScreenTablet extends State<SignUpScreenTablet> {
                               ),
                               floatingLabelBehavior: FloatingLabelBehavior.auto,
                               errorStyle: errorStyle,
-                              contentPadding: EdgeInsets.all(contenPadding)
+                              contentPadding: EdgeInsets.all(contentPadding)
                           ),
                         ),
                       ),
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 20.w),
                         child: TextFormField(
-                          controller: passwordController,
+                          controller: viewModel.passwordController,
                           obscureText: true,
                           style: contentStyle,
                           decoration: InputDecoration(
@@ -149,7 +143,7 @@ class _SignUpScreenTablet extends State<SignUpScreenTablet> {
                               ),
                               floatingLabelBehavior: FloatingLabelBehavior.auto,
                               errorStyle: errorStyle,
-                              contentPadding: EdgeInsets.all(contenPadding)
+                              contentPadding: EdgeInsets.all(contentPadding)
                           ),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
@@ -166,7 +160,7 @@ class _SignUpScreenTablet extends State<SignUpScreenTablet> {
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
                         child: TextFormField(
-                          controller: usenameController,
+                          controller: viewModel.useNameController,
                           style: contentStyle,
                           decoration: InputDecoration(
                               fillColor: Colors.grey[100],
@@ -178,7 +172,7 @@ class _SignUpScreenTablet extends State<SignUpScreenTablet> {
                               ),
                               floatingLabelBehavior: FloatingLabelBehavior.auto,
                               errorStyle: errorStyle,
-                              contentPadding: EdgeInsets.all(contenPadding)
+                              contentPadding: EdgeInsets.all(contentPadding)
                           ),
                           validator: (value){
                             if (value == null || value.isEmpty){
@@ -204,42 +198,43 @@ class _SignUpScreenTablet extends State<SignUpScreenTablet> {
                             // )
                           ),
                           onPressed: () async {
-                            String? message;
-                            if (formKey.currentState! .validate()) {
-                              showDialog(
-                                  context: context,
-                                  barrierDismissible: false,
-                                  builder: (context){
-                                    return Center(child: CircularProgressIndicator());
-                                  });
-                              message = await viewModel.signUp(emailController.text, passwordController.text, usenameController.text);
-                              Navigator.pop(context);
-                              if (message == 'The account already exists for that email.') {
-                                QuickAlert.show(
-                                  context: context,
-                                  type: QuickAlertType.error,
-                                  title: "Đăng ký thất bại",
-                                  text: "Email này đã được đăng ký, vui lòng thử lại với email khác",
-                                );
-                              } else if (message != null && message.contains('Đăng ký thành công')) {
-                                QuickAlert.show(
-                                  context: context,
-                                  type: QuickAlertType.success,
-                                  title: "Còn 1 bước nữa",
-                                  text: message,
-                                  onConfirmBtnTap: () async {
-                                    await NavigatorHelper.navigateAndRemoveUntil(context, const EmailVerificationLinkMobile());
-                                  },
-                                );
-                              } else {
-                                QuickAlert.show(
-                                  context: context,
-                                  type: QuickAlertType.error,
-                                  title: "Lỗi",
-                                  text: message ?? "Đã xảy ra lỗi không xác định.",
-                                );
-                              }
-                            }
+                            viewModel.signUpOnTap(context);
+                            // String? message;
+                            // if (viewModel.formKey.currentState! .validate()) {
+                            //   showDialog(
+                            //       context: context,
+                            //       barrierDismissible: false,
+                            //       builder: (context){
+                            //         return Center(child: CircularProgressIndicator());
+                            //       });
+                            //   message = await viewModel.signUp(viewModelemailController.text, passwordController.text, usenameController.text);
+                            //   Navigator.pop(context);
+                            //   if (message == 'The account already exists for that email.') {
+                            //     QuickAlert.show(
+                            //       context: context,
+                            //       type: QuickAlertType.error,
+                            //       title: "Đăng ký thất bại",
+                            //       text: "Email này đã được đăng ký, vui lòng thử lại với email khác",
+                            //     );
+                            //   } else if (message != null && message.contains('Đăng ký thành công')) {
+                            //     QuickAlert.show(
+                            //       context: context,
+                            //       type: QuickAlertType.success,
+                            //       title: "Còn 1 bước nữa",
+                            //       text: message,
+                            //       onConfirmBtnTap: () async {
+                            //         await NavigatorHelper.navigateAndRemoveUntil(context, const EmailVerificationLinkMobile());
+                            //       },
+                            //     );
+                            //   } else {
+                            //     QuickAlert.show(
+                            //       context: context,
+                            //       type: QuickAlertType.error,
+                            //       title: "Lỗi",
+                            //       text: message ?? "Đã xảy ra lỗi không xác định.",
+                            //     );
+                            //   }
+                            // }
                           },
                           child: Text(
                             "Bắt đầu",

@@ -7,7 +7,6 @@ import 'package:provider/provider.dart';
 
 import '../../models/film_model.dart';
 import '../../services/film_service.dart';
-import '../../widgets/movie_detail/movie_item.dart';
 class SearchScreenMobile extends StatefulWidget {
   final Future<void> fetchTypes;
   final Future<void> fetchYears;
@@ -25,27 +24,13 @@ class _SearchScreenMobileState extends State<SearchScreenMobile> {
 
   final contentStyle = TextStyle(
       fontFamily: GoogleFonts.roboto().fontFamily,
-      fontSize: 18,
+      fontSize: 18.sp,
       color: Colors.white
   );
   final imageWidth = 150.0;
   final imageHeight = 200.0;
   @override
-  void initState() {
-    // final searchViewModel = Provider.of<SearchViewModel>(context, listen: false);
-    // searchViewModel.reset();
-    // fetchTypes = searchViewModel.getAllTypes();
-    // fetchYears = searchViewModel.getYears();
-    // searchingFilmController = ScrollController()..addListener(searchingFilmsOnScroll);
-    super.initState();
-  }
 
-  // void searchingFilmsOnScroll() {
-  //   final searchViewModel = Provider.of<SearchViewModel>(context, listen: false);
-  //   if (searchingFilmController.position.pixels == searchingFilmController.position.maxScrollExtent && !searchViewModel.isLoading && searchViewModel.hasMore) {
-  //     searchViewModel.searchMoreFilmsByTypeAndYear();
-  //   }
-  // }
   @override
   Widget build(BuildContext context) {
     final heightBottomSheet = MediaQuery.of(context).size.height - AppBar().preferredSize.height;
@@ -192,7 +177,7 @@ class _SearchScreenMobileState extends State<SearchScreenMobile> {
       appBar: AppBar(
         titleSpacing: 10.w,
         backgroundColor: Colors.black,
-        title: Text("Tìm Kiếm", style: TextStyle(color: Colors.white)),
+        title: Text("Tìm Kiếm", style: contentStyle.copyWith(fontWeight: FontWeight.bold)),
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(50),
           child: Padding(
@@ -297,6 +282,7 @@ class _SearchScreenMobileState extends State<SearchScreenMobile> {
                 types: film.type.join(", "),
                 name: film.name,
                 des: film.description,
+                maxline: 5,
                 ontap: (){
                   searchingViewModel.onTap(context, films[index]);
                 },
@@ -374,8 +360,6 @@ class CustomSearchDelegate extends SearchDelegate {
               title: Text(films[index].name, style: contentStyle),
               onTap: () {
                 searchVM.onTap(context, films[index]);
-                // query = films[index].name;
-                // showResults(context);
               },
             );
           },

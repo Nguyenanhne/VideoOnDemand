@@ -9,35 +9,36 @@ import 'package:provider/provider.dart';
 import 'package:tap_debouncer/tap_debouncer.dart';
 
 import '../../services/firebase_authentication.dart';
-import '../../utils.dart';
+import '../../utils/utils.dart';
 import '../../view_models/film_watched_card_vm.dart';
 import '../../view_models/my_list_film_vm.dart';
 import '../../widgets/film_card.dart';
 
 class MyNetflixScreenWeb extends StatefulWidget {
-  const MyNetflixScreenWeb({super.key});
+  final Future<void> fetchMyList;
+  final Future<void> fetchFilmWatched;
+  const MyNetflixScreenWeb({super.key, required this.fetchMyList, required this.fetchFilmWatched});
 
   @override
   State<MyNetflixScreenWeb> createState() => _MyNetflixScreenWebState();
 }
 
 class _MyNetflixScreenWebState extends State<MyNetflixScreenWeb> {
-  late Future<void> fetchMyList;
-  late Future<void> fetchFilmWatched;
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    final myListFilmsViewModel = Provider.of<MyListFilmViewModel>(context, listen: false);
-    final myFilmWatched = Provider.of<FilmWatchedCardViewModel>(context, listen: false);
-
-    fetchMyList = myListFilmsViewModel.fetchMyList();
-    fetchFilmWatched = myFilmWatched.fetchMyListFilmWatched();
-  }
-  @override
-  void dispose() {
-    super.dispose();
-  }
+  // late Future<void> fetchMyList;
+  // late Future<void> fetchFilmWatched;
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   final myListFilmsViewModel = Provider.of<MyListFilmViewModel>(context, listen: false);
+  //   final myFilmWatched = Provider.of<FilmWatchedCardViewModel>(context, listen: false);
+  //
+  //   fetchMyList = myListFilmsViewModel.fetchMyList();
+  //   fetchFilmWatched = myFilmWatched.fetchMyListFilmWatched();
+  // }
+  // @override
+  // void dispose() {
+  //   super.dispose();
+  // }
   @override
   Widget build(BuildContext context) {
     final heightScreen = MediaQuery.of(context).size.height
@@ -55,7 +56,7 @@ class _MyNetflixScreenWebState extends State<MyNetflixScreenWeb> {
     );
 
     final leadingTitle = TextStyle(
-        fontSize: 35,
+        fontSize: 30,
         fontFamily: GoogleFonts.roboto().fontFamily,
         color: Colors.white,
         fontWeight: FontWeight.bold
@@ -138,9 +139,25 @@ class _MyNetflixScreenWebState extends State<MyNetflixScreenWeb> {
                     style: titleStyle,
                   ),
                 ),
+                InkWell(
+                  onTap: (){
+                    viewModel.changePWOnTap(context);
+                  },
+                  child: ListTile(
+                    leading: Icon(
+                      LineAwesomeIcons.edit_solid,
+                      size: iconTabletSize,
+                      color: Colors.white,
+                    ),
+                    title: Text(
+                      "Đổi mật khẩu",
+                      style: titleStyle,
+                    ),
+                  ),
+                ),
                 TapDebouncer(
                   onTap: () async {
-                    viewModel.ontapBackToLoginScreen(context);
+                    viewModel.onTapBackToLoginScreen(context);
                     await firebaseAuth.signOut();
                   }, // your tap handler moved here
                   builder: (BuildContext context, TapDebouncerFunc? onTap) {
@@ -171,39 +188,10 @@ class _MyNetflixScreenWebState extends State<MyNetflixScreenWeb> {
       appBar: AppBar(
         titleSpacing: 10.w,
         backgroundColor: Colors.black,
-        leading: InkWell(
-          child: Icon(
-            Icons.arrow_back,
-            color: Color(colorAppbarIcon),
-            size: iconTabletSize,
-          ),
-        ),
         title: Text(
           "Netflix của tôi",
           style: leadingTitle,
         ),
-        actions: [
-          InkWell(
-              child: const Icon(
-                Icons.search,
-                size: iconTabletSize,
-                color: Colors.white,
-              )
-          ),
-          InkWell(
-              onTap: (){
-                showBottomSheet(context);
-              },
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16.w),
-                child: const Icon(
-                  Icons.menu,
-                  size: iconTabletSize,
-                  color: Colors.white,
-                ),
-              )
-          ),
-        ],
       ),
       body: CustomScrollView(
         slivers: [
@@ -271,7 +259,7 @@ class _MyNetflixScreenWebState extends State<MyNetflixScreenWeb> {
           //     }
           // ),
           FutureBuilder(
-              future: fetchMyList,
+              future: widget.fetchMyList,
               builder: (context, snapshot){
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return SliverToBoxAdapter(
@@ -304,14 +292,14 @@ class _MyNetflixScreenWebState extends State<MyNetflixScreenWeb> {
                                 return ClipRRect(
                                   borderRadius: BorderRadius.circular(5),
                                   child: Container(
-                                    width: widthScreen*0.3,
+                                    width: widthScreen*13,
                                     color: Colors.grey[800],
                                   ),
                                 );
                               }
                               final movie = films[index];
                               return FilmCard(
-                                width: 0.15,
+                                width: 0.13,
                                 movie: movie,
                                 onTap: () {
                                   myListFilmsViewModel.onTap(context, movie);
@@ -335,7 +323,7 @@ class _MyNetflixScreenWebState extends State<MyNetflixScreenWeb> {
             ),
           ),
           FutureBuilder(
-              future: fetchFilmWatched,
+              future: widget.fetchFilmWatched,
               builder: (context, snapshot){
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return SliverToBoxAdapter(
@@ -357,7 +345,7 @@ class _MyNetflixScreenWebState extends State<MyNetflixScreenWeb> {
                       }
                       return SliverToBoxAdapter(
                         child: SizedBox(
-                          height: heightScreen*0.3,
+                          height: heightScreen*0.25,
                           child: ListView.separated(
                             controller: filmWatchedViewModel.filmWatchedScrollController,
                             scrollDirection: Axis.horizontal,
@@ -368,14 +356,14 @@ class _MyNetflixScreenWebState extends State<MyNetflixScreenWeb> {
                                 return ClipRRect(
                                   borderRadius: BorderRadius.circular(5),
                                   child: Container(
-                                    width: widthScreen*0.15,
+                                    width: widthScreen*0.13,
                                     color: Colors.grey[800],
                                   ),
                                 );
                               }
                               final movie = films[index];
                               return FilmCard(
-                                width: 0.15,
+                                width: 0.13,
                                 movie: movie,
                                 onTap: () {
                                   filmWatchedViewModel.onTap(context, movie);
