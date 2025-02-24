@@ -51,7 +51,7 @@ class DetailedFilmViewModel extends ChangeNotifier {
   BetterPlayerController? get betterPlayerController => _betterPlayerController;
   @override
   void dispose() {
-    _betterPlayerController?.dispose();
+    _betterPlayerController?.dispose(forceDispose: true);
     super.dispose();
   }
   void setActiveEpisode(int index) {

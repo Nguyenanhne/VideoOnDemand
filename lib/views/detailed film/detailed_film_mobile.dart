@@ -66,9 +66,11 @@ class _DetailedMovieScreenMobileState extends State<DetailedMovieScreenMobile>  
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      'Mô tả: $title',
-                      style: contentStyle.copyWith(fontSize: 18.sp, fontWeight: FontWeight.bold),
+                    Expanded(
+                      child: Text(
+                        'Mô tả: $title',
+                        style: contentStyle.copyWith(fontSize: 18.sp, fontWeight: FontWeight.bold),
+                      ),
                     ),
                     IconButton(
                       onPressed: () => Navigator.pop(context),
@@ -110,9 +112,11 @@ class _DetailedMovieScreenMobileState extends State<DetailedMovieScreenMobile>  
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      'Diễn viên: $title',
-                      style: contentStyle.copyWith(fontSize: 18.sp, fontWeight: FontWeight.bold, color: Colors.white),
+                    Expanded(
+                      child: Text(
+                        'Diễn viên: $title',
+                        style: contentStyle.copyWith(fontSize: 18.sp, fontWeight: FontWeight.bold, color: Colors.white),
+                      ),
                     ),
                     IconButton(
                       onPressed: () => Navigator.pop(context),

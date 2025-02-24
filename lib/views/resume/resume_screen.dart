@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
+import '../video.dart';
+
 
 class MyResumeScreen extends StatefulWidget {
   final String filmID;
@@ -26,10 +28,35 @@ class _MyResumeScreenState extends State<MyResumeScreen> {
   }
   @override
   Widget build(BuildContext context) {
-    return ResponsiveLayout(
-      mobileLayout: MyResumeScreenMobile(getLastVideoPosition: getLastVideoPosition, filmID: widget.filmID),
-      tabletLayout: MyResumeScreenTablet(getLastVideoPosition: getLastVideoPosition, filmID: widget.filmID),
-      webLayout: MyResumeScreenWeb(getLastVideoPosition: getLastVideoPosition, filmID: widget.filmID)
+    return FutureBuilder(
+      future: getLastVideoPosition,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return  Center(child: CircularProgressIndicator());
+        }
+        if (snapshot.hasError) {
+          return Center(child: Text("Lỗi: ${snapshot.error}"));
+        }
+        return Consumer<ResumeViewModel>(
+          builder: (context, resumeVM, child) {
+            if (resumeVM.position == 0) {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => VideoPlayer(filmID: widget.filmID, position: 0),
+                  ),
+                );
+              });
+            }
+            return ResponsiveLayout(
+              mobileLayout: MyResumeScreenMobile(getLastVideoPosition: getLastVideoPosition, filmID: widget.filmID),
+              tabletLayout: MyResumeScreenTablet(getLastVideoPosition: getLastVideoPosition, filmID: widget.filmID),
+              webLayout: MyResumeScreenWeb(getLastVideoPosition: getLastVideoPosition, filmID: widget.filmID)
+            );
+          }
+        );
+      }
     );
   }
 }

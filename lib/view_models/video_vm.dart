@@ -16,18 +16,18 @@ class VideoViewModel with ChangeNotifier {
   BetterPlayerDataSource? _betterPlayerDataSource;
   Timer? _savePositionTimer;
   String? _videoURL;
-  bool _verifyToken = true;
+  bool _verifyToken = false;
   bool  get verifyToken => _verifyToken;
   String? get videoURL => _videoURL;
   BetterPlayerController? get betterPlayerController => _betterPlayerController;
 
 
   Future<void> initializeVideoPlayer({required String filmID, required int position}) async{
-    // _videoURL = await getVideoURL(filmID);
-    // print("video url $_videoURL");
-    // if (_videoURL == null){
-    //   return;
-    // }
+    _videoURL = await getVideoURL(filmID);
+    print("Video Url $_videoURL");
+    if (_videoURL == null){
+      return;
+    }
     BetterPlayerConfiguration betterPlayerConfiguration = BetterPlayerConfiguration(
       aspectRatio: 16 / 9,
       fit: BoxFit.contain,
@@ -36,11 +36,10 @@ class VideoViewModel with ChangeNotifier {
       fullScreenByDefault: true,
       startAt: Duration(seconds: position),
     );
-
     _betterPlayerDataSource = BetterPlayerDataSource(
       BetterPlayerDataSourceType.network,
-      "https://stream-akamai.castr.com/5b9352dbda7b8c769937e459/live_2361c920455111ea85db6911fe397b9e/index.fmp4.m3u8",
-      // _videoURL!,
+      // "https://stream-akamai.castr.com/5b9352dbda7b8c769937e459/live_2361c920455111ea85db6911fe397b9e/index.fmp4.m3u8",
+      _videoURL!,
       cacheConfiguration: BetterPlayerCacheConfiguration(
         useCache: false,
         maxCacheSize: 100 * 1024 * 1024, // 100 MB
@@ -54,12 +53,7 @@ class VideoViewModel with ChangeNotifier {
         bufferForPlaybackAfterRebufferMs: 2000,
       ),
     );
-
     _betterPlayerController = BetterPlayerController(betterPlayerConfiguration);
-    _betterPlayerController!.addEventsListener((event){
-      if (event.betterPlayerEventType == BetterPlayerEventType.hideFullscreen) {
-      }
-    });
     _betterPlayerController!.setupDataSource(_betterPlayerDataSource!);
     saveFilmPosition(filmID: filmID);
   }
@@ -96,7 +90,7 @@ class VideoViewModel with ChangeNotifier {
 
   @override
   void dispose(){
-    _betterPlayerController?.dispose();
+    _betterPlayerController?.dispose(forceDispose: true);
     super.dispose();
   }
 

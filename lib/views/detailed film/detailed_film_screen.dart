@@ -23,6 +23,7 @@ class _DetailedFilmScreenState extends State<DetailedFilmScreen> {
   late Future<void> getTrailerURL;
   late Future<void> fetchSameFilms;
   late Future<List<dynamic>> combinedFuture;
+
   @override
   void initState() {
     super.initState();
@@ -38,7 +39,7 @@ class _DetailedFilmScreenState extends State<DetailedFilmScreen> {
     fetchSameFilms = searchVM.searchFilmsByMultipleType(filmTypes);
     getTrailerURL = filmVM.initializeVideoPlayer(filmID: filmID);
   }
-  @override
+
   @override
   Widget build(BuildContext context) {
     return ResponsiveLayout(

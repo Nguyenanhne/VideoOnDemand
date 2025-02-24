@@ -2,6 +2,7 @@ import 'package:du_an_cntt/utils/utils.dart';
 import 'package:du_an_cntt/view_models/video_vm.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:better_player_enhanced/better_player.dart';
 
@@ -16,6 +17,11 @@ class VideoPlayer extends StatefulWidget {
 
 class _VideoPlayerState extends State<VideoPlayer> {
   late Future<void> getFilmURL;
+  final contentStyle = TextStyle(
+      fontSize: 25,
+      color: Colors.white,
+      fontFamily: GoogleFonts.roboto().fontFamily
+  );
   @override
   void initState() {
     SystemChrome.setPreferredOrientations([]);
@@ -41,30 +47,32 @@ class _VideoPlayerState extends State<VideoPlayer> {
           },
         ),
       ),
-      body:  PopScope(
-        canPop: false,
-        child: Consumer<VideoViewModel>(
-          builder: (context, videoViewModel, child) {
-            return BetterPlayer(controller: videoViewModel.betterPlayerController!);
-          }
+        body: FutureBuilder(
+          future: getFilmURL,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            if (snapshot.hasError) {
+              print("Lỗi FutureBuilder: ${snapshot.error}");
+              return Center(child: Text("Lỗi tải dữ liệu!", style: contentStyle));
+            }
+            return PopScope(
+              canPop: false,
+              child: Consumer<VideoViewModel>(
+                builder: (context, videoViewModel, child) {
+                  if (!(videoViewModel.verifyToken)) {
+                    return Center(child: Text("Lỗi xác thực!", style: contentStyle));
+                  }
+                  if (videoViewModel.videoURL == null || videoViewModel.videoURL!.isEmpty) {
+                    return Center(child: Text("Lỗi phim!", style: contentStyle));
+                  }
+                  return BetterPlayer(controller: videoViewModel.betterPlayerController!);
+                },
+              ),
+            );
+          },
         )
-      )
-      // body: FutureBuilder(
-      //   future: getFilmURL,
-      //   builder: (context, snapshot){
-      //     if(snapshot.connectionState == ConnectionState.waiting){
-      //       return Center(child: CircularProgressIndicator());
-      //     }
-      //     return (videoViewModel.verifyToken)
-      //       ? (videoViewModel.videoURL != null)
-      //       ? PopScope(canPop: false, child: Consumer<VideoViewModel>(builder: (context, videoViewModel, child) {return BetterPlayer(controller: videoViewModel.betterPlayerController!);}))
-      //       : Center(child: Text("Lỗi phim!", style: contentStyle))
-      //       : Center(child: Text("Lỗi xác thực!", style: contentStyle));
-      //   }
-      // )
-      //   body: (videoViewModel.verifyToken)
-      //       ? PopScope(canPop: false, child: Consumer<VideoViewModel>(builder: (context, videoViewModel, child) {return BetterPlayer(controller: videoViewModel.betterPlayerController);}))
-      //       : Center(child: Text("Lỗi xác thực!", style: contentStyle))
     );
   }
 }
